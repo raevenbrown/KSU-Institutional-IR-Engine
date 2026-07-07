@@ -58,23 +58,30 @@ if "advisor_availability_db" not in st.session_state:
     })
 
 # Master Coles Capacity Reference Frame
-coles_capacity_data = pd.DataFrame({
-    "major_name": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
-    "undergrad_seat_count": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420]
-})
+if "coles_capacity_db" not in st.session_state:
+    st.session_state.coles_capacity_db = pd.DataFrame({
+        "major_name": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
+        "undergrad_seat_count": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420],
+        "semester_credit_hours": [12400, 18400, 9100, 5200, 4800, 24500, 3100, 9400, 19800, 14200],
+        "retention_goal_pct": [84.0, 85.0, 88.0, 80.0, 82.0, 82.0, 80.0, 88.0, 80.0, 85.0],
+        "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1]
+    })
+
+# Explicit KSU Gold Brand Palette for Plotly Charts
+ksu_gold_palette = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100", "#4E5D6C", "#161B22"]
 
 # ==========================================
-# SIDEBAR NAVIGATION MATRIX
+# NAVIGATE360 NATIVE FILTER SIDEBAR SYSTEM
 # ==========================================
 st.sidebar.title("🛡️ Navigate360 Core")
 st.sidebar.markdown("**User Access Role:** `Advisor Terminal Suite`")
 st.sidebar.write("---")
 
 st.sidebar.subheader("🔍 Filters Panel")
-major_filter = st.sidebar.selectbox("Filter Enrollment Major Context:", options=["All majors"] + list(coles_capacity_data["major_name"].unique()))
+major_filter = st.sidebar.selectbox("Filter Enrollment Major Context:", options=["All majors"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
 class_filter = st.sidebar.selectbox("Filter Classification Level:", options=["All classifications", "First Year", "Second Year", "Third Year", "Fourth Year"])
 
-processed_df = st.session_state.navigate_students_db
+processed_df = st.session_state.navigate_students_db.copy()
 if major_filter != "All majors":
     processed_df = processed_df[processed_df["student_major"] == major_filter]
 if class_filter != "All classifications":
@@ -95,7 +102,8 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
         st.write("---")
         
         if len(processed_df) > 0:
-            selected_student_name = st.selectbox("👤 Select Student Profile File to Inspect:", options=processed_df["student_name"].unique())
+            # Fixed potential KeyError index caching issues by using the robust master key list directly
+            selected_student_name = st.selectbox("👤 Select Student Profile File to Inspect:", options=list(processed_df["student_name"].unique()))
             idx = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_name"] == selected_student_name].index[0]
             s_row = st.session_state.navigate_students_db.loc[idx]
             
@@ -152,7 +160,7 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
                 st.success("Operational changes logged successfully to backend tables!")
                 st.rerun()
         else:
-            st.warning("No records match current criteria.")
+            st.warning("No records match the active filtering parameters inside the left panel configuration.")
             
         st.write("---")
         st.subheader("📋 Full Filtered Caseload Ingestion Matrix View")
@@ -195,7 +203,6 @@ elif app_panel == "📅 Scheduling Desk & Availability Manager":
     
     tab_avail, tab_book = st.tabs(["🔒 My Availability Configuration Terminal", "🤝 Multi-Criteria Appointment Booking Engine"])
     
-    # Sub-Terminal A: Managing Shift Availability
     with tab_avail:
         st.subheader("Available Consulting Times Matrix")
         st.dataframe(st.session_state.advisor_availability_db, use_container_width=True, hide_index=True)
@@ -224,10 +231,8 @@ elif app_panel == "📅 Scheduling Desk & Availability Manager":
                 st.success("Authorized schedule modification applied successfully!")
                 st.rerun()
 
-    # Sub-Terminal B: Appointment Booking Form
     with tab_book:
         st.subheader("Schedule Interactive Appointment Form")
-        
         book_left, book_right = st.columns([1, 2])
         
         with book_left:
@@ -254,8 +259,6 @@ elif app_panel == "📅 Scheduling Desk & Availability Manager":
             
             st.write("---")
             st.markdown("##### **3. Choose A Grid Time Slot Matrix Allocation**")
-            
-            # Replicating Grid Selection Block from Screen 8
             time_slots_data = pd.DataFrame({
                 "Time Slot Windows": ["12:00pm - 12:45pm ET", "12:45pm - 1:30pm ET", "1:30pm - 2:15pm ET", "2:15pm - 3:00pm ET", "3:00pm - 3:45pm ET"],
                 "08/31 (SUN)": ["DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN"],
@@ -264,7 +267,6 @@ elif app_panel == "📅 Scheduling Desk & Availability Manager":
             })
             st.dataframe(time_slots_data, use_container_width=True, hide_index=True)
             
-            # Simple simulation toggle action completion trigger
             if st.button("💾 Save Finalized Appointment Frame to Navigate Core Schema Pipeline", use_container_width=True):
                 st.success(f"Appointment processed for target date matching {b_date} under {b_serv} processing tracks!")
 
@@ -275,13 +277,18 @@ elif app_panel == "📊 Population Health Dashboard":
     st.header("📊 Population Health Dashboard & Resource Analytics")
     st.write("---")
     
+    display_metrics = st.session_state.coles_capacity_db.copy()
+    if major_filter != "All majors":
+        display_metrics = display_metrics[display_metrics["major_name"] == major_filter]
+        
     g_col1, g_col2 = st.columns(2)
     with g_col1:
-        fig_ret = px.bar(coles_capacity_data, x="major_name", y="undergrad_seat_count",
-                         title="Undergraduate Enrollment Volume Size Focus",
-                         color_discrete_sequence=["#FFC400"])
+        fig_ret = px.bar(display_metrics, x="major_name", y=["retention_goal_pct", "actual_retention_pct"],
+                         title="Retention Matrix Analysis: Coles Goals vs. Actual Proportions", barmode="group",
+                         color_discrete_sequence=["#FFC400", "#161B22"])
         st.plotly_chart(fig_ret, use_container_width=True)
     with g_col2:
-        fig_seats = px.pie(coles_capacity_data, values="undergrad_seat_count", names="major_name", hole=0.4,
-                           title="Enrollment Metric Distribution Shares", color_discrete_sequence=px.colors.sequential.Golds)
+        # Fixed the structural layout by switching out px.colors.sequential.Golds for our explicit hex array sequence
+        fig_seats = px.pie(display_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
+                           title="Enrollment Metric Distribution Shares", color_discrete_sequence=ksu_gold_palette)
         st.plotly_chart(fig_seats, use_container_width=True)
