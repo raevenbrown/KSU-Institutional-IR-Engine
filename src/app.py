@@ -3,50 +3,34 @@ import pandas as pd
 import plotly.express as px
 
 # 1. Main Page Canvas Configuration
-st.set_page_config(page_title="Coles Navigate360 Terminal", layout="wide")
+st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 
 # ==========================================
-# EAB NAVIGATE CORE DATA SCHEMA COMPLIANCE
+# CENTRALIZED NAVIGATE360 ALIGNED DATA BASE
 # ==========================================
 
-# Persistent Session State 1: Central Navigate360 Student Caseload & Activity Feed
-if "navigate_caseload_db" not in st.session_state:
-    st.session_state.navigate_caseload_db = pd.DataFrame({
-        "case_id": [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010],
+# Persistent Session State: Central Student Profile Logs
+if "navigate_students_db" not in st.session_state:
+    st.session_state.navigate_students_db = pd.DataFrame({
+        "student_id": ["KSU-9321", "KSU-4412", "KSU-5591", "KSU-2204", "KSU-7781", "KSU-1104", "KSU-3391", "KSU-8841", "KSU-6621", "KSU-5510"],
         "student_record": ["Student Alpha", "Student Beta", "Student Gamma", "Student Delta", "Student Epsilon", "Student Zeta", "Student Eta", "Student Theta", "Student Iota", "Student Kappa"],
         "student_major": ["Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems & Information Security", "Management", "Marketing", "Marketing"],
+        "classification": ["Sophomore", "Freshman", "Senior", "Junior", "Sophomore", "Freshman", "Senior", "Junior", "Sophomore", "Senior"],
+        "transfer_student": ["No", "Yes", "No", "No", "Yes", "No", "No", "No", "No", "Yes"],
+        "gpa_df_count": [0, 1, 0, 2, 0, 0, 1, 0, 0, 0],
+        "withdrawn_courses": [0, 0, 1, 3, 0, 0, 0, 1, 0, 0],
+        "cumulative_gpa": [3.31, 2.45, 3.82, 1.95, 2.88, 3.12, 2.15, 3.64, 3.22, 2.95],
+        "total_credits_earned": [51.0, 18.0, 94.0, 72.0, 45.0, 14.0, 112.0, 88.0, 62.0, 105.0],
+        "credit_completion_pct": [100, 85, 96, 64, 100, 100, 78, 92, 100, 88],
+        "predicted_support_level": ["Low Risk", "Medium Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk", "Medium Risk"],
         "appointment_care_unit": ["Academic Advising", "Academic Advising", "Career Coaching", "Internship & Co-op Advising", "Academic Advising", "Student Engagement", "Academic Advising", "Career Coaching", "Academic Advising", "Professional Sales Track"],
         "assigned_staff_owner": ["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins", "Stacey Nebriaga", "Tyler Pede", "Michael Gabriele", "Thomas Anderson"],
-        "reason_category": [
-            "Graduation Check & Degree Auditing",
-            "MFA Token Issue & Registration Authorization",
-            "Resume Polish & Executive Mock Interview",
-            "Corporate Internship Credit Sign-off",
-            "Schedule Optimization & Prerequisite Check",
-            "Business Student Association Leadership Intake",
-            "Upper-Division Security Course Override Request",
-            "Fall Career Fair Strategic Prep Session",
-            "Change of Major Intake: Swapping to Marketing",
-            "National Collegiate Sales Competition Prep & Vetting"
-        ],
-        "predicted_support_level": ["High Risk", "Medium Risk", "High Risk", "Critical Risk", "Low Risk", "Low Risk", "Critical Risk", "High Risk", "Medium Risk", "High Risk"],
+        "reason_category": ["Graduation Check", "Registration Auth", "Resume Polish", "Co-op Sign-off", "Prerequisite Check", "Leadership Intake", "Course Override", "Career Fair Prep", "Change of Major", "Sales Team Vetting"],
         "case_status": ["Open", "In Progress", "Open", "Open", "Resolved", "Open", "In Progress", "Open", "Resolved", "In Progress"],
-        "touchpoint_duration_mins": [0, 15, 0, 0, 45, 0, 30, 0, 30, 15],
         "appointment_summary_report": ["", "Reviewing transfer credits from state college.", "", "", "Cleared registration holds and prerequisites.", "", "Processing system registration override permission codes.", "", "Change of major paperwork securely archived.", ""]
     })
 
-# Persistent Session State 2: Progress Report Campaigns (Navigate's Midterm/Early Alert Engine)
-if "progress_reports_db" not in st.session_state:
-    st.session_state.progress_reports_db = pd.DataFrame({
-        "campaign_course": ["BUSA 2150", "BUSA 3150", "BUSA 4150", "BUSA 2150", "BUSA 3150"],
-        "business_major": ["Accounting", "Finance", "Management", "Marketing", "Cybersecurity"],
-        "students_targeted": [340, 290, 410, 380, 195],
-        "faculty_response_rate_pct": [94.2, 88.5, 91.1, 86.4, 92.7],
-        "positive_case_outcomes": [315, 240, 395, 310, 180],
-        "intervention_alert_status": ["Compliant", "Needs Review", "Compliant", "Needs Attention", "Compliant"]
-    })
-
-# Master Coles Capacity & Outcome Metrics
+# Master Coles Capacity Analytics Reference Frame
 coles_capacity_data = pd.DataFrame({
     "major_name": ["Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems & Information Security", "Management", "Marketing", "Professional Sales"],
     "undergrad_seat_count": [1250, 680, 410, 350, 980, 240, 890, 1650, 1420, 310],
@@ -56,165 +40,163 @@ coles_capacity_data = pd.DataFrame({
 })
 
 # ==========================================
-# SIDEBAR CONTROL PANEL
+# NAVIGATE360 NATIVE FILTER SIDEBAR SYSTEM
 # ==========================================
-st.sidebar.title("💎 Coles Navigate360 Terminal")
-st.sidebar.markdown("**Operational Hub:** `Center for Student Success` ")
-st.sidebar.markdown("**System Class:** `Navigate V3 Data Engine`")
+st.sidebar.title("🛡️ Navigate360 Context")
+st.sidebar.markdown("**Operational Suite:** `Student Success Workstation`")
 st.sidebar.write("---")
 
-# Direct Major-by-Major Context Switch Matrix
-st.sidebar.subheader("🏢 Caseload Scope Filter")
-major_selection = st.sidebar.selectbox(
-    "Select Student Cohort Focus:",
+st.sidebar.subheader("🔍 Filter Parameters")
+
+# 1. Enrollment Major Filter Loop Focus
+major_filter = st.sidebar.selectbox(
+    "Enrollment History (Major Focus):",
     options=["All Coles Business Majors"] + list(coles_capacity_data["major_name"].unique())
 )
 
-# Apply Context Isolation Filters
-if major_selection == "All Coles Business Majors":
-    filtered_cases = st.session_state.navigate_caseload_db
-    filtered_progress = st.session_state.progress_reports_db
-    filtered_metrics = coles_capacity_data
-else:
-    filtered_cases = st.session_state.navigate_caseload_db[st.session_state.navigate_caseload_db["student_major"] == major_selection]
-    filtered_progress = st.session_state.progress_reports_db[st.session_state.progress_reports_db["business_major"] == major_selection]
-    filtered_metrics = coles_capacity_data[coles_capacity_data["major_name"] == major_selection]
+# 2. Student Current Classification Filters
+class_filter = st.sidebar.selectbox(
+    "Current Classification:",
+    options=["All Classifications", "Freshman", "Sophomore", "Junior", "Senior"]
+)
+
+# 3. Transfer Student Isolation Filter
+transfer_filter = st.sidebar.selectbox(
+    "Transfer Student Status:",
+    options=["All Students", "Yes", "No"]
+)
+
+# Processing Selection Matrix
+processed_df = st.session_state.navigate_students_db
+
+if major_filter != "All Coles Business Majors":
+    processed_df = processed_df[processed_df["student_major"] == major_filter]
+if class_filter != "All Classifications":
+    processed_df = processed_df[processed_df["classification"] == class_filter]
+if transfer_filter != "All Students":
+    processed_df = processed_df[processed_df["transfer_student"] == transfer_filter]
 
 st.sidebar.write("---")
 
-# Navigation Panel Choice Structure Loops
+# Dashboard Tab Controller Matrix
 st.sidebar.subheader("🏁 Operational Navigation")
 app_panel = st.sidebar.radio(
-    "Select Dashboard View:",
-    [
-        "📋 Staff Home: Caseload & Activity Feed", 
-        "📢 Progress Report Campaigns",
-        "📊 Population Health & Capacity Metrics", 
-        "🏛️ University Data Strategy Alignment"
-    ]
+    "Select Interface Terminal View:",
+    ["📋 Staff Home: Caseload Workspace", "📊 Population Health Analytics", "🏛️ University Data Strategy Alignment"]
 )
 
 # ==========================================
-# MAIN DASHBOARD MOUNTING
+# MAIN INTERFACE RENDER ENGINE
 # ==========================================
-st.title("🏛️ Coles College — Navigate360 Student Success Workspace")
-st.markdown(f"Active Filtering Cohort: **{major_selection}** | Workspace Module: **{app_panel}**")
+st.title("🏛️ Navigate360 — Center for Student Success Control Center")
 st.write("---")
 
 # ------------------------------------------
-# MODULE 1: STAFF HOME: CASELOAD & ACTIVITY FEED
+# TERMINAL MODULE 1: STAFF HOME LOGS CASELOAD
 # ------------------------------------------
-if app_panel == "📋 Staff Home: Caseload & Activity Feed":
-    st.header("📋 Staff Home: Real-Time Caseload Activity Feed")
-    st.markdown("##### *Monitoring live queues across Academic Advising Care Units, Career Coaching, and Appointment Summary Reports.*")
+if app_panel == "📋 Staff Home: Caseload Workspace":
+    st.header("📋 Staff Home Workspace & Active Appointment Queues")
     
-    # Process Process Metrics
-    tc1, tc2, tc3 = st.columns(3)
-    with tc1: st.metric("Total Assigned Caseload Count", value=len(filtered_cases))
-    with tc2: st.metric("Critical Support Levels Flagged", value=len(filtered_cases[filtered_cases["predicted_support_level"] == "Critical Risk"]))
-    with tc3: st.metric("Accumulated Touchpoint Duration", value=f"{filtered_cases['touchpoint_duration_mins'].sum()} Mins")
-    
-    st.write("")
-    st.subheader("📊 Live Activity Feed (V3 Reporting Format)")
-    st.dataframe(filtered_cases, use_container_width=True, hide_index=True)
-    st.write("---")
-    
-    # Dynamic Advisor Input Desk Hook
-    st.subheader("🛠️ Navigate360 Case Management Engine")
-    if len(filtered_cases) > 0:
-        target_id = st.selectbox("Mount Student Record to Case Management Center ID:", options=filtered_cases["case_id"].unique())
-        idx = st.session_state.navigate_caseload_db[st.session_state.navigate_caseload_db["case_id"] == target_id].index[0]
-        row = st.session_state.navigate_caseload_db.loc[idx]
+    # 1. Interactive Selection Box to Mount a Specific Profile Target
+    if len(processed_df) > 0:
+        target_student_id = st.selectbox("Mount Active Student File to Worksurface Workspace ID:", options=processed_df["student_id"].unique())
         
+        # Isolate selected record reference data row parameters
+        idx = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_id"] == target_student_id].index[0]
+        s_row = st.session_state.navigate_students_db.loc[idx]
+        
+        # 2. HIGH-DENSITY PROFILE INFRASTRUCTURE SCOREBOARD (Mimicking the System Header Grid Layout)
         with st.container(border=True):
-            w_col1, w_col2 = st.columns(2)
-            with w_col1:
-                st.markdown(f"**🏢 Student Major:** `{row['student_major']}` | **🎯 Appointment Care Unit:** `{row['appointment_care_unit']}`")
-                st.markdown(f"**👤 Owner (User List):** `{row['assigned_staff_owner']}`")
-                st.markdown(f"**📝 Care Reason Category:** *{row['reason_category']}*")
-            with w_col2:
-                st.markdown(f"**📈 Predicted Support Level:** `{row['predicted_support_level']}`")
-                st.markdown(f"**⚙️ Current Case Status:** `{row['case_status']}` | **⏳ Touchpoint Duration:** `{row['touchpoint_duration_mins']} Mins`")
-                
-        w_in1, w_in2, w_in3, w_in4 = st.columns([1, 1, 2, 1])
-        with w_in1:
-            time_add = st.selectbox("Log Touchpoint Duration:", options=[0, 15, 30, 45, 60], format_func=lambda x: f"{x} Mins")
-        with w_in2:
-            staff_update = st.selectbox("Modify Case Owner:", options=["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins", "Unassigned"])
-        with w_in3:
-            note_add = st.text_input("Append Appointment Summary Report Entry:")
-        with w_in4:
-            state_update = st.selectbox("Update Case Status Field:", options=["Open", "In Progress", "Resolved"])
+            st.markdown(f"### 👤 Profile Terminal: `{s_row['student_record']}` | ID: `{s_row['student_id']}`")
+            st.write("")
             
-        if st.button("🚀 Commit Changes to Navigate360 Database Pipeline", use_container_width=True):
-            st.session_state.navigate_caseload_db.at[idx, "touchpoint_duration_mins"] += time_add
-            st.session_state.navigate_caseload_db.at[idx, "case_status"] = state_update
-            st.session_state.navigate_caseload_db.at[idx, "assigned_staff_owner"] = staff_update
-            if note_add:
-                st.session_state.navigate_caseload_db.at[idx, "appointment_summary_report"] = f"{row['appointment_summary_report']} | {note_add}".strip(" | ")
-            st.success("Authorized modification saved to Navigate core schema database tables.")
-            st.rerun()
+            # Split Top Metrics Row Bar Interface
+            kpi_c1, kpi_c2, kpi_c3, kpi_c4, kpi_c5, kpi_c6, kpi_c7 = st.columns(7)
+            with kpi_c1: st.metric("Course Grade D/F", value=int(s_row["gpa_df_count"]))
+            with kpi_c2: st.metric("Repeated Courses", value="0")
+            with kpi_c3: st.metric("Withdrawn Courses", value=int(s_row["withdrawn_courses"]))
+            with kpi_c4: st.metric("Missed Markers", value="0")
+            with kpi_c5: st.metric("Cumulative GPA", value=f"{s_row['cumulative_gpa']:.2f}")
+            with kpi_c6: st.metric("Total Credits Earned", value=f"{s_row['total_credits_earned']:.1f}")
+            with kpi_c7: st.metric("Credit Completion %", value=f"{s_row['credit_completion_pct']}%")
+            
+        st.write("")
+        
+        # 3. SPLIT CONSOLE INTERFACE WORK BENCH LAYOUT
+        left_profile_col, right_options_col = st.columns([3, 1])
+        
+        with left_profile_col:
+            st.subheader("📝 Institutional Profile Overview")
+            with st.container(border=True):
+                p_c1, p_c2 = st.columns(2)
+                with p_c1:
+                    st.markdown(f"**📚 Academic Concentration Major:** `{s_row['student_major']}`")
+                    st.markdown(f"**🎯 Classification Level:** `{s_row['classification']}`")
+                    st.markdown(f"**🤝 Transfer Route Status:** `{s_row['transfer_student']}`")
+                with p_c2:
+                    st.markdown(f"**🔮 Predicted Support Level:** `{s_row['predicted_support_level']}`")
+                    st.markdown(f"**📂 Active Appointment Care Unit:** `{s_row['appointment_care_unit']}`")
+                    st.markdown(f"**👤 Assigned Care Owner Staff:** `{s_row['assigned_staff_owner']}`")
+            
+            st.write("")
+            st.subheader("📥 Active Summary Report Log & Current Appointment Case Details")
+            with st.container(border=True):
+                st.markdown(f"**Care Reason Category:** `{s_row['reason_category']}` | **Case Status Field:** `{s_row['case_status']}`")
+                st.markdown(f"**Appointment Summary Report Log:** *{s_row['appointment_summary_report'] if s_row['appointment_summary_report'] else 'No summary reports recorded for current session touchpoint milestone.'}*")
+                
+        with right_options_col:
+            st.subheader("⚡ Options Workflow")
+            # Mimicking Right Sidebar Actions Command Elements Link Panel directly
+            with st.container(border=True):
+                st.markdown("##### *I want to...*")
+                st.button("✉️ Message Student", use_container_width=True)
+                st.button("📝 Add a Note on this Student", use_container_width=True)
+                st.button("📅 Schedule an Appointment", use_container_width=True)
+                
+                st.write("---")
+                st.markdown("**Modify Database Fields:**")
+                state_update = st.selectbox("Update Case Status:", options=["Open", "In Progress", "Resolved"])
+                staff_update = st.selectbox("Reassign Staff Owner:", options=["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins"])
+                note_add = st.text_input("Append Summary Report Text:")
+                
+                if st.button("🚀 Commit Changes to Core System Database", use_container_width=True):
+                    st.session_state.navigate_students_db.at[idx, "case_status"] = state_update
+                    st.session_state.navigate_students_db.at[idx, "assigned_staff_owner"] = staff_update
+                    if note_add:
+                        st.session_state.navigate_students_db.at[idx, "appointment_summary_report"] = f"{s_row['appointment_summary_report']} | {note_add}".strip(" | ")
+                    st.success("Changes successfully tracked!")
+                    st.rerun()
+
     else:
-        st.warning("No dynamic caseload targets match the filtered focus matrix.")
+        st.warning("No tracking student files match the active left-hand query parameters filters.")
+        
+    st.write("---")
+    st.subheader("📋 Active Filtered Results Datatable View")
+    st.dataframe(processed_df, use_container_width=True, hide_index=True)
 
 # ------------------------------------------
-# MODULE 2: PROGRESS REPORT CAMPAIGNS
+# TERMINAL MODULE 2: POPULATION HEALTH METRICS
 # ------------------------------------------
-elif app_panel == "📢 Progress Report Campaigns":
-    st.header("📢 Early Alert & Progress Report Campaigns")
-    st.markdown("##### *Tracking faculty engagement, midterm risk alerts, and positive case outcomes across BUSA core blocks.*")
+elif app_panel == "📊 Population Health Analytics":
+    st.header("📊 Population Health Dashboard & Resource Analytics")
+    st.markdown("##### *Monitoring macro-level performance indicators: cumulative GPA trends, credit hours, and target retention gaps.*")
     
-    bc1, bc2, bc3 = st.columns(3)
-    with bc1: st.metric("Total Campaign Targeted Population", value=f"{filtered_progress['students_targeted'].sum():,}")
-    with bc2: st.metric("Mean Faculty Response Rate", value=f"{filtered_progress['faculty_response_rate_pct'].mean():.1f}%" if len(filtered_progress) > 0 else "N/A")
-    with bc3: st.metric("Total Positive Case Outcomes", value=f"{filtered_progress['positive_case_outcomes'].sum():,}")
-    
-    st.write("---")
-    st.subheader("📋 Progress Report Campaigns Tracking Grid")
-    
-    def color_progress_rows(row):
-        if row["intervention_alert_status"] == "Needs Attention": return ['background-color: #3E2723; color: #FFCC80'] * len(row)
-        elif row["intervention_alert_status"] == "Needs Review": return ['background-color: #4A3B00; color: #FFE082'] * len(row)
-        return [''] * len(row)
-    st.dataframe(filtered_progress.style.apply(color_progress_rows, axis=1), use_container_width=True, hide_index=True)
-    
-    st.write("---")
-    st.subheader("📊 Successful Positive Outcomes Sliced by Cohort Major")
-    if len(filtered_progress) > 0:
-        fig_prog = px.bar(filtered_progress, x="campaign_course", y="positive_case_outcomes", color="business_major",
-                          title="Intervention Milestone Resolution Rates", barmode="group",
-                          color_discrete_sequence=px.colors.sequential.Golds)
-        st.plotly_chart(fig_prog, use_container_width=True)
-
-# ------------------------------------------
-# MODULE 3: POPULATION HEALTH & CAPACITY METRICS
-# ------------------------------------------
-elif app_panel == "📊 Population Health & Capacity Metrics":
-    st.header("📊 Population Health Dashboard & Capacity Metrics")
-    st.markdown("##### *Auditing institutional outcome metrics: undergraduate enrollment caps vs. multi-semester retention goals.*")
-    
-    mc1, mc2 = st.columns(2)
-    with mc1: st.metric("Undergraduate Enrollment Size Focus", value=f"{filtered_metrics['undergrad_seat_count'].sum():,}")
-    with mc2: st.metric("Total Semester Credit Hours (SCH) Sourced", value=f"{filtered_metrics['semester_credit_hours'].sum():,}")
-    
-    st.write("---")
-    st.subheader("🏢 Capacity Load & Retention Metric Audit Grid")
-    st.dataframe(filtered_metrics, use_container_width=True, hide_index=True)
-    st.write("---")
+    # Filtering Metrics View calculations
+    display_metrics = coles_capacity_data if major_filter == "All Coles Business Majors" else coles_capacity_data[coles_capacity_data["major_name"] == major_filter]
     
     g_col1, g_col2 = st.columns(2)
     with g_col1:
-        fig_ret = px.bar(filtered_metrics, x="major_name", y=["retention_goal_pct", "actual_retention_pct"],
-                         title="Retention Matrix: Ultimate Goals vs. Actual Process Outcome Rates", barmode="group",
+        fig_ret = px.bar(display_metrics, x="major_name", y=["retention_goal_pct", "actual_retention_pct"],
+                         title="Retention Matrix Analysis: Coles Goals vs. Actual Proportions", barmode="group",
                          color_discrete_sequence=["#FFC400", "#161B22"])
         st.plotly_chart(fig_ret, use_container_width=True)
     with g_col2:
-        fig_seats = px.pie(filtered_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
-                           title="Enrollment Metric Distribution Shares", color_discrete_sequence=px.colors.sequential.Golds)
+        fig_seats = px.pie(display_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
+                           title="Undergraduate Enrollment Volume Allocations Share", color_discrete_sequence=px.colors.sequential.Golds)
         st.plotly_chart(fig_seats, use_container_width=True)
 
 # ------------------------------------------
-# MODULE 4: UNIVERSITY DATA STRATEGY ALIGNMENT
+# TERMINAL MODULE 3: DATA STRATEGY ALIGNMENT
 # ------------------------------------------
 elif app_panel == "🏛️ University Data Strategy Alignment":
     st.header("🏛️ Office of University Data Strategy Integration Framework")
@@ -231,15 +213,12 @@ elif app_panel == "🏛️ University Data Strategy Alignment":
         if "USG" in compliance_target:
             st.markdown("### 🏛️ Alignment Validation: **USG Fall Term Census Data**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Authenticated by Assessment Coordinator`")
-            st.markdown(f"*   **Target Data Scope:** Sourced records matching: **{major_selection}**.")
             st.info("💡 **USG Core Values Check:** Local transaction counts pass institutional baseline verification test models. Schedulers clear to sync with system-wide pipelines.")
         elif "IPEDS" in compliance_target:
             st.markdown("### 🦅 Alignment Validation: **Federal IPEDS Higher-Ed Compliance**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Audit Complete`")
-            st.markdown(f"*   **Target Data Scope:** Program milestones matching **{major_selection}** parameters.")
             st.warning("🔒 **FERPA Safety Shield Engaged:** Small student sample clusters (cell counts under threshold parameters) must enforce automated baseline cell suppression before external compilation.")
         else:
             st.markdown("### 🏆 Alignment Validation: **National Rankings Survey Ingestion**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Verified Pipeline Clear`")
-            st.markdown(f"*   **Target Data Scope:** Retained undergraduate curves mapped to **{major_selection}** benchmarks.")
             st.success("🟢 **Operational Directive:** Sourced performance indicators comply precisely with structural ranking survey parameters.")
