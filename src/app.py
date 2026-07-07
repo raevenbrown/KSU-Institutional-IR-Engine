@@ -115,7 +115,6 @@ if app_panel == "👥 Student Body Enrollment & Lifecycle":
     with m1:
         st.metric("Aggregated Application Pool Intake", value=f"{total_applicants:,}")
     with m2:
-        # Mask metric values if active and below threshold limit
         metric_census_val = f"{total_census:,}" if not (ferpa_masking_active and total_census < 30) else "< 30"
         st.metric("Official Census Headcount (Freeze Date)", value=metric_census_val)
     with m3:
@@ -127,8 +126,9 @@ if app_panel == "👥 Student Body Enrollment & Lifecycle":
     g_col1, g_col2 = st.columns(2)
     with g_col1:
         st.subheader("🍩 Admissions Yield Share by Academic Major")
+        # Fixed singular attribute error by mapping to px.colors.sequential.Golds
         fig_yield = px.pie(filtered_enrollment, values="admitted_yield_count", names="academic_major", hole=0.4,
-                           color_discrete_sequence=px.colors.sequential.Gold_r)
+                           color_discrete_sequence=px.colors.sequential.Golds)
         st.plotly_chart(fig_yield, use_container_width=True)
     with g_col2:
         st.subheader("📈 Six-Year Long-Term Graduation Trajectories")
@@ -186,7 +186,6 @@ elif app_panel == "🏛️ Compliance & External Reporting Gateway":
     st.markdown("##### *Formatting and validating finalized institutional assets for external state, federal, and ranking entities.*")
     st.write("")
     
-    # Interactive Compliance Submission Station Simulation Component
     st.subheader("📬 Forensic Compliance Data Package Dispatcher")
     st.markdown("*Select an external regulatory framework entity to package and review finalized institutional telemetry sets context loops.*")
     
@@ -223,8 +222,6 @@ elif app_panel == "🏛️ Compliance & External Reporting Gateway":
             st.success("🟢 **Publication Ready:** Performance vectors align cleanly with U.S. News & World Report survey standards.")
             
     st.write("---")
-    
-    # Audit Checklist Block
     st.subheader("📋 Pre-Submission Validation Check Tracker")
     st.markdown("This tracker highlights automated validation rules processed before exporting out data rows.")
     
