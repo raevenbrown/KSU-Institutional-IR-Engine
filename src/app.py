@@ -103,7 +103,6 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
         if len(processed_df) > 0:
             selected_student_name = st.selectbox("👤 Select Student Profile File to Inspect:", options=list(processed_df["student_name"].unique()))
             
-            # FIXED: Safe explicit condition matching instead of fragile shared-index indexer lookup matrix tracking
             master_match = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_name"] == selected_student_name]
             idx = master_match.index[0]
             s_row = master_match.loc[idx]
@@ -167,7 +166,8 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
         st.subheader("📋 Full Filtered Caseload Ingestion Matrix View")
         st.dataframe(processed_df[["student_id", "student_name", "student_major", "cumulative_gpa", "category_tags"]], use_container_width=True, hide_index=True)
 
-    with ai_sidebar_col = ai_sidebar_col, st.container():
+    # FIXED: Replaced invalid inside-assignment logic arrays completely with clean native layouts
+    with ai_sidebar_col:
         st.markdown("### 🤖 Navigate AI Assistant")
         st.caption("EAB Responsible Higher-Ed Model Active")
         st.write("---")
