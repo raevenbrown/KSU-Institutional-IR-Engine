@@ -3,192 +3,223 @@ import pandas as pd
 import plotly.express as px
 
 # 1. Main Page Canvas Configuration
-st.set_page_config(page_title="Coles CSS Operations Engine", layout="wide")
+st.set_page_config(page_title="Coles CSS Command Suite", layout="wide")
 
 # ==========================================
-# CENTRALIZED EMBEDDED COLES CSS DATA STATE
+# RE-ENGINEERED COLES CSS REAL-WORLD SEED DATA
 # ==========================================
 
-# 1. Active Advising Queue (Emulating daily operations for Accounting, Marketing, Finance, Management)
-if "advising_db" not in st.session_state:
-    st.session_state.advising_db = pd.DataFrame({
-        "case_id": [1001, 1002, 1003, 1004, 1005, 1006, 1007],
-        "student_major": ["Accounting", "Finance", "Management", "Marketing", "Information Systems", "Finance", "Management"],
-        "assigned_advisor": ["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Michael Gabriele", "Unassigned"],
-        "appointment_type": ["Graduation Check", "Transfer Credit Review", "Academic Warning Intervention", "Change of Major Intake", "Internship/Co-op Approval", "Schedule Optimization", "Emergency Drop-In Request"],
-        "priority_tier": ["High", "Medium", "Critical", "Low", "Medium", "Low", "High"],
-        "case_status": ["Open", "In Progress", "Open", "Resolved", "Open", "In Progress", "Unassigned"],
-        "session_duration_mins": [0, 30, 0, 45, 0, 15, 0],
-        "action_notes": ["", "Reviewing transfer credits from local state college.", "", "Major officially swapped to Marketing; forms processed.", "", "Adjusted Fall 2026 scheduling constraints.", ""]
+# Persistent Session State 1: Central Advising, Coaching, and Engagement Queue
+if "coles_cases_db" not in st.session_state:
+    st.session_state.coles_cases_db = pd.DataFrame({
+        "case_id": [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010],
+        "student_major": ["Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems & Information Security", "Management", "Marketing", "Professional Sales"],
+        "service_track": ["Academic Advising", "Academic Advising", "Career Coaching", "Internship & Co-op", "Academic Advising", "Student Engagement", "Academic Advising", "Career Coaching", "Academic Advising", "Internship & Co-op"],
+        "assigned_staff": ["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins", "Stacey Nebriaga", "Tyler Pede", "Michael Gabriele", "Thomas Anderson"],
+        "appointment_topic": [
+            "Graduation Check & Degree Auditing",
+            "MFA Token Issue & System Authorization",
+            "Resume Polish & Executive Mock Interview",
+            "Corporate Internship Credit Sign-off",
+            "Schedule Optimization & Prerequisite Check",
+            "Business Student Association Inbound Intake",
+            "Upper-Division Security Course Override Request",
+            "Fall Career Fair Strategic Prep Session",
+            "Change of Major Intake: Swapping to Marketing",
+            "Co-op Agreement Extension with Corporate Partner"
+        ],
+        "priority": ["High", "Medium", "High", "Critical", "Low", "Low", "Critical", "High", "Medium", "High"],
+        "status": ["Open", "In Progress", "Open", "Open", "Resolved", "Open", "In Progress", "Open", "Resolved", "In Progress"],
+        "duration_minutes": [0, 15, 0, 0, 45, 0, 30, 0, 30, 15],
+        "session_logs": ["", "Reviewing transfer credits.", "", "", "Cleared prerequisites.", "", "Processing course override override codes.", "", "Forms processed successfully.", ""]
     })
 
-# 2. Coles Departmental Load & Faculty-Student Telemetry Matrix
-if "coles_metrics_db" not in st.session_state:
-    st.session_state.coles_metrics_db = pd.DataFrame({
-        "department_name": ["School of Accountancy", "Economics, Finance & EFQA", "Leven School of Management", "Marketing & Professional Sales", "Information Systems & Security"],
-        "undergrad_majors_count": [1250, 980, 1650, 1420, 890],
-        "full_time_faculty": [28, 42, 35, 18, 22],
-        "part_time_instructors": [12, 15, 22, 8, 11],
-        "semester_credit_hours": [18400, 24500, 19800, 14200, 9400],
-        "retention_goal_pct": [85.0, 82.0, 80.0, 85.0, 88.0],
-        "actual_retention_pct": [82.4, 76.8, 74.2, 81.1, 89.5],
-        "invoice_clearance": ["Clear", "Clear", "Review Required", "Clear", "Clear"]
+# Persistent Session State 2: BUSA Professionalism Courses Enrollment Tracker
+if "busa_courses_db" not in st.session_state:
+    st.session_state.busa_courses_db = pd.DataFrame({
+        "course_code": ["BUSA 2150", "BUSA 3150", "BUSA 4150", "BUSA 2150", "BUSA 3150"],
+        "business_major": ["Accounting", "Finance", "Management", "Marketing", "Cybersecurity"],
+        "total_enrolled": [340, 290, 410, 380, 195],
+        "attendance_rate_pct": [94.2, 88.5, 91.1, 86.4, 92.7],
+        "professionalism_milestones_completed": [315, 240, 395, 310, 180],
+        "vulnerability_risk_flag": ["Compliant", "Needs Review", "Compliant", "Needs Attention", "Compliant"]
     })
 
+# Master Coles Department Capacity Metrics
+coles_metrics_data = pd.DataFrame({
+    "major_name": ["Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems & Information Security", "Management", "Marketing", "Professional Sales"],
+    "undergrad_seat_count": [1250, 680, 410, 350, 980, 240, 890, 1650, 1420, 310],
+    "semester_credit_hours": [18400, 9100, 5200, 4800, 24500, 3100, 9400, 19800, 14200, 3900],
+    "retention_goal_pct": [85.0, 88.0, 80.0, 82.0, 82.0, 80.0, 88.0, 80.0, 85.0, 85.0],
+    "actual_retention_pct": [82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1, 84.8]
+})
+
 # ==========================================
-# UNIFIED COLES STUDENT SUCCESS SIDEBAR
+# SIDEBAR CONTROL PANEL
 # ==========================================
 st.sidebar.title("💎 Coles CSS Workbench")
 st.sidebar.markdown("**Operational Hub:** `Center for Student Success` ")
-st.sidebar.markdown("**Data Strategy Status:** `● Framework Aligned`")
+st.sidebar.markdown("**System Class:** `Embedded Data Terminals`")
 st.sidebar.write("---")
 
-# Target Department Filter Matrix
-dept_selection = st.sidebar.selectbox(
-    "Active Department Scope:",
-    options=["All Coles Business Majors", "Accounting", "Finance", "Management", "Marketing", "Information Systems"]
+# Direct Major-by-Major Context Switch Matrix
+st.sidebar.subheader("🏢 Undergraduate Major Scope")
+major_selection = st.sidebar.selectbox(
+    "Active Academic Scope:",
+    options=["All Coles Business Majors"] + list(coles_metrics_data["major_name"].unique())
 )
 
-# Apply context isolation based on selection
-if dept_selection == "All Coles Business Majors":
-    filtered_cases = st.session_state.advising_db
-    filtered_metrics = st.session_state.coles_metrics_db
+# Apply Context Isolation Filters
+if major_selection == "All Coles Business Majors":
+    filtered_cases = st.session_state.coles_cases_db
+    filtered_busa = st.session_state.busa_courses_db
+    filtered_metrics = coles_metrics_data
 else:
-    filtered_cases = st.session_state.advising_db[st.session_state.advising_db["student_major"] == dept_selection]
-    # Map raw filter selection to full department naming keys
-    dept_map = {
-        "Accounting": "School of Accountancy", "Finance": "Economics, Finance & EFQA",
-        "Management": "Leven School of Management", "Marketing": "Marketing & Professional Sales",
-        "Information Systems": "Information Systems & Security"
-    }
-    filtered_metrics = st.session_state.coles_metrics_db[st.session_state.coles_metrics_db["department_name"] == dept_map[dept_selection]]
+    filtered_cases = st.session_state.coles_cases_db[st.session_state.coles_cases_db["student_major"] == major_selection]
+    filtered_busa = st.session_state.busa_courses_db[st.session_state.busa_courses_db["business_major"] == major_selection]
+    filtered_metrics = coles_metrics_data[coles_metrics_data["major_name"] == major_selection]
 
 st.sidebar.write("---")
 
-# Navigation Module Layout Selection
+# Navigation Panel Choice Structure Loops
 st.sidebar.subheader("🏁 Operational Navigation")
 app_panel = st.sidebar.radio(
     "Select Management Module Panel:",
     [
-        "📋 Advising Desk Queue & Operations",
-        "📊 Departmental Resource & Faculty Load",
+        "📋 Academic Advising & Services Queue", 
+        "📚 BUSA Professionalism Courses",
+        "📊 Departmental Resource Analytics", 
         "🏛️ University Data Strategy Alignment"
     ]
 )
 
 # ==========================================
-# MAIN WORKSPACE CANVAS INTERFACE
+# MAIN DASHBOARD MOUNTING
 # ==========================================
-st.title("🛡️ Coles College — Center for Student Success Operations Engine")
-st.markdown(f"Active Department Focus: **{dept_selection}** | Operational View: **{app_panel}**")
+st.title("🛡️ Coles College — Center for Student Success Control Center")
+st.markdown(f"Active Academic Scope: **{major_selection}** | Operational View: **{app_panel}**")
 st.write("---")
 
 # ------------------------------------------
-# MODULE 1: ADVISING DESK QUEUE & OPERATIONS
+# MODULE 1: ACADEMIC ADVISING & SERVICES QUEUE
 # ------------------------------------------
-if app_panel == "📋 Advising Desk Queue & Operations":
-    st.header("📋 Daily Advising Inbound Operations & Case Workbench")
+if app_panel == "📋 Academic Advising & Services Queue":
+    st.header("📋 Center Operations Support Desk & Service Tracks")
+    st.markdown("##### *Monitoring live queues across Academic Advising, Professional Sales, Career Coaching, Internships/Co-ops, and Student Engagement.*")
     
-    # Live Pipeline Metrics
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.metric("Active Case Queue Load", value=len(filtered_cases))
-    with c2:
-        unassigned_count = len(filtered_cases[filtered_cases["case_status"] == "Unassigned"])
-        st.metric("Unassigned Drop-Ins Pending", value=unassigned_count)
-    with c3:
-        st.metric("Total Advisory Mins Logged", value=int(filtered_cases["session_duration_mins"].sum()))
-        
+    # Live Operations Metrics
+    tc1, tc2, tc3 = st.columns(3)
+    with tc1: st.metric("Active Case Records Dynamic Count", value=len(filtered_cases))
+    with tc2: st.metric("Critical Priority Actions Stalled", value=len(filtered_cases[filtered_cases["priority"] == "Critical"]))
+    with tc3: st.metric("Accumulated Counseling Duration", value=f"{filtered_cases['duration_minutes'].sum()} Mins")
+    
     st.write("")
-    st.subheader("📊 Master Student Advising Board (Daily Live Feed)")
+    st.subheader("📊 Master Student Success Queue (Daily Live Feed)")
     st.dataframe(filtered_cases, use_container_width=True, hide_index=True)
     st.write("---")
     
-    # Interactive Advisor Workbench Hook
-    st.subheader("🛠️ Active Advisor Workbench Engine")
+    # Dynamic Advisory Input Desk Hook
+    st.subheader("🛠️ Active Advisor & Career Coach Workbench Engine")
     if len(filtered_cases) > 0:
-        target_id = st.selectbox("Mount Student Case to Action Center ID:", options=filtered_cases["case_id"].unique())
-        idx = st.session_state.advising_db[st.session_state.advising_db["case_id"] == target_id].index[0]
-        row = st.session_state.advising_db.loc[idx]
+        target_id = st.selectbox("Mount Student Record to Action Center ID:", options=filtered_cases["case_id"].unique())
+        idx = st.session_state.coles_cases_db[st.session_state.coles_cases_db["case_id"] == target_id].index[0]
+        row = st.session_state.coles_cases_db.loc[idx]
         
         with st.container(border=True):
             w_col1, w_col2 = st.columns(2)
             with w_col1:
-                st.markdown(f"**🏢 Student Major Niche:** `{row['student_major']}` | **📁 Appointment Type:** `{row['appointment_type']}`")
-                st.markdown(f"**👤 Assigned Coles Staff Advisor:** `{row['assigned_advisor']}`")
+                st.markdown(f"**🏢 Student Major:** `{row['student_major']}` | **🎯 Service Track:** `{row['service_track']}`")
+                st.markdown(f"**👤 Assigned Coles Officer:** `{row['assigned_staff']}`")
+                st.markdown(f"**📝 Intake Problem Statement:** *{row['appointment_topic']}*")
             with w_col2:
-                st.markdown(f"**⚙️ Case State Status:** `{row['case_status']}` | **⏳ Duration Sourced:** `{row['session_duration_mins']} Mins`")
+                st.markdown(f"**⚙️ Execution Workflow Status:** `{row['status']}`")
+                st.markdown(f"**⏳ Logged Counseling Sessions Duration:** `{row['duration_minutes']} Mins`")
                 
         w_in1, w_in2, w_in3, w_in4 = st.columns([1, 1, 2, 1])
         with w_in1:
             time_add = st.selectbox("Log Session Time Slot:", options=[0, 15, 30, 45, 60], format_func=lambda x: f"{x} Mins")
         with w_in2:
-            advisor_update = st.selectbox("Reassign Staff Role:", options=["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Unassigned"])
+            staff_update = st.selectbox("Modify Assigned Staff Role:", options=["Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins", "Unassigned"])
         with w_in3:
-            note_add = st.text_input("Append Advisor Session Resolution Notes:")
+            note_add = st.text_input("Append Advisory Resolution Case Notes:")
         with w_in4:
             state_update = st.selectbox("Flag Status Tier:", options=["Open", "In Progress", "Resolved", "Unassigned"])
             
         if st.button("🚀 Push Update to Coles Production Framework", use_container_width=True):
-            st.session_state.advising_db.at[idx, "session_duration_mins"] += time_add
-            st.session_state.advising_db.at[idx, "case_status"] = state_update
-            st.session_state.advising_db.at[idx, "assigned_advisor"] = advisor_update
+            st.session_state.coles_cases_db.at[idx, "duration_minutes"] += time_add
+            st.session_state.coles_cases_db.at[idx, "status"] = state_update
+            st.session_state.coles_cases_db.at[idx, "assigned_staff"] = staff_update
             if note_add:
-                st.session_state.advising_db.at[idx, "action_notes"] = f"{row['action_notes']} | {note_add}".strip(" | ")
-            st.success("Authorized operational modification logged successfully!")
+                st.session_state.coles_cases_db.at[idx, "session_logs"] = f"{row['session_logs']} | {note_add}".strip(" | ")
+            st.success("Authorized entry submitted! Rerunning database tables.")
             st.rerun()
     else:
-        st.warning("No tracking assets match the filtered focus matrix.")
+        st.warning("No dynamic cases match the filtered criteria.")
 
 # ------------------------------------------
-# MODULE 2: DEPARTMENTAL RESOURCE & FACULTY LOAD
+# MODULE 2: BUSA PROFESSIONALISM COURSES
 # ------------------------------------------
-elif app_panel == "📊 Departmental Resource & Faculty Load":
-    st.header("📊 Educational Infrastructure Load & Evaluation Desk")
+elif app_panel == "📚 BUSA Professionalism Courses":
+    st.header("📚 BUSA Professionalism Courses & Milestone Compliance")
+    st.markdown("##### *Tracking student career development benchmarks across BUSA 2150, 3150, and 4150.*")
     
-    # Financial/Resource Analytics Cards
-    rc1, rc2, rc3 = st.columns(3)
-    with rc1:
-        st.metric("Total Coles Business Undergrad Load", value=f"{filtered_metrics['undergrad_majors_count'].sum():,}")
-    with rc2:
-        st.metric("Aggregated Semester Credit Hours (SCH)", value=f"{filtered_metrics['semester_credit_hours'].sum():,}")
-    with rc3:
-        review_needed = len(filtered_metrics[filtered_metrics["invoice_clearance"] == "Review Required"])
-        st.metric("Departmental Budgets Pending Review", value=review_needed)
-        
+    bc1, bc2, bc3 = st.columns(3)
+    with bc1: st.metric("Total Enrolled Student Footprint", value=f"{filtered_busa['total_enrolled'].sum():,}")
+    with bc2: st.metric("Mean Class Engagement Attendance", value=f"{filtered_busa['attendance_rate_pct'].mean():.1f}%" if len(filtered_busa) > 0 else "N/A")
+    with bc3: st.metric("Flagged Interventions Required", value=len(filtered_busa[filtered_busa["vulnerability_risk_flag"] != "Compliant"]))
+    
     st.write("---")
-    st.subheader("🏢 Departmental Capacity & Performance Tracking Matrix")
+    st.subheader("📋 BUSA Course Enrollment & Milestone Completion Matrix")
+    
+    def color_busa_rows(row):
+        if row["vulnerability_risk_flag"] == "Needs Attention": return ['background-color: #3E2723; color: #FFCC80'] * len(row)
+        elif row["vulnerability_risk_flag"] == "Needs Review": return ['background-color: #4A3B00; color: #FFE082'] * len(row)
+        return [''] * len(row)
+    st.dataframe(filtered_busa.style.apply(color_busa_rows, axis=1), use_container_width=True, hide_index=True)
+    
+    st.write("---")
+    st.subheader("📊 Course Milestone Trajectory Split by Undergraduate Major")
+    if len(filtered_busa) > 0:
+        fig_busa = px.bar(filtered_busa, x="course_code", y="professionalism_milestones_completed", color="business_major",
+                          title="Professionalism Badges Sourced per Cohort Profile", barmode="group",
+                          color_discrete_sequence=px.colors.sequential.Golds)
+        st.plotly_chart(fig_busa, use_container_width=True)
+
+# ------------------------------------------
+# MODULE 3: DEPARTMENTAL RESOURCE ANALYTICS
+# ------------------------------------------
+elif app_panel == "📊 Departmental Resource Analytics":
+    st.header("📊 Coles College Capacity Load & Evaluation Desk")
+    
+    mc1, mc2 = st.columns(2)
+    with mc1: st.metric("Total Sourced Business Undergrads", value=f"{filtered_metrics['undergrad_seat_count'].sum():,}")
+    with mc2: st.metric("Total Sourced Semester Credit Hours (SCH)", value=f"{filtered_metrics['semester_credit_hours'].sum():,}")
+    
+    st.write("---")
+    st.subheader("🏢 Capacity Load & Retention Metric Audit Grid")
     st.dataframe(filtered_metrics, use_container_width=True, hide_index=True)
     st.write("---")
     
-    # Comparative Retention Analytics Graphs
     g_col1, g_col2 = st.columns(2)
     with g_col1:
-        fig_retention = px.bar(
-            filtered_metrics, x="department_name", y=["retention_goal_pct", "actual_retention_pct"],
-            title="Retention Matrix Analysis: Institutional Goals vs. Actual Ratios",
-            labels={"value": "Percentage (%)", "department_name": "Coles Academic Unit", "variable": "Retention Class"},
-            color_discrete_sequence=["#FFC400", "#161B22"], barmode="group"
-        )
-        st.plotly_chart(fig_retention, use_container_width=True)
+        fig_ret = px.bar(filtered_metrics, x="major_name", y=["retention_goal_pct", "actual_retention_pct"],
+                         title="Retention Metrics: Coles Goals vs. Actual Ratios", barmode="group",
+                         color_discrete_sequence=["#FFC400", "#161B22"])
+        st.plotly_chart(fig_ret, use_container_width=True)
     with g_col2:
-        fig_faculty = px.pie(
-            filtered_metrics, values="full_time_faculty", names="department_name", hole=0.4,
-            title="Full-Time Faculty Core Resource Footprint Allocation",
-            color_discrete_sequence=px.colors.sequential.Golds
-        )
-        st.plotly_chart(fig_faculty, use_container_width=True)
+        fig_seats = px.pie(filtered_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
+                           title="Undergraduate Enrollment Volume Share by Major", color_discrete_sequence=px.colors.sequential.Golds)
+        st.plotly_chart(fig_seats, use_container_width=True)
 
 # ------------------------------------------
-# MODULE 3: UNIVERSITY DATA STRATEGY ALIGNMENT
+# MODULE 4: UNIVERSITY DATA STRATEGY ALIGNMENT
 # ------------------------------------------
 elif app_panel == "🏛️ University Data Strategy Alignment":
     st.header("🏛️ Office of University Data Strategy Integration Framework")
-    st.markdown("##### *Aligning local student success metrics with external reporting structures (USG System, Federal IPEDS, and National Publication surveys).*")
-    st.write("")
+    st.markdown("##### *Aligning localized Center for Student Success (CSS) operations with macro-level reporting constraints.*")
     
     compliance_target = st.selectbox(
-        "Select Regulatory Compliance Export Gateway:",
+        "Select Regulatory Compliance Export Gateway Component Loop:",
         ["1. University System of Georgia (USG) - Term Census Headcount Packets",
          "2. Federal IPEDS Matrix Gateway - Annual Institutional Completion Matrix",
          "3. National Rankings Survey (U.S. News & World Report Profiling)"]
@@ -198,17 +229,15 @@ elif app_panel == "🏛️ University Data Strategy Alignment":
         if "USG" in compliance_target:
             st.markdown("### 🏛️ Alignment Validation: **USG Fall Term Census Data**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Authenticated by Assessment Coordinator`")
-            st.markdown(f"*   **Target Data Scope:** Finalized credit hours and student counts for **{dept_selection}**.")
-            st.info("💡 **USG Core Values Check:** Local data maps pass institutional cross-check baseline validation testing. Ready for automated state-wide data pipeline synchronization.")
-            
+            st.markdown(f"*   **Target Data Scope:** Sourced records matching: **{major_selection}**.")
+            st.info("💡 **USG Core Values Check:** Local transaction counts pass institutional baseline verification test models. Schedulers clear to sync with system-wide pipelines.")
         elif "IPEDS" in compliance_target:
             st.markdown("### 🦅 Alignment Validation: **Federal IPEDS Higher-Ed Compliance**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Audit Complete`")
-            st.markdown(f"*   **Target Data Scope:** Program completion indicators matching **{dept_selection}** parameters.")
-            st.warning("🔒 **FERPA Safety Shield Reminder:** Small student sample clusters (cell counts under threshold values) must maintain automated baseline suppression rules before public publishing.")
-            
+            st.markdown(f"*   **Target Data Scope:** Program milestones matching **{major_selection}** parameters.")
+            st.warning("🔒 **FERPA Safety Shield Engaged:** Small student sample clusters (cell counts under threshold parameters) must enforce automated baseline cell suppression before external compilation.")
         else:
             st.markdown("### 🏆 Alignment Validation: **National Publications Survey Ingestion**")
             st.markdown("**Local Coles CSS Validation Signature:** `● Verified Pipeline Clear`")
-            st.markdown(f"*   **Target Data Scope:** Undergraduate retention shifts mapped to **{dept_selection}** timeline curves.")
-            st.success("🟢 **Operational Directive:** Performance indicators comply precisely with structural survey ranking indices.")
+            st.markdown(f"*   **Target Data Scope:** Retained undergraduate curves mapped to **{major_selection}** benchmarks.")
+            st.success("🟢 **Operational Directive:** Sourced performance indicators comply precisely with structural ranking survey parameters.")
