@@ -67,7 +67,6 @@ if "coles_capacity_db" not in st.session_state:
         "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1]
     })
 
-# Explicit KSU Gold Brand Palette for Plotly Charts
 ksu_gold_palette = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100", "#4E5D6C", "#161B22"]
 
 # ==========================================
@@ -102,10 +101,12 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
         st.write("---")
         
         if len(processed_df) > 0:
-            # Fixed potential KeyError index caching issues by using the robust master key list directly
             selected_student_name = st.selectbox("👤 Select Student Profile File to Inspect:", options=list(processed_df["student_name"].unique()))
-            idx = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_name"] == selected_student_name].index[0]
-            s_row = st.session_state.navigate_students_db.loc[idx]
+            
+            # FIXED: Safe explicit condition matching instead of fragile shared-index indexer lookup matrix tracking
+            master_match = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_name"] == selected_student_name]
+            idx = master_match.index[0]
+            s_row = master_match.loc[idx]
             
             with st.container(border=True):
                 st.markdown(f"### Student File: **{s_row['student_name']}** | ID: `{s_row['student_id']}`")
@@ -166,7 +167,7 @@ if app_panel == "📋 Staff Home: Student Profile Inspector":
         st.subheader("📋 Full Filtered Caseload Ingestion Matrix View")
         st.dataframe(processed_df[["student_id", "student_name", "student_major", "cumulative_gpa", "category_tags"]], use_container_width=True, hide_index=True)
 
-    with ai_sidebar_col:
+    with ai_sidebar_col = ai_sidebar_col, st.container():
         st.markdown("### 🤖 Navigate AI Assistant")
         st.caption("EAB Responsible Higher-Ed Model Active")
         st.write("---")
@@ -288,7 +289,6 @@ elif app_panel == "📊 Population Health Dashboard":
                          color_discrete_sequence=["#FFC400", "#161B22"])
         st.plotly_chart(fig_ret, use_container_width=True)
     with g_col2:
-        # Fixed the structural layout by switching out px.colors.sequential.Golds for our explicit hex array sequence
         fig_seats = px.pie(display_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
                            title="Enrollment Metric Distribution Shares", color_discrete_sequence=ksu_gold_palette)
         st.plotly_chart(fig_seats, use_container_width=True)
