@@ -126,9 +126,10 @@ if app_panel == "👥 Student Body Enrollment & Lifecycle":
     g_col1, g_col2 = st.columns(2)
     with g_col1:
         st.subheader("🍩 Admissions Yield Share by Academic Major")
-        # Fixed singular attribute error by mapping to px.colors.sequential.Golds
+        # Explicitly assigned a discrete color sequence hex code array to fix the dynamic attribute error
+        ksu_gold_sequence = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100"]
         fig_yield = px.pie(filtered_enrollment, values="admitted_yield_count", names="academic_major", hole=0.4,
-                           color_discrete_sequence=px.colors.sequential.Golds)
+                           color_discrete_sequence=ksu_gold_sequence)
         st.plotly_chart(fig_yield, use_container_width=True)
     with g_col2:
         st.subheader("📈 Six-Year Long-Term Graduation Trajectories")
