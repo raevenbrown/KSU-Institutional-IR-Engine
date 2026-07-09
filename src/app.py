@@ -4,222 +4,170 @@ import plotly.express as px
 from datetime import date
 
 # 1. Main Page Canvas Configuration
-st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
+st.set_page_config(page_title="Coles Navigate360 Enterprise Console", layout="wide")
 
 # ==========================================
-# EXPANDED SEMESTER-BASED ENROLLMENT DATA STATE
+# CENTRALIZED STUDENT LIFE LIFECYCLE DATA STATE
 # ==========================================
-
 if "enrollment_funnel_db" not in st.session_state:
     st.session_state.enrollment_funnel_db = pd.DataFrame({
-        "applicant_id": [
-            "APP-2501", "APP-2502", "APP-2503", "APP-2504", "APP-2505", 
-            "APP-2601", "APP-2602", "APP-2603", "APP-2604", "APP-2605", "APP-2606"
-        ],
-        "prospect_name": [
-            "James Wyatt", "Nancy Aguas", "Peggy Aguila", "Marcus Vance", "Elena Rostova",
-            "Michael Adam", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel", "Ryan Gallagher"
-        ],
-        "intended_major": [
-            "Biology", "Accounting", "Cybersecurity", "Entrepreneurship", "Finance",
-            "Biology", "Hospitality Management", "Information Systems", "Management", "Marketing", "Marketing"
-        ],
-        "academic_term": [
-            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2025", "Fall 2025",
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview"
-        ],
-        "funnel_stage": [
-            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled",
-            "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry", "Inquiry"
-        ],
-        "outreach_campaign_group": [
-            "Completed Yield", "Completed Yield", "Completed Yield", "Completed Yield", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Scholarship Push", "Fall Preview Invite", "General Inquiry Track"
-        ],
-        "predicted_yield_probability": [
-            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled",
-            "Enrolled", "Enrolled", "High", "Medium", "Low", "Low"
-        ],
-        "last_interaction_date": [
-            "2025-01-10", "2025-05-15", "2025-08-20", "2025-01-12", "2025-08-22",
-            "2026-01-08", "2026-05-12", "2026-07-05", "2026-06-28", "2026-07-02", "2026-07-09"
-        ],
-        "to_dos_pending": [0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 2],
-        "communication_preference": ["Email", "Email", "Text/SMS", "Email", "Email", "Text/SMS", "Text/SMS", "Text/SMS", "Email", "Text/SMS", "Email"],
-        "staff_meeting_prep_notes": [
-            "Historical Record: Confirmed enrollment for Spring 2025.",
-            "Historical Record: Confirmed enrollment for Summer 2025.",
-            "Historical Record: Confirmed enrollment for Fall 2025.",
-            "Historical Record: Confirmed enrollment for Spring 2025.",
-            "Historical Record: Confirmed enrollment for Fall 2025.",
-            "Current Cycle: Completed onboarding registration for Spring 2026.",
-            "Current Cycle: Completed summer transient enrollment checks.",
-            "Upcoming Cycle: Admitted with honors scholarship. High follow-up priority.",
-            "Upcoming Cycle: Incomplete portfolio submission flag raised.",
-            "Upcoming Cycle: Invited to Coles Open House. Primary interest is Marketing niche.",
-            "Upcoming Cycle: Web inquiry form capture. Assigned to general outreach queue."
+        "applicant_id": ["APP-2501", "APP-2502", "APP-2503", "APP-2504", "APP-2505", "APP-2601", "APP-2602", "APP-2603", "APP-2604", "APP-2605"],
+        "student_name": ["Michael Adam", "Nancy Aguas", "Peggy Aguila", "Margaret Aldrege", "James Alexander", "Nathan Amador", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel"],
+        "student_major": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
+        "academic_term": ["Spring 2025", "Summer 2025", "Fall 2025", "Spring 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview"],
+        "classification": ["Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"],
+        "cumulative_gpa": [2.85, 3.31, 2.45, 3.82, 1.95, 2.88, 3.12, 2.15, 3.64, 3.22],
+        "predicted_yield_level": ["Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High Probability", "Medium Probability", "Low Probability"],
+        "funnel_stage": ["Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry"],
+        "category_tags": ["First Generation, Pell-Eligible", "Adult Learner, Full-Time", "Military/Veteran", "Active Academic Holds", "Honors Program, Dean's List", "Full-Time, Athlete", "First Generation", "Pell-Eligible, Commuter", "Good Academic Standing", "Active Academic Holds"]
+    })
+
+# ==========================================
+# CENTRALIZED FACULTY ROSTER & RETENTION LIFECYCLE DATA STATE
+# ==========================================
+if "faculty_retention_db" not in st.session_state:
+    st.session_state.faculty_retention_db = pd.DataFrame({
+        "faculty_id": ["FAC-201", "FAC-202", "FAC-203", "FAC-204", "FAC-205", "FAC-206", "FAC-207", "FAC-208"],
+        "faculty_name": ["Dr. Stacey Nebriaga", "Prof. Michael Gabriele", "Dr. Tyler Pede", "Dr. Thomas Anderson", "Prof. Emily Holzgrefe", "Dr. Sarah Jenkins", "Dr. David Vance", "Prof. Elena Rostova"],
+        "department_assignment": ["School of Accountancy", "Information Systems & Security", "Economics & Finance", "Leven School of Management", "Marketing & Professional Sales", "School of Accountancy", "Information Systems & Security", "Economics & Finance"],
+        "appointment_track": ["Tenured Faculty", "Non-Tenure Lecturer", "Tenure-Track Assistant", "Tenured Faculty", "Non-Tenure Clinical", "Tenure-Track Assistant", "Tenured Faculty", "Non-Tenure Lecturer"],
+        "tenure_years_at_institution": [12.5, 3.0, 4.5, 16.0, 2.5, 5.0, 14.0, 1.5],
+        "semester_credit_hours_load": [420, 580, 390, 310, 620, 410, 330, 600],
+        "faculty_retention_hazard_flag": ["Low Risk", "Medium Risk", "Low Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk", "Medium Risk"],
+        "estimated_departure_timeline": ["Stable (>5 Years)", "Review in 1-2 Years", "Stable (>5 Years)", "Stable (>5 Years)", "Immediate Risk (<1 Year)", "Stable (>5 Years)", "Stable (>5 Years)", "Review in 1-2 Years"],
+        "operational_satisfaction_score": [9.2, 7.4, 8.8, 9.5, 5.1, 8.5, 9.0, 6.8],
+        "retention_notes": [
+            "Department Chair candidate. Highly stable institutional asset.",
+            "Seeking promotion track clarification. Heavy foundational instructional load.",
+            "Progressing on schedule toward tenure review portal window.",
+            "Endowed chairholder. Zero departure indicator markers.",
+            "Burnout indicators identified due to extreme SCH class sizes. Needs retention strategy intervention.",
+            "Research grant funding secured. Stable alignment marker verified.",
+            "Senior institutional asset. Approaching retirement horizon window parameters.",
+            "Market salary compression issues logged. Reviewing compensation structures."
         ]
     })
 
-# Master Operational Performance Capacity Framework
-if "coles_capacity_db" not in st.session_state:
-    st.session_state.coles_capacity_db = pd.DataFrame({
-        "major_name": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
-        "undergrad_seat_count": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420],
-        "semester_credit_hours": [12400, 18400, 9100, 5200, 4800, 24500, 3100, 9400, 19800, 14200],
-        "retention_goal_pct": [84.0, 85.0, 88.0, 80.0, 82.0, 82.0, 80.0, 88.0, 80.0, 85.0],
-        "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1],
-        "department_inventory_count": [45, 120, 85, 30, 25, 110, 15, 60, 140, 130]
-    })
-
+# Master Brand Color Layout Configurations
 ksu_gold_palette = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100", "#4E5D6C", "#161B22"]
 
 # ==========================================
-# NAVIGATION CONTROL INTERFACE SIDEBAR
+# UNIFIED CONSOLE SIDEBAR FRAMEWORK
 # ==========================================
 st.sidebar.title("💎 Coles Navigate360")
 st.sidebar.markdown("**Operational Hub:** `Center for Student Success`")
 st.sidebar.write("---")
 
-st.sidebar.subheader("🔍 Funnel Filters")
-# NEW: Term Isolation Dropdown Matrix
-term_filter = st.sidebar.selectbox(
-    "Target Academic Term:", 
-    options=["All Active Terms", "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview"]
-)
-stage_filter = st.sidebar.selectbox("Filter Recruitment Stage:", options=["All Stages", "Inquiry", "Applied", "Admitted", "Enrolled"])
-
-# Processing Multi-Tenant Filtering Logic
-processed_funnel = st.session_state.enrollment_funnel_db.copy()
-if term_filter != "All Active Terms":
-    processed_funnel = processed_funnel[processed_funnel["academic_term"] == term_filter]
-if stage_filter != "All Stages":
-    processed_funnel = processed_funnel[processed_funnel["funnel_stage"] == stage_filter]
-
-st.sidebar.write("---")
 st.sidebar.subheader("🏁 Navigation Terminal")
-app_panel = st.sidebar.radio("Select View Desk Mode:", [
-    "📋 Enrollment Funnel & Staff Home", 
-    "📢 EAB Targeted Campaign Manager", 
+app_panel = st.sidebar.radio("Select Operational Workspace Desk:", [
+    "👤 Student Lifecycle Portal", 
+    "🏛️ Faculty Retention Terminal",
     "📈 Reports & Analytics Gateway (All 10 Keys)"
 ])
 
 # ==========================================
-# MODULE 1: ENROLLMENT FUNNEL & STAFF HOME
+# MODULE 1: STUDENT LIFECYCLE PORTAL
 # ==========================================
-if app_panel == "📋 Enrollment Funnel & Staff Home":
-    main_workspace, ai_assistant_col = st.columns([3, 1])
+if app_panel == "👤 Student Lifecycle Portal":
+    st.header("👤 Student Lifecycle Progress Terminal")
+    st.markdown("##### *Isolate, query, and audit individual student records across historical, current, and upcoming Target Academic Terms.*")
+    st.write("---")
     
-    with main_workspace:
-        st.markdown("## 📋 Staff Home: Funnel Progress & Prospect Management")
-        st.write("---")
+    # Context-switching filters inside the workspace surface
+    s_c1, s_c2 = st.columns(2)
+    with s_c1:
+        term_select = st.selectbox("Isolate Target Academic Term Horizon:", options=["All Terms", "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview"])
+    with s_c2:
+        stage_select = st.selectbox("Isolate Funnel Lifecycle Stage:", options=["All Stages", "Inquiry", "Applied", "Admitted", "Enrolled"])
         
-        # Upper KPI Analytical Overview Strip
-        fc1, fc2, fc3, fc4 = st.columns(4)
-        with fc1: st.metric("Filtered Cohort Records", value=len(processed_funnel))
-        with fc2: st.metric("Admitted Student Pipeline", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Admitted"]))
-        with fc3: st.metric("Enrolled Conversion Count", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Enrolled"]))
-        with fc4: st.metric("Open Reminders/To-Dos", value=int(processed_funnel["to_dos_pending"].sum()))
+    s_filtered = st.session_state.enrollment_funnel_db.copy()
+    if term_select != "All Terms":
+        s_filtered = s_filtered[s_filtered["academic_term"] == term_select]
+    if stage_select != "All Stages":
+        s_filtered = s_filtered[s_filtered["funnel_stage"] == stage_select]
         
-        st.write("")
-        if len(processed_funnel) > 0:
-            selected_prospect = st.selectbox("🔍 Select Active Student File to Audit:", options=list(processed_funnel["prospect_name"].unique()))
-            
-            master_match = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["prospect_name"] == selected_prospect]
-            idx = master_match.index[0]
-            p_row = master_match.loc[idx]
-            
-            with st.container(border=True):
-                st.markdown(f"### Applicant Portal: **{p_row['prospect_name']}** | ID: `{p_row['applicant_id']}`")
-                st.write("")
-                det_col1, det_col2 = st.columns(2)
-                with det_col1:
-                    st.markdown(f"**📚 Intended Academic Major:** `{p_row['intended_major']}`")
-                    st.markdown(f"**🗓️ Academic Term Registration:** `{p_row['academic_term']}`")
-                    st.markdown(f"**🎯 Current Funnel Stage:** `{p_row['funnel_stage']}`")
-                with det_col2:
-                    st.markdown(f"**🔮 Predicted Yield Probability:** `{p_row['predicted_yield_probability']}`")
-                    st.markdown(f"**📅 Last Interaction Timestamp:** `{p_row['last_interaction_date']}`")
-                    st.markdown(f"**✉️ Outreach Preference Mode:** `{p_row['communication_preference']}`")
-            
+    if len(s_filtered) > 0:
+        student_picker = st.selectbox("🔍 Search & Mount Active Student Profile:", options=list(s_filtered["student_name"].unique()))
+        s_match = s_filtered[s_filtered["student_name"] == student_picker]
+        idx = s_match.index[0]
+        s_row = s_match.loc[idx]
+        
+        # High-Contrast Student Profile Header Box
+        with st.container(border=True):
+            st.markdown(f"### Profile File: **{s_row['student_name']}** | ID: `{s_row['applicant_id']}`")
             st.write("")
-            st.subheader("🤖 AI Assistant: Automated Meeting Prep Insights")
-            with st.container(border=True):
-                st.markdown(f"*🧠 Institutional Digest Material:* **\"{p_row['staff_meeting_prep_notes']}\"**")
-                
-            st.write("---")
-            st.subheader("🛠         Streamline Applicant Progress Queue Tasks")
-            w1, w2, w3 = st.columns([1, 1, 2])
-            with w1:
-                stage_update = st.selectbox("Advance Funnel Stage:", options=["Inquiry", "Applied", "Admitted", "Enrolled"])
-            with w2:
-                camp_update = st.selectbox("Reassign Outreach Campaign:", options=["Completed Yield", "General Inquiry Track", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"])
-            with w3:
-                append_note = st.text_input("Append Diagnostic Communication Log Entry:")
-                
-            if st.button("🚀 Commit Adjustments to Centralized Funnel View", use_container_width=True):
-                st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
-                st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
-                if append_note:
-                    st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | Update: {append_note}"
-                st.success("Funnel attributes modified successfully.")
-                st.rerun()
-        else:
-            st.warning("No tracking files match filtered conditions.")
+            m1, m2, m3, m4, m5 = st.columns(5)
+            with m1: st.metric("Cumulative GPA", value=f"{s_row['cumulative_gpa']:.2f}")
+            with m2: st.metric("Target Academic Term", value=s_row["academic_term"])
+            with m3: st.metric("Classification Cohort", value=s_row["classification"])
+            with m4: st.metric("Current Funnel Stage", value=s_row["funnel_stage"])
+            with m5: st.metric("Yield Risk Status", value=s_row["predicted_yield_level"])
             
-        st.write("---")
-        st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
-        st.dataframe(processed_funnel[["applicant_id", "prospect_name", "intended_major", "academic_term", "funnel_stage", "predicted_yield_probability"]], use_container_width=True, hide_index=True)
-
-    with ai_assistant_col:
-        st.markdown("### 🤖 Staff AI Assistant")
-        st.caption("EAB Higher-Ed Engine Connected")
-        st.write("---")
-        if len(processed_funnel) > 0 and 'p_row' in locals():
-            st.markdown("##### 📥 **Digest Insight Cards:**")
-            with st.container(border=True):
-                st.markdown(f"**Target:** `{p_row['prospect_name']}`")
-                st.write(f"* **Term Scope:** {p_row['academic_term']}")
-                st.write(f"* **Yield Probability:** {p_row['predicted_yield_probability']}")
-                
-        st.write("")
-        st.markdown("##### ⚙️ **Automated Task Actions:**")
-        st.button("✉️ Deploy Automated Nudge Reminder", use_container_width=True)
-        st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
-        st.write("---")
-        ai_query = st.text_input("💬 Ask AI Agent for Funnel Metrics:")
-        if ai_query:
-            q_lower = ai_query.lower()
-            with st.container(border=True):
-                if "preview" in q_lower or "2026" in q_lower:
-                    st.info("AI Finder: Flagged 4 student profiles currently pipeline-routed for the Fall 2026 Preview cycle campaign framework.")
-                elif "2025" in q_lower:
-                    st.success("AI Finder: Sourced 5 historical records completely integrated for the 2025 academic cycles sequence.")
-                else:
-                    st.success(f"System Check: Active sub-view contains {len(processed_funnel)} records matching baseline criteria.")
+            st.write("---")
+            st.markdown(f"**🏷️ System Administrative Category Tags:** `{s_row['category_tags']}`")
+            st.markdown(f"**📝 Care & Interaction Summary Logs:** *{s_row['staff_meeting_prep_notes']}*")
+    else:
+        st.warning("No student records match the active filtering constraints matrix.")
+        
+    st.write("---")
+    st.subheader("📋 Filtered Cohort Data View Spreadsheet Grid")
+    st.dataframe(s_filtered, use_container_width=True, hide_index=True)
 
 # ==========================================
-# MODULE 2: EAB TARGETED CAMPAIGN MANAGER
+# MODULE 2: FACULTY RETENTION TERMINAL
 # ==========================================
-elif app_panel == "📢 EAB Targeted Campaign Manager":
-    st.header("📢 EAB Custom Communications Campaign Manager")
+elif app_panel == "🏛️ Faculty Retention Terminal":
+    st.header("🏛️ Faculty Roster Retention & Workload Terminal")
+    st.markdown("##### *Auditing instructional tenure years, credit hour generation tracking, and automated institutional departure risk indexes.*")
     st.write("---")
     
-    st.markdown("#### ⚙️ Configure & Launch Tailored Outreach Campaign")
-    with st.form("campaign_creation_desk"):
-        c_name = st.text_input("Campaign Name Target Label:", value="Fall 2026 Orientation Completion Nudge")
-        c_channel = st.selectbox("Primary Communication Channel Strategy:", options=["Targeted Email Sequences", "Personalized Text/SMS Blasts", "Shared Event Invitation Portals"])
-        c_cohort = st.selectbox("Target Audience Filter Group Term:", options=["Fall 2026 Preview Pool", "Historical Active Inquiries Pipeline"])
+    # Faculty Dashboard Visualizations Summary Row
+    f_g1, f_g2 = st.columns(2)
+    with f_g1:
+        fig_tenure = px.bar(
+            st.session_state.faculty_retention_db, x="faculty_name", y="tenure_years_at_institution",
+            title="Institutional Tenure Longevity Curve (Years Staying At KSU)",
+            labels={"tenure_years_at_institution": "Years at Institution", "faculty_name": "Faculty Instructor"},
+            color="appointment_track", color_discrete_sequence=ksu_gold_palette
+        )
+        st.plotly_chart(fig_tenure, use_container_width=True)
+    with f_g2:
+        fig_hazard = px.pie(
+            st.session_state.faculty_retention_db, values="semester_credit_hours_load", names="faculty_retention_hazard_flag",
+            title="Sourced Instructional SCH Share Sorted by Retention Hazard Tier Risk",
+            hole=0.4, color_discrete_sequence=["#00E676", "#FFC400", "#FF5722"]
+        )
+        st.plotly_chart(fig_hazard, use_container_width=True)
         
-        if st.form_submit_button("🚀 Deploy Nuanced Outreach & Launch Campaign"):
-            st.success(f"Outreach track '{c_name}' deployed successfully!")
-
     st.write("---")
-    st.subheader("📊 Historical Longitudinal Pipeline Growth: Term-by-Term Submissions")
-    # Group and map counts across standard timelines cleanly
-    term_counts = st.session_state.enrollment_funnel_db.groupby("academic_term").size().reset_index(name="total_applicants")
-    fig_term = px.bar(term_counts, x="academic_term", y="total_applicants", title="Longitudinal Intake Distribution", color="academic_term", color_discrete_sequence=ksu_gold_palette)
-    st.plotly_chart(fig_term, use_container_width=True)
+    st.subheader("🔍 Search & Inspect Detailed Faculty Operational Profiles")
+    
+    faculty_picker = st.selectbox("👤 Select Faculty Instructor File to Open:", options=list(st.session_state.faculty_retention_db["faculty_name"].unique()))
+    f_row = st.session_state.faculty_retention_db[st.session_state.faculty_retention_db["faculty_name"] == faculty_picker].iloc[0]
+    
+    with st.container(border=True):
+        st.markdown(f"### Academic Staff File: **{f_row['faculty_name']}** | ID: `{f_row['faculty_id']}`")
+        st.write("")
+        f_c1, f_c2, f_c3 = st.columns(3)
+        with f_c1:
+            st.markdown(f"**🏢 Departmental Unit:** `{f_row['department_assignment']}`")
+            st.markdown(f"**🎯 Appointment Track:** `{f_row['appointment_track']}`")
+            st.markdown(f"**⏳ Tenure Longevity Stated:** `{f_row['tenure_years_at_institution']} Years`")
+        with f_c2:
+            st.markdown(f"**📚 Semester Instructional Load:** `{f_row['semester_credit_hours_load']} SCH`")
+            st.markdown(f"**📊 Operational Satisfaction Index:** `{f_row['operational_satisfaction_score']} / 10`")
+        with f_c3:
+            # Highlight Risk Level
+            if f_row["faculty_retention_hazard_flag"] == "High Risk":
+                st.error(f"🚨 **Retention Threat:** `{f_row['faculty_retention_hazard_flag']}`")
+            elif f_row["faculty_retention_hazard_flag"] == "Medium Risk":
+                st.warning(f"⚠️ **Retention Threat:** `{f_row['faculty_retention_hazard_flag']}`")
+            else:
+                st.success(f"🟢 **Retention Threat:** `{f_row['faculty_retention_hazard_flag']}`")
+            st.markdown(f"**🔮 Estimated Departure Timeline:** `{f_row['estimated_departure_timeline']}`")
+            
+        st.write("---")
+        st.markdown(f"**📥 Human Resources Retention Log Notes:** *\"{f_row['retention_notes']}\"*")
 
 # ==========================================
 # MODULE 3: REPORTS & ANALYTICS GATEWAY
@@ -253,13 +201,17 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Standardized vs. Ad Hoc Query Compilations (`Key 1`)")
-        st.info(f"Extracting cohort statistics isolated by current scope context parameters:")
-        st.dataframe(processed_funnel[["applicant_id", "prospect_name", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
+        st.dataframe(st.session_state.enrollment_funnel_db[["applicant_id", "student_name", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
+        
+    elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
+        st.markdown("### 🏛️ Departmental Faculty Interpretation Summary Matrix (`Key 2`)")
+        st.dataframe(st.session_state.faculty_retention_db[["faculty_name", "department_assignment", "appointment_track", "tenure_years_at_institution"]], use_container_width=True, hide_index=True)
         
     elif "7. Compiles recurring operational review" in selected_key_tab:
-        st.markdown("### 📈 Multi-Semester Longitudinal Trend Analytics Curve (`Key 7`)")
-        st.markdown("##### *Reviewing tracking allocations across historical and upcoming enrollment pipelines:*")
-        st.dataframe(st.session_state.enrollment_funnel_db.groupby(["academic_term", "funnel_stage"]).size().reset_index(name="student_count"), use_container_width=True, hide_index=True)
+        st.markdown("### 📈 Longitudinal Human Capital Attrition Trends Operational Review (`Key 7`)")
+        st.markdown("##### *Aggregated retention timeline insights across institutional staff tracking structures:*")
+        st.dataframe(st.session_state.faculty_retention_db.groupby(["appointment_track", "estimated_departure_timeline"]).size().reset_index(name="faculty_headcount"), use_container_width=True, hide_index=True)
         
     else:
-        st.info("💡 Select another Key requirement line to evaluate localized data interpretation panels.")
+        st.info("💡 Select another framework compliance line from the dropdown to check its reporting metrics panel.")
+        
