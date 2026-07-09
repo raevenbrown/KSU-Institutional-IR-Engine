@@ -7,23 +7,37 @@ from datetime import date
 st.set_page_config(page_title="Coles Navigate360 Enterprise Console", layout="wide")
 
 # ==========================================
-# CENTRALIZED STUDENT LIFE LIFECYCLE DATA STATE
+# CENTRALIZED STUDENT LIFECYCLE DATA STATE
 # ==========================================
 if "enrollment_funnel_db" not in st.session_state:
     st.session_state.enrollment_funnel_db = pd.DataFrame({
         "applicant_id": ["APP-2501", "APP-2502", "APP-2503", "APP-2504", "APP-2505", "APP-2601", "APP-2602", "APP-2603", "APP-2604", "APP-2605"],
         "student_name": ["Michael Adam", "Nancy Aguas", "Peggy Aguila", "Margaret Aldrege", "James Alexander", "Nathan Amador", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel"],
         "student_major": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
-        "academic_term": ["Spring 2025", "Summer 2025", "Fall 2025", "Spring 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview"],
+        "academic_term": ["Spring 2025", "Summer 2025", "Fall 2025", "Spring 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 22026 Preview", "Fall 2026 Preview", "Fall 2026 Preview"],
         "classification": ["Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"],
         "cumulative_gpa": [2.85, 3.31, 2.45, 3.82, 1.95, 2.88, 3.12, 2.15, 3.64, 3.22],
         "predicted_yield_level": ["Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High Probability", "Medium Probability", "Low Probability"],
         "funnel_stage": ["Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry"],
-        "category_tags": ["First Generation, Pell-Eligible", "Adult Learner, Full-Time", "Military/Veteran", "Active Academic Holds", "Honors Program, Dean's List", "Full-Time, Athlete", "First Generation", "Pell-Eligible, Commuter", "Good Academic Standing", "Active Academic Holds"]
+        "category_tags": ["First Generation, Pell-Eligible", "Adult Learner, Full-Time", "Military/Veteran", "Active Academic Holds", "Honors Program, Dean's List", "Full-Time, Athlete", "First Generation", "Pell-Eligible, Commuter", "Good Academic Standing", "Active Academic Holds"],
+        "to_dos_pending": [0, 0, 0, 0, 0, 0, 0, 0, 1, 3],
+        "communication_preference": ["Email", "Email", "Text/SMS", "Email", "Email", "Text/SMS", "Text/SMS", "Text/SMS", "Email", "Text/SMS"],
+        "staff_meeting_prep_notes": [
+            "Historical Record: Confirmed enrollment for Spring 2025.",
+            "Historical Record: Confirmed enrollment for Summer 2025.",
+            "Historical Record: Confirmed enrollment for Fall 2025.",
+            "Historical Record: Confirmed enrollment for Spring 2025.",
+            "Historical Record: Confirmed enrollment for Fall 2025.",
+            "Current Cycle: Completed onboarding registration for Spring 2026.",
+            "Current Cycle: Completed summer transient enrollment checks.",
+            "Upcoming Cycle: Admitted with honors scholarship. High follow-up priority.",
+            "Upcoming Cycle: Incomplete portfolio submission flag raised.",
+            "Upcoming Cycle: Invited to Coles Open House. Primary interest is Marketing niche."
+        ]
     })
 
 # ==========================================
-# CENTRALIZED FACULTY ROSTER & RETENTION LIFECYCLE DATA STATE
+# CENTRALIZED FACULTY ROSTER & RETENTION DATA STATE
 # ==========================================
 if "faculty_retention_db" not in st.session_state:
     st.session_state.faculty_retention_db = pd.DataFrame({
@@ -48,7 +62,16 @@ if "faculty_retention_db" not in st.session_state:
         ]
     })
 
-# Master Brand Color Layout Configurations
+if "coles_capacity_db" not in st.session_state:
+    st.session_state.coles_capacity_db = pd.DataFrame({
+        "major_name": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
+        "undergrad_seat_count": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420],
+        "semester_credit_hours": [12400, 18400, 9100, 5200, 4800, 24500, 3100, 9400, 19800, 14200],
+        "retention_goal_pct": [84.0, 85.0, 88.0, 80.0, 82.0, 82.0, 80.0, 88.0, 80.0, 85.0],
+        "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1],
+        "department_inventory_count": [45, 120, 85, 30, 25, 110, 15, 60, 140, 130]
+    })
+
 ksu_gold_palette = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100", "#4E5D6C", "#161B22"]
 
 # ==========================================
@@ -73,7 +96,6 @@ if app_panel == "👤 Student Lifecycle Portal":
     st.markdown("##### *Isolate, query, and audit individual student records across historical, current, and upcoming Target Academic Terms.*")
     st.write("---")
     
-    # Context-switching filters inside the workspace surface
     s_c1, s_c2 = st.columns(2)
     with s_c1:
         term_select = st.selectbox("Isolate Target Academic Term Horizon:", options=["All Terms", "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview"])
@@ -92,7 +114,6 @@ if app_panel == "👤 Student Lifecycle Portal":
         idx = s_match.index[0]
         s_row = s_match.loc[idx]
         
-        # High-Contrast Student Profile Header Box
         with st.container(border=True):
             st.markdown(f"### Profile File: **{s_row['student_name']}** | ID: `{s_row['applicant_id']}`")
             st.write("")
@@ -121,7 +142,6 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     st.markdown("##### *Auditing instructional tenure years, credit hour generation tracking, and automated institutional departure risk indexes.*")
     st.write("---")
     
-    # Faculty Dashboard Visualizations Summary Row
     f_g1, f_g2 = st.columns(2)
     with f_g1:
         fig_tenure = px.bar(
@@ -141,7 +161,6 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
         
     st.write("---")
     st.subheader("🔍 Search & Inspect Detailed Faculty Operational Profiles")
-    
     faculty_picker = st.selectbox("👤 Select Faculty Instructor File to Open:", options=list(st.session_state.faculty_retention_db["faculty_name"].unique()))
     f_row = st.session_state.faculty_retention_db[st.session_state.faculty_retention_db["faculty_name"] == faculty_picker].iloc[0]
     
@@ -157,7 +176,6 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
             st.markdown(f"**📚 Semester Instructional Load:** `{f_row['semester_credit_hours_load']} SCH`")
             st.markdown(f"**📊 Operational Satisfaction Index:** `{f_row['operational_satisfaction_score']} / 10`")
         with f_c3:
-            # Highlight Risk Level
             if f_row["faculty_retention_hazard_flag"] == "High Risk":
                 st.error(f"🚨 **Retention Threat:** `{f_row['faculty_retention_hazard_flag']}`")
             elif f_row["faculty_retention_hazard_flag"] == "Medium Risk":
@@ -176,7 +194,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     st.header("📈 Reports & Analytics Portfolio Gateway")
     st.write("---")
     
-    # 10-Row Master Tracking Schema Table
     ledger_df = pd.DataFrame({
         "Key ID": [f"Key {i}" for i in range(1, 11)],
         "Job Description Requirement Statement": [
@@ -209,7 +226,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         
     elif "7. Compiles recurring operational review" in selected_key_tab:
         st.markdown("### 📈 Longitudinal Human Capital Attrition Trends Operational Review (`Key 7`)")
-        st.markdown("##### *Aggregated retention timeline insights across institutional staff tracking structures:*")
         st.dataframe(st.session_state.faculty_retention_db.groupby(["appointment_track", "estimated_departure_timeline"]).size().reset_index(name="faculty_headcount"), use_container_width=True, hide_index=True)
         
     else:
