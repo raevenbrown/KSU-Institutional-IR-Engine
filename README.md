@@ -1,4 +1,4 @@
-# 🏛️ Coles StudentSuccess Terminal (EAB Navigate360 Architecture)
+# StudentSuccess Terminal 
 
 A live, high-density higher-education analytics suite engineered to model enrollment pipelines, student success thresholds, and faculty workload retention profiles. 
 
