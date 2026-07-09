@@ -93,6 +93,12 @@ st.sidebar.title("🛡️ Navigate360 Core")
 st.sidebar.markdown("**Operational Hub:** `Center for Student Success`")
 st.sidebar.write("---")
 
+# NEW DIRECTIVE FEATURE: Data Visibility Checklist Layer Toggle Options
+st.sidebar.subheader("👁️ Layer Visibility Options")
+show_students = st.sidebar.checkbox("Show Student Data Tracks", value=True)
+show_faculty = st.sidebar.checkbox("Show Faculty Staff Tracks", value=True)
+st.sidebar.write("---")
+
 st.sidebar.subheader("🗂️ Global Scope Filters")
 
 dept_filter = st.sidebar.selectbox("Filter by Academic Department Major:", options=["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
@@ -120,28 +126,34 @@ if dept_filter != "All Departments":
     processed_funnel = processed_funnel[processed_funnel["intended_major"] == dept_filter]
     processed_faculty = processed_faculty[processed_faculty["department_assignment"] == dept_filter]
 
-# Apply Student-specific filters ONLY to student data (Faculty data remains unaffected by empty student semesters)
+# Apply Student-specific filters
 if term_filter != "All Semesters":
     processed_funnel = processed_funnel[processed_funnel["academic_term"] == term_filter]
 
 if studentvue_filter != "All Student Tiers":
     processed_funnel = processed_funnel[processed_funnel["studentvue_sync_status"] == studentvue_filter]
 
-# Apply Faculty-specific filters ONLY to faculty data
+# Apply Faculty-specific filters
 if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
 
 st.sidebar.write("---")
 st.sidebar.subheader("🏁 Navigation Terminal")
-app_panel = st.sidebar.radio("Select Operational Workspace Desk:", [
-    "👤 Student Lifecycle Portal (StudentVue)", 
-    "🏛️ Faculty Retention Terminal",
-    "📢 EAB Targeted Campaign Manager", 
-    "📈 Reports & Analytics Gateway (All 10 Keys)"
-])
+
+# Dynamic navigation setup determined strictly by checked layer flags
+nav_options = []
+if show_students:
+    nav_options.append("👤 Student Lifecycle Portal (StudentVue)")
+if show_faculty:
+    nav_options.append("🏛️ Faculty Retention Terminal")
+if show_students:
+    nav_options.append("📢 EAB Targeted Campaign Manager")
+nav_options.append("📈 Reports & Analytics Gateway (All 10 Keys)")
+
+app_panel = st.sidebar.radio("Select Operational Workspace Desk:", options=nav_options)
 
 # ==========================================
-# MODULE 1: STUDENT LIFECYCLE PORTAL (STUDENTVUE)
+# RENDERING TAB CONSOLES
 # ==========================================
 if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
     main_workspace, ai_assistant_col = st.columns([3, 1])
@@ -320,15 +332,21 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Standardized vs. Ad Hoc Query Compilations (`Key 1`)")
-        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
+        if show_students:
+            st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
+        else:
+            st.info("Student reporting layer toggled off.")
 
     elif "2. Provides reports, analysis" in selected_key_tab:
         st.markdown("### 🏛️ Departmental Interpretation Ledger Matrix (`Key 2`)")
-        st.dataframe(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]], use_container_width=True, hide_index=True)
+        if show_faculty:
+            st.dataframe(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]], use_container_width=True, hide_index=True)
+        else:
+            st.info("Faculty reporting layer toggled off.")
 
     elif "3. Identifies areas of opportunity" in selected_key_tab:
         st.markdown("### 💡 Leadership Findings & Strategic Recommendations Engine (`Key 3`)")
-        if len(processed_funnel) > 0:
+        if show_students and len(processed_funnel) > 0:
             low_yield_leads = processed_funnel[processed_funnel["predicted_yield_probability"] == "Low"]
             with st.container(border=True):
                 st.markdown("🏆 **Executive Data Insights Memorandum**")
@@ -337,18 +355,18 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 st.error("🚨 Opportunity Tracking Scope List:")
                 st.dataframe(low_yield_leads[["student_name", "intended_major", "academic_term", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
         else:
-            st.warning("No records found within current scope filter.")
+            st.warning("Reporting layer inactive or zero records in selection.")
 
     elif "4. Provides productivity analysis" in selected_key_tab:
         st.markdown("### ⏳ Outreach Campaign Effectiveness Productivity Audit Log (`Key 4`)")
-        if len(processed_funnel) > 0:
+        if show_students and len(processed_funnel) > 0:
             prod_df = processed_funnel.groupby("outreach_campaign_group").agg(total_prospects_reached=("applicant_id", "count"), total_pending_tasks=("to_dos_pending", "sum")).reset_index()
             st.dataframe(prod_df, use_container_width=True, hide_index=True)
         else: st.warning("No records to aggregate for productivity evaluation metrics.")
 
     elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
         st.markdown("### ⚙️ Operational Utilization & Communication Activity Benchmarks (`Key 5`)")
-        if len(processed_funnel) > 0:
+        if show_students and len(processed_funnel) > 0:
             util_df = processed_funnel.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
             fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Channel Share", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_util, use_container_width=True)
@@ -371,7 +389,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
 
     elif "9. May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
         st.markdown("### 🎯 Center Performance & Program Effectiveness Matrix (`Key 9`)")
-        if len(processed_funnel) > 0:
+        if show_students and len(processed_funnel) > 0:
             res_counts = processed_funnel.groupby("funnel_stage").size().reset_index(name="total_cases")
             fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Profile", color_discrete_sequence=["#00E676"])
             st.plotly_chart(fig_perf, use_container_width=True)
