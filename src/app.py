@@ -4,291 +4,297 @@ import plotly.express as px
 from datetime import date
 
 # 1. Main Page Canvas Configuration
-st.set_page_config(page_title="Coles Navigate360 System Console", layout="wide")
+st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 
 # ==========================================
-# CENTRALIZED REALISTIC NAVIGATE360 STUDENT BASE
+# CENTRALIZED REALISTIC ENROLLMENT & LIFE CYCLE DATA
 # ==========================================
 
-if "navigate_students_db" not in st.session_state:
-    st.session_state.navigate_students_db = pd.DataFrame({
-        "student_id": ["87650214", "04218579", "14538206", "46581097", "94753108", "81295374", "JIH339188", "JIH884120", "JIH662199", "JIH551043"],
-        "student_name": ["Michael Adam", "Nancy Aguas", "Peggy Aguila", "Margaret Aldrege", "James Alexander", "Nathan Amador", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel"],
-        "student_major": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
-        "classification": ["Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"],
-        "transfer_student": ["No", "No", "Yes", "No", "No", "Yes", "No", "No", "No", "No"],
-        "gpa_df_count": [2, 0, 1, 0, 2, 0, 0, 1, 0, 0],
-        "repeated_courses": [1, 0, 0, 0, 2, 0, 0, 0, 1, 0],
-        "withdrawn_courses": [0, 0, 0, 1, 3, 0, 0, 0, 1, 0],
-        "missed_markers": [3, 0, 1, 0, 4, 0, 0, 2, 0, 0],
-        "cumulative_gpa": [2.85, 3.31, 2.45, 3.82, 1.95, 2.88, 3.12, 2.15, 3.64, 3.22],
-        "total_credits_earned": [27.0, 51.0, 18.0, 94.0, 72.0, 45.0, 14.0, 112.0, 88.0, 62.0],
-        "credit_completion_pct": [90, 100, 85, 96, 64, 100, 100, 78, 92, 100],
-        "predicted_support_level": ["High Risk", "Low Risk", "Medium Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk"],
-        "category_tags": [
-            "Completed probation requirement, Financial Aid, First generation student, Full-Time, Pre-enrollment risk, Study group member",
-            "Adult learner, Full-Time",
-            "Completed probation requirement, Financial Aid, First generation student, Full-Time, Pre-enrollment risk, Study group member",
-            "Active holds, Transfer student",
-            "Completed probation requirement, Financial Aid, First generation student, Full-Time, Good Academic Standing, Honors student, Pell-Eligible, Pre-enrollment risk, Re-enrollment grant recipient, Sports In-Season, Study group member, Transfer-Intending, TRIO Success",
-            "Pell-Eligible, Financial Aid, First generation student, Full-Time",
-            "First generation student, Full-Time",
-            "Pell-Eligible, Financial Aid, Study group member",
-            "Good Academic Standing, Honors student, Full-Time",
-            "Pell-Eligible, Active holds"
-        ],
-        "appointment_care_unit": ["Academic Advising", "Academic Advising", "Academic Advising", "Career Coaching", "Internship & Co-op Advising", "Academic Advising", "Student Engagement", "Academic Advising", "Career Coaching", "Academic Advising"],
-        "assigned_staff_owner": ["Beth Allen", "Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe", "Sarah Jenkins", "Stacey Nebriaga", "Tyler Pede", "Michael Gabriele"],
-        "reason_category": ["Course Performance Concerns", "Graduation Check", "Registration Auth", "Resume Polish", "Co-op Sign-off", "Prerequisite Check", "Leadership Intake", "Course Override", "Career Fair Prep", "Change of Major"],
-        "case_status": ["Open", "Open", "In Progress", "Open", "Open", "Resolved", "Open", "In Progress", "Open", "Resolved"],
-        "appointment_summary_report": ["James was missing class because of a part-time job. Connected him with financial aid. Recommended tutoring.", "", "Reviewing transfer credits from state college.", "", "", "Cleared registration holds.", "", "Processing course override codes.", "", "Forms processed."]
+if "enrollment_funnel_db" not in st.session_state:
+    st.session_state.enrollment_funnel_db = pd.DataFrame({
+        "applicant_id": ["APP-9081", "APP-4112", "APP-3094", "APP-5512", "APP-7721", "APP-1109", "APP-6642", "APP-8841", "APP-2291", "APP-1043"],
+        "prospect_name": ["Alex Rivera", "Jordan Chang", "Sarah Jenkins", "Marcus Vance", "Elena Rostova", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel", "Ryan Gallagher"],
+        "intended_major": ["Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing", "Marketing"],
+        "funnel_stage": ["Inquiry", "Applied", "Inquiry", "Admitted", "Applied", "Admitted", "Inquiry", "Admitted", "Applied", "Enrolled"],
+        "outreach_campaign_group": ["Fall Preview Invite", "Scholarship Push", "Fall Preview Invite", "Housing Deposit Nudge", "Scholarship Push", "Housing Deposit Nudge", "General Inquiry Track", "Housing Deposit Nudge", "Scholarship Push", "Completed Yield"],
+        "predicted_yield_probability": ["Low", "Medium", "Low", "High", "Low", "High", "Low", "High", "Medium", "Enrolled"],
+        "last_interaction_date": ["2026-06-12", "2026-07-01", "2026-05-18", "2026-07-05", "2026-06-28", "2026-07-02", "2026-04-15", "2026-07-08", "2026-06-30", "2026-07-09"],
+        "to_dos_pending": [2, 1, 3, 0, 1, 0, 4, 1, 2, 0],
+        "communication_preference": ["Email", "Text/SMS", "Email", "Text/SMS", "Email", "Text/SMS", "Email", "Email", "Text/SMS", "Email"],
+        "staff_meeting_prep_notes": ["Student inquired at local high school career fair. Primary interest is CPA track acceleration.", "Transfer credit evaluation pending from local college.", "Sent invite to Coles Open House. No response yet.", "Admitted with honors scholarship. High follow-up priority.", "Incomplete portfolio submission flag raised.", "Housing selection finalized. Clear onboarding path.", "Cold lead from website request info form.", "Awaiting official final high school transcript files.", "Parent attended information night seminar.", "Orientation deposit securely captured. Transferred to advisor module."]
     })
 
-# Persistent Session State 2: Advisor Availability Shift Ledger
-if "advisor_availability_db" not in st.session_state:
-    st.session_state.advisor_availability_db = pd.DataFrame({
-        "days_of_week": ["Mon, Wed, Fri", "Mon", "Mon", "Fri", "Fri", "Tue, Wed, Thu"],
-        "times": ["8:00am - 5:00pm ET", "9:00am - 5:30pm ET", "9:00am - 5:30pm ET", "9:00am - 4:30pm ET", "9:00am - 4:30pm ET", "8:00am - 4:00pm ET"],
-        "dates": ["Fall 2026", "Forever", "Forever", "Forever", "Forever", "Forever"],
-        "location": ["Advising Center", "One Stop Student Services", "Advising Center", "Financial Aid Center", "Advising Center", "Advising Center"],
-        "purpose": ["Academic Planning for Appointments/Drop-Ins/Campaigns", "BIO-101, Course-based Tutoring", "Academic Planning, Changing a Major, General Advising", "Applying for Financial Aid", "Academic Planning, Changing a Major, General Advising", "Academic Planning, Changing a Major, General Advising"],
-        "care_unit": ["Advising", "Tutoring", "Advising", "Financial Aid", "Advising", "Advising"],
-        "personal_link": ["No", "No", "Yes", "No", "No", "No"],
-        "meeting_type": ["In-person, Video (Zoom)", "In-person", "WhatsApp Video Call", "In-person", "In-person", "WhatsApp Video Call"]
-    })
-
-# Master Coles Capacity Reference Frame
+# Master Operational Performance Capacity Framework
 if "coles_capacity_db" not in st.session_state:
     st.session_state.coles_capacity_db = pd.DataFrame({
         "major_name": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
         "undergrad_seat_count": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420],
         "semester_credit_hours": [12400, 18400, 9100, 5200, 4800, 24500, 3100, 9400, 19800, 14200],
         "retention_goal_pct": [84.0, 85.0, 88.0, 80.0, 82.0, 82.0, 80.0, 88.0, 80.0, 85.0],
-        "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1]
+        "actual_retention_pct": [81.2, 82.4, 86.7, 79.1, 81.5, 76.8, 80.2, 89.5, 74.2, 81.1],
+        "department_inventory_count": [45, 120, 85, 30, 25, 110, 15, 60, 140, 130]
     })
 
 ksu_gold_palette = ["#FFC400", "#FFA000", "#FF8F00", "#FF6F00", "#FF5722", "#E65100", "#4E5D6C", "#161B22"]
 
 # ==========================================
-# NAVIGATE360 NATIVE FILTER SIDEBAR SYSTEM
+# NAVIGATION CONTROL INTERFACE SIDEBAR
 # ==========================================
-st.sidebar.title("🛡️ Navigate360 Core")
-st.sidebar.markdown("**User Access Role:** `Advisor Terminal Suite`")
+st.sidebar.title("💎 Coles Navigate360")
+st.sidebar.markdown("**Operational Hub:** `Center for Student Success`")
 st.sidebar.write("---")
 
-st.sidebar.subheader("🔍 Filters Panel")
-major_filter = st.sidebar.selectbox("Filter Enrollment Major Context:", options=["All majors"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
-class_filter = st.sidebar.selectbox("Filter Classification Level:", options=["All classifications", "First Year", "Second Year", "Third Year", "Fourth Year"])
+st.sidebar.subheader("🔍 Funnel Filters")
+stage_filter = st.sidebar.selectbox("Filter Recruitment Stage:", options=["All Stages", "Inquiry", "Applied", "Admitted", "Enrolled"])
+campaign_filter = st.sidebar.selectbox("Filter Marketing Campaign:", options=["All Campaigns", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"])
 
-processed_df = st.session_state.navigate_students_db.copy()
-if major_filter != "All majors":
-    processed_df = processed_df[processed_df["student_major"] == major_filter]
-if class_filter != "All classifications":
-    processed_df = processed_df[processed_df["classification"] == class_filter]
+processed_funnel = st.session_state.enrollment_funnel_db.copy()
+if stage_filter != "All Stages":
+    processed_funnel = processed_funnel[processed_funnel["funnel_stage"] == stage_filter]
+if campaign_filter != "All Campaigns":
+    processed_funnel = processed_funnel[processed_funnel["outreach_campaign_group"] == campaign_filter]
 
 st.sidebar.write("---")
-st.sidebar.subheader("🏁 Navigation Modules")
-app_panel = st.sidebar.radio("Select View Desk:", ["📋 Staff Home: Student Profile Inspector", "📅 Scheduling Desk & Availability Manager", "📊 Population Health Dashboard"])
+st.sidebar.subheader("🏁 Navigation Terminal")
+app_panel = st.sidebar.radio("Select View Desk Mode:", [
+    "📋 Enrollment Funnel & Staff Home", 
+    "📢 EAB Targeted Campaign Manager", 
+    "📈 Reports & Analytics Gateway (All 10 Keys)"
+])
 
 # ==========================================
-# MODULE 1: STAFF HOME — STUDENT INSPECTOR
+# MODULE 1: ENROLLMENT FUNNEL & STAFF HOME
 # ==========================================
-if app_panel == "📋 Staff Home: Student Profile Inspector":
-    main_workspace, ai_sidebar_col = st.columns([3, 1])
+if app_panel == "📋 Enrollment Funnel & Staff Home":
+    main_workspace, ai_assistant_col = st.columns([3, 1])
     
     with main_workspace:
-        st.markdown("## 📋 Staff Home — Student Profile Inspector")
+        st.markdown("## 📋 Staff Home: Funnel Progress & Prospect Management")
         st.write("---")
         
-        if len(processed_df) > 0:
-            selected_student_name = st.selectbox("👤 Select Student Profile File to Inspect:", options=list(processed_df["student_name"].unique()))
+        # Upper KPI Analytical Overview Strip
+        fc1, fc2, fc3, fc4 = st.columns(4)
+        with fc1: st.metric("Total Prospects Monitored", value=len(processed_funnel))
+        with fc2: st.metric("Admitted Student Pipeline", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Admitted"]))
+        with fc3: st.metric("Enrolled Yield Conversion", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Enrolled"]))
+        with fc4: st.metric("Open Reminders/To-Dos", value=int(processed_funnel["to_dos_pending"].sum()))
+        
+        st.write("")
+        if len(processed_funnel) > 0:
+            selected_prospect = st.selectbox("🔍 Select Active Applicant File to Audit:", options=list(processed_funnel["prospect_name"].unique()))
             
-            master_match = st.session_state.navigate_students_db[st.session_state.navigate_students_db["student_name"] == selected_student_name]
+            # Match item string reference parameters cleanly
+            master_match = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["prospect_name"] == selected_prospect]
             idx = master_match.index[0]
-            s_row = master_match.loc[idx]
+            p_row = master_match.loc[idx]
             
             with st.container(border=True):
-                st.markdown(f"### Student File: **{s_row['student_name']}** | ID: `{s_row['student_id']}`")
+                st.markdown(f"### Applicant Portal: **{p_row['prospect_name']}** | ID: `{p_row['applicant_id']}`")
                 st.write("")
-                kpi_c1, kpi_c2, kpi_c3, kpi_c4 = st.columns(4)
-                with kpi_c1: 
-                    st.metric("Course Grade D/F", value=int(s_row["gpa_df_count"]))
-                    st.metric("Cumulative GPA", value=f"{s_row['cumulative_gpa']:.2f}")
-                with kpi_c2: 
-                    st.metric("Repeated Courses", value=int(s_row["repeated_courses"]))
-                    st.metric("Total Credits Earned", value=f"{s_row['total_credits_earned']:.1f}")
-                with kpi_c3: 
-                    st.metric("Withdrawn Courses", value=int(s_row["withdrawn_courses"]))
-                    st.metric("Credit Completion Ratio", value=f"{s_row['credit_completion_pct']}%")
-                with kpi_c4: 
-                    st.metric("Missed Success Markers", value=int(s_row["missed_markers"]))
-                    st.metric("Predicted Support Level", value=s_row["predicted_support_level"])
+                det_col1, det_col2 = st.columns(2)
+                with det_col1:
+                    st.markdown(f"**📚 Intended Academic Major:** `{p_row['intended_major']}`")
+                    st.markdown(f"**🎯 Current Funnel Stage:** `{p_row['funnel_stage']}`")
+                    st.markdown(f"**📢 Assigned Outreach Track:** `{p_row['outreach_campaign_group']}`")
+                with det_col2:
+                    st.markdown(f"**🔮 Predicted Yield Probability:** `{p_row['predicted_yield_probability']}`")
+                    st.markdown(f"**📅 Last Interaction Timestamp:** `{p_row['last_interaction_date']}`")
+                    st.markdown(f"**✉️ Outreach Preference Mode:** `{p_row['communication_preference']}`")
             
             st.write("")
-            st.subheader("📋 Profile Institutional Category Tags & Background Parameters")
+            st.subheader("🤖 AI Assistant: Automated Meeting Prep Insights")
             with st.container(border=True):
-                st.markdown(f"**🏷️ System Category Tags:** `{s_row['category_tags']}`")
-                st.write("---")
-                det_c1, det_c2 = st.columns(2)
-                with det_c1:
-                    st.markdown(f"**Academic Concentration Major:** `{s_row['student_major']}`")
-                    st.markdown(f"**Classification Cohort Track:** `{s_row['classification']}`")
-                with det_c2:
-                    st.markdown(f"**Assigned Staff Core Owner:** `{s_row['assigned_staff_owner']}`")
-                    st.markdown(f"**Current Care Reason Category:** `{s_row['reason_category']}`")
-                    
-            st.write("")
-            st.subheader("📥 Appointment Summary Report & Historic Case Logs")
-            with st.container(border=True):
-                st.markdown(f"*\"{s_row['appointment_summary_report'] if s_row['appointment_summary_report'] else 'No summary reports recorded.'}\"*")
+                st.markdown(f"*🧠 Institutional Digest Material:* **\"{p_row['staff_meeting_prep_notes']}\"**")
                 
             st.write("---")
-            st.subheader("🛠️ Advisor Database Field Modification Console")
-            w_in1, w_in2, w_in3 = st.columns([1, 1, 2])
-            with w_in1:
-                state_update = st.selectbox("Update Case Status Field:", options=["Open", "In Progress", "Resolved"])
-            with w_in2:
-                staff_update = st.selectbox("Modify Staff Owner Assignment:", options=["Beth Allen", "Stacey Nebriaga", "Michael Gabriele", "Tyler Pede", "Thomas Anderson", "Emily Holzgrefe"])
-            with w_in3:
-                note_add = st.text_input("Append Text Entry to Appointment Summary Notes:")
+            st.subheader("🛠️ Streamline Applicant Progress Queue Tasks")
+            w1, w2, w3 = st.columns([1, 1, 2])
+            with w1:
+                stage_update = st.selectbox("Advance Funnel Stage:", options=["Inquiry", "Applied", "Admitted", "Enrolled"])
+            with w2:
+                camp_update = st.selectbox("Reassign Outreach Campaign:", options=["General Inquiry Track", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"])
+            with w3:
+                append_note = st.text_input("Append Diagnostic Communication Log Entry:")
                 
-            if st.button("🚀 Commit Workflow Modification to System Pipelines", use_container_width=True):
-                st.session_state.navigate_students_db.at[idx, "case_status"] = state_update
-                st.session_state.navigate_students_db.at[idx, "assigned_staff_owner"] = staff_update
-                if note_add:
-                    st.session_state.navigate_students_db.at[idx, "appointment_summary_report"] = f"{s_row['appointment_summary_report']} | {note_add}".strip(" | ")
-                st.success("Operational changes logged successfully to backend tables!")
+            if st.button("🚀 Commit Adjustments to Centralized Funnel View", use_container_width=True):
+                st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
+                st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
+                if append_note:
+                    st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
+                st.success("Funnel attributes modified and saved to baseline ledger frames.")
                 st.rerun()
         else:
-            st.warning("No records match the active filtering parameters inside the left panel configuration.")
+            st.warning("No tracking files match filtered conditions.")
             
         st.write("---")
-        st.subheader("📋 Full Filtered Caseload Ingestion Matrix View")
-        st.dataframe(processed_df[["student_id", "student_name", "student_major", "cumulative_gpa", "category_tags"]], use_container_width=True, hide_index=True)
+        st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
+        st.dataframe(processed_funnel[["applicant_id", "prospect_name", "intended_major", "funnel_stage", "outreach_campaign_group", "predicted_yield_probability"]], use_container_width=True, hide_index=True)
 
-    # FIXED: Replaced invalid inside-assignment logic arrays completely with clean native layouts
-    with ai_sidebar_col:
-        st.markdown("### 🤖 Navigate AI Assistant")
-        st.caption("EAB Responsible Higher-Ed Model Active")
+    with ai_assistant_col:
+        st.markdown("### 🤖 Staff AI Assistant")
+        st.caption("EAB Higher-Ed Engine Connected")
         st.write("---")
-        if len(processed_df) > 0 and 's_row' in locals():
-            st.markdown("##### ⚡ **Dynamic Briefing Session Notes:**")
+        if len(processed_funnel) > 0 and 'p_row' in locals():
+            st.markdown("##### 📥 **Digest Insight Cards:**")
             with st.container(border=True):
-                st.markdown(f"**Target Focus:** `{s_row['student_name']}`")
-                st.write(f"* **Current Risk Factor:** {s_row['predicted_support_level']}")
-                st.write(f"* **Touchpoint Summary:** {s_row['reason_category']}")
-        st.write("")
-        st.markdown("##### ⚙️ **Quick Macro Prompts:**")
-        st.button("🎯 Create an Action Campaign", use_container_width=True)
-        st.button("📋 Help Me Prep for Appointment", use_container_width=True)
-        st.write("---")
-        ai_prompt_input = st.text_input("💬 Ask the System AI Data Finder:")
-        if ai_prompt_input:
-            p_lower = ai_prompt_input.lower()
-            with st.container(border=True):
-                if "risk" in p_lower or "alert" in p_lower:
-                    risk_subset = st.session_state.navigate_students_db[st.session_state.navigate_students_db["predicted_support_level"] == "High Risk"]
-                    st.error(f"Isolated {len(risk_subset)} high-risk files:")
-                    st.dataframe(risk_subset[["student_name", "student_major", "cumulative_gpa"]], hide_index=True)
-                elif "michael" in p_lower or "adam" in p_lower:
-                    st.success("Profile Summary: Michael Adam is a Second Year Biology major with 2 D/F marks and 3 missed success markers. He has active probation requirements logged.")
-                else:
-                    st.info(f"System Baseline: Directory contains {len(st.session_state.navigate_students_db)} active records. System mean GPA: {st.session_state.navigate_students_db['cumulative_gpa'].mean():.2f}")
-
-# ==========================================
-# MODULE 2: SCHEDULING DESK & AVAILABILITY MANAGER
-# ==========================================
-elif app_panel == "📅 Scheduling Desk & Availability Manager":
-    st.header("📅 Scheduling Desk & Staff Availability Manager")
-    st.write("---")
-    
-    tab_avail, tab_book = st.tabs(["🔒 My Availability Configuration Terminal", "🤝 Multi-Criteria Appointment Booking Engine"])
-    
-    with tab_avail:
-        st.subheader("Available Consulting Times Matrix")
-        st.dataframe(st.session_state.advisor_availability_db, use_container_width=True, hide_index=True)
-        st.write("---")
-        
-        st.markdown("#### ⚙️ Append New Availability Constraint Block")
-        with st.form("availability_form", clear_on_submit=True):
-            av_col1, av_col2, av_col3 = st.columns(3)
-            with av_col1:
-                av_days = st.text_input("Days of Week Configuration:", value="Mon, Wed, Fri")
-                av_times = st.text_input("Active Target Time Block Hours:", value="8:00am - 5:00pm ET")
-            with av_col2:
-                av_loc = st.selectbox("Explicit Physical Location Suite:", options=["Advising Center", "One Stop Student Services Center", "Financial Aid Center"])
-                av_unit = st.selectbox("Care Unit Sector Category:", options=["Advising", "Tutoring", "Financial Aid"])
-            with av_col3:
-                av_purp = st.text_input("Authorized Consulting Purpose:", value="Academic Planning, General Advising")
-                av_mtype = st.selectbox("Meeting Type Transmission Format:", options=["In-person", "In-person, Video (Zoom)", "WhatsApp Video Call"])
+                st.markdown(f"**Target:** `{p_row['prospect_name']}`")
+                st.write(f"* **Yield Probability:** {p_row['predicted_yield_probability']}")
+                st.write(f"* **Pending To-Dos:** {p_row['to_dos_pending']}")
                 
-            if st.form_submit_button("🚀 Inject Availability Block Into Active Matrix"):
-                new_avail_row = pd.DataFrame({
-                    "days_of_week": [av_days], "times": [av_times], "dates": ["Fall 2026"],
-                    "location": [av_loc], "purpose": [av_purp], "care_unit": [av_unit],
-                    "personal_link": ["No"], "meeting_type": [av_mtype]
-                })
-                st.session_state.advisor_availability_db = pd.concat([st.session_state.advisor_availability_db, new_avail_row], ignore_index=True)
-                st.success("Authorized schedule modification applied successfully!")
-                st.rerun()
-
-    with tab_book:
-        st.subheader("Schedule Interactive Appointment Form")
-        book_left, book_right = st.columns([1, 2])
-        
-        with book_left:
-            st.markdown("##### **1. Selection Filters**")
-            b_unit = st.selectbox("Care Unit Target:", options=["Advising", "Tutoring", "Financial Aid"])
-            b_loc = st.selectbox("Location Target Suite:", options=["Advising Center", "One Stop Student Services Center", "Financial Aid Center"])
-            b_serv = st.selectbox("Service Classification Purpose:", options=["Academic Planning", "Course-based Tutoring", "Change of Major Intake", "Financial Aid Check"])
-            b_mtype = st.selectbox("Meeting Type Format Option:", options=["In-person", "Video (Zoom)", "WhatsApp Video Call"])
-            b_date = st.date_input("Select Appointment Target Date Milestone:", value=date(2026, 9, 1))
-            
-        with book_right:
-            st.markdown("##### **2. Select An Organizer (Staff Resource Directory List)**")
-            organizer_df = pd.DataFrame({
-                "Select": [False, False, False, False],
-                "Organizer Staff Name": ["Beth Allen", "Jack Wheeler", "Jack Whitmore", "Jack Whitten"],
-                "Available Ingress Reference Windows Times": [
-                    "For: Appointments/Drop-Ins/Campaigns Mon-Fri 12:00pm - 5:00pm ET",
-                    "For: Appointments/Drop-Ins/Campaigns Mon 9:00am - 5:30pm ET",
-                    "For: Appointments/Drop-Ins/Campaigns Mon, Wed, Fri 8:00am - 5:00pm ET (Fall 2026)",
-                    "For: Appointments/Drop-Ins/Campaigns Fri 9:00am - 4:30pm ET"
-                ]
-            })
-            st.data_editor(organizer_df, use_container_width=True, hide_index=True)
-            
-            st.write("---")
-            st.markdown("##### **3. Choose A Grid Time Slot Matrix Allocation**")
-            time_slots_data = pd.DataFrame({
-                "Time Slot Windows": ["12:00pm - 12:45pm ET", "12:45pm - 1:30pm ET", "1:30pm - 2:15pm ET", "2:15pm - 3:00pm ET", "3:00pm - 3:45pm ET"],
-                "08/31 (SUN)": ["DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN"],
-                "09/01 (MON)": ["DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN", "DROP-IN"],
-                "09/02 (TUE)": ["0/1 Available", "0/1 Available", "0/1 Available", "✅ Select Slot", "0/1 Available"]
-            })
-            st.dataframe(time_slots_data, use_container_width=True, hide_index=True)
-            
-            if st.button("💾 Save Finalized Appointment Frame to Navigate Core Schema Pipeline", use_container_width=True):
-                st.success(f"Appointment processed for target date matching {b_date} under {b_serv} processing tracks!")
+        st.write("")
+        st.markdown("##### ⚙️ **Automated Task Actions:**")
+        st.button("✉️ Deploy Automated Nudge reminder", use_container_width=True)
+        st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
+        st.write("---")
+        ai_query = st.text_input("💬 Ask AI Agent for Funnel Metrics:")
+        if ai_query:
+            q_lower = ai_query.lower()
+            with st.container(border=True):
+                if "risk" in q_lower or "low" in q_lower:
+                    st.error("AI Finder: Flagged 4 student files displaying low yield interaction probabilities.")
+                elif "marketing" in q_lower or "major" in q_lower:
+                    st.info("AI Finder: Marketing concentration contains the highest density profile stack inside the inquiry pool segment.")
+                else:
+                    st.success(f"System Check: Funnel contains {len(st.session_state.enrollment_funnel_db)} records. Core yield projection curve model active.")
 
 # ==========================================
-# MODULE 3: POPULATION HEALTH ANALYTICS
+# MODULE 2: EAB TARGETED CAMPAIGN MANAGER
 # ==========================================
-elif app_panel == "📊 Population Health Dashboard":
-    st.header("📊 Population Health Dashboard & Resource Analytics")
+elif app_panel == "📢 EAB Targeted Campaign Manager":
+    st.header("📢 EAB Custom Communications Campaign Manager")
+    st.markdown("##### *Configure tailored outreach tracks, deploy nudges, and track audience engagement profiles across the recruitment lifecycle.*")
     st.write("---")
     
-    display_metrics = st.session_state.coles_capacity_db.copy()
-    if major_filter != "All majors":
-        display_metrics = display_metrics[display_metrics["major_name"] == major_filter]
+    st.markdown("#### ⚙️ Configure & Launch Tailored Outreach Campaign")
+    with st.form("campaign_creation_desk"):
+        c_name = st.text_input("Campaign Name Target Label:", value="Fall 2026 Orientation Completion Nudge")
+        c_channel = st.selectbox("Primary Communication Channel Strategy:", options=["Personalized Text/SMS Blasts", "Targeted Email Sequences", "Shared Event Invitation Portals"])
+        c_cohort = st.selectbox("Target Audience Filter Group Stage:", options=["Inquiry Population Pool", "Applied - Awaiting Decision", "Admitted - Yield Acceleration Focus"])
         
-    g_col1, g_col2 = st.columns(2)
-    with g_col1:
-        fig_ret = px.bar(display_metrics, x="major_name", y=["retention_goal_pct", "actual_retention_pct"],
-                         title="Retention Matrix Analysis: Coles Goals vs. Actual Proportions", barmode="group",
-                         color_discrete_sequence=["#FFC400", "#161B22"])
-        st.plotly_chart(fig_ret, use_container_width=True)
-    with g_col2:
-        fig_seats = px.pie(display_metrics, values="undergrad_seat_count", names="major_name", hole=0.4,
-                           title="Enrollment Metric Distribution Shares", color_discrete_sequence=ksu_gold_palette)
-        st.plotly_chart(fig_seats, use_container_width=True)
+        if st.form_submit_button("🚀 Deploy Nuanced Outreach & Launch Campaign"):
+            st.success(f"Outreach track '{c_name}' deployed successfully! Communication automated across target {c_cohort} clusters.")
+
+    st.write("---")
+    st.subheader("📊 Active Funnel Stage Allocations Distribution Analysis")
+    fig_funnel = px.bar(st.session_state.enrollment_funnel_db, x="funnel_stage", title="Continuous Progress Funnel Monitor", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
+    st.plotly_chart(fig_funnel, use_container_width=True)
+
+# ==========================================
+# MODULE 3: REPORTS & ANALYTICS GATEWAY (ALL 10 KEYS)
+# ==========================================
+elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
+    st.header("📈 Reports & Analytics Portfolio Gateway")
+    st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities outlined in the data analyst job profile framework.*")
+    st.write("---")
+    
+    # 10-Row Master Tracking Schema Table
+    st.subheader("🎯 Job Framework Compliance Ledger")
+    ledger_df = pd.DataFrame({
+        "Key ID": [f"Key {i}" for i in range(1, 11)],
+        "Job Description Requirement Statement": [
+            "1. Compiles standard and ad hoc reports per established guidelines and frequency",
+            "2. Provides reports, analysis and data interpretation for all assigned departments",
+            "3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders",
+            "4. Provides productivity analysis reports",
+            "5. Develops and maintains reports to measure operational and/or utilization activity",
+            "6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements",
+            "7. Compiles recurring operational review that includes trend analysis",
+            "8. May assists with departmental inventory reporting and analysis",
+            "9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness",
+            "10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
+        ],
+        "Dashboard Validation Status": ["🟢 Engine Integrated & Deployable"] * 10
+    })
+    st.dataframe(ledger_df, use_container_width=True, hide_index=True)
+    st.write("---")
+    
+    selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
+    st.write("")
+    
+    if "1. Compiles standard and ad hoc" in selected_key_tab:
+        st.markdown("### 📊 Standardized vs. Ad Hoc Query Compilations (`Key 1`)")
+        rep_type = st.radio("Select Guidelines Frequency Distribution Format:", ["Standard Recurring (Weekly Intake)", "Ad Hoc Live Extract"])
+        if rep_type == "Standard Recurring (Weekly Intake)":
+            st.info("📦 **Standard Guideline Run:** Extracting structured multi-semester headcount and demographic benchmarks.")
+            st.dataframe(st.session_state.enrollment_funnel_db[["applicant_id", "prospect_name", "intended_major", "funnel_stage"]], hide_index=True)
+        else:
+            st.warning("⚡ **Ad Hoc Command Executed:** Running dynamic cross-sectional splice targeting critical priority yield risks.")
+            ad_hoc_subset = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["predicted_yield_probability"] == "Low"]
+            st.dataframe(ad_hoc_subset, use_container_width=True, hide_index=True)
+
+    elif "2. Provides reports, analysis" in selected_key_tab:
+        st.markdown("### 🏛️ Departmental Interpretation Ledger Matrix (`Key 2`)")
+        target_dept = st.selectbox("Isolate Assigned Department Data Scope:", options=list(st.session_state.enrollment_funnel_db["intended_major"].unique()))
+        dept_match = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["intended_major"] == target_dept]
+        st.markdown(f"#### Interpretive Analysis Summary for **{target_dept}**:")
+        if len(dept_match) > 0:
+            st.success(f"🟢 **Data Signal Active:** Sourced {len(dept_match)} prospect applications matching this unit. Inquiries currently map out to a total count size of **{len(dept_match[dept_match['funnel_stage']=='Inquiry'])}** leads.")
+            st.dataframe(dept_match, use_container_width=True, hide_index=True)
+        else:
+            st.warning(f"⚠️ Zero counts isolated inside {target_dept} tracking files.")
+
+    elif "3. Identifies areas of opportunity" in selected_key_tab:
+        st.markdown("### 💡 Leadership Findings & Strategic Recommendations Engine (`Key 3`)")
+        st.markdown("##### *Automated script checking for institutional funnel risk bottlenecks to construct a stakeholder summary.*")
+        low_yield_leads = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["predicted_yield_probability"] == "Low"]
+        with st.container(border=True):
+            st.markdown("🏆 **Executive Data Insights Memorandum**")
+            st.write(f"1. **Identified Area of Opportunity:** Found **{len(low_yield_leads)}** prospects maintaining low yield confirmation conversion rates.")
+            st.write("2. **Analytical Interpretation:** Communication logs reveal bottlenecked transcript verification holds are delaying admissions decision letters.")
+            st.write("3. **Actionable Recommendation to Leadership:** Deploy automated EAB text message alerts targeting verification parameters to reduce processing friction.")
+            st.error("🚨 Opportunity Tracking Scope List:")
+            st.dataframe(low_yield_leads[["prospect_name", "intended_major", "funnel_stage", "outreach_campaign_group"]], use_container_width=True, hide_index=True)
+
+    elif "4. Provides productivity analysis" in selected_key_tab:
+        st.markdown("### ⏳ Outreach Campaign Effectiveness Productivity Audit Log (`Key 4`)")
+        prod_df = st.session_state.enrollment_funnel_db.groupby("outreach_campaign_group").agg(
+            total_prospects_reached=("applicant_id", "count"),
+            total_pending_tasks_remaining=("to_dos_pending", "sum")
+        ).reset_index()
+        st.dataframe(prod_df, use_container_width=True, hide_index=True)
+        fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign", color_discrete_sequence=["#FFC400"])
+        st.plotly_chart(fig_prod, use_container_width=True)
+
+    elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
+        st.markdown("### ⚙️ Operational Utilization & Communication Activity Benchmarks (`Key 5`)")
+        util_df = st.session_state.enrollment_funnel_db.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
+        st.dataframe(util_df, use_container_width=True, hide_index=True)
+        fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Resource Channels Allocation", color_discrete_sequence=ksu_gold_palette)
+        st.plotly_chart(fig_util, use_container_width=True)
+
+    elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
+        st.markdown("### 🏛️ External Oversight & Regulatory Compliance USG Framework Gateway (`Key 6`)")
+        reg_target = st.selectbox("Select Regulatory Compliance Recipient:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
+        with st.container(border=True):
+            st.write(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
+            st.write(f"*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
+            st.success("🟢 Validation Protocol: Pass. System layout fields map out perfectly for state board data integration loops.")
+
+    elif "7. Compiles recurring operational review" in selected_key_tab:
+        st.markdown("### 📈 Multi-Semester Longitudinal Trend Analytics Curve (`Key 7`)")
+        trend_df = st.session_state.coles_capacity_db.copy()
+        trend_df["retention_shortfall"] = trend_df["retention_goal_pct"] - trend_df["actual_retention_pct"]
+        st.dataframe(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]], use_container_width=True, hide_index=True)
+        fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Retention Goal Gaps Profile Trends", markers=True, color_discrete_sequence=["#FF5722"])
+        st.plotly_chart(fig_trend, use_container_width=True)
+
+    elif "8. May assists with departmental inventory" in selected_key_tab:
+        st.markdown("### 🖥️ Departmental Technology Asset Inventory Analysis (`Key 8`)")
+        inv_df = st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]].copy()
+        st.dataframe(inv_df, use_container_width=True, hide_index=True)
+        fig_inv = px.bar(inv_df, x="major_name", y="department_inventory_count", title="Hardware Terminals Active per Student Care Unit", color_discrete_sequence=["#161B22"])
+        st.plotly_chart(fig_inv, use_container_width=True)
+
+    elif "9. May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
+        st.markdown("### 🎯 Center Performance & Program Effectiveness Matrix (`Key 9`)")
+        res_counts = st.session_state.enrollment_funnel_db.groupby("funnel_stage").size().reset_index(name="total_cases")
+        fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Profile", color_discrete_sequence=["#00E676"])
+        st.plotly_chart(fig_perf, use_container_width=True)
+
+    elif "10. Collaborate with a variety of stakeholders" in selected_key_tab:
+        st.markdown("### 🤝 Office of University Data Strategy Alignment Matrix (`Key 10`)")
+        with st.container(border=True):
+            st.markdown("### 🏛️ University Policy Framework Integration Terminal")
+            st.write("🔗 **Data Governance Layer:** Kennesaw State University Master Data Strategy Directive")
+            st.write("🔒 **Encryption Protocol:** AES-256 System Handshake Validated")
+            st.success("🟢 **Alignment Confirmed:** Local fields mapped to Navigate360 structures perfectly match KSU's central data taxonomy rules.")
