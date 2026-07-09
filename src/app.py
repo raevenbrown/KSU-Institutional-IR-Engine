@@ -115,16 +115,19 @@ faculty_status_filter = st.sidebar.selectbox(
 processed_funnel = st.session_state.enrollment_funnel_db.copy()
 processed_faculty = st.session_state.faculty_retention_db.copy()
 
+# Apply Department Filters to both
 if dept_filter != "All Departments":
     processed_funnel = processed_funnel[processed_funnel["intended_major"] == dept_filter]
     processed_faculty = processed_faculty[processed_faculty["department_assignment"] == dept_filter]
 
+# Apply Student-specific filters ONLY to student data (Faculty data remains unaffected by empty student semesters)
 if term_filter != "All Semesters":
     processed_funnel = processed_funnel[processed_funnel["academic_term"] == term_filter]
 
 if studentvue_filter != "All Student Tiers":
     processed_funnel = processed_funnel[processed_funnel["studentvue_sync_status"] == studentvue_filter]
 
+# Apply Faculty-specific filters ONLY to faculty data
 if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
 
@@ -152,7 +155,6 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         with fc2: st.metric("Admitted Student Pipeline", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Admitted"]))
         with fc3: st.metric("Enrolled Yield Conversion", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Enrolled"]))
         
-        # FIXED: Safe column presence evaluation check logic to stop KeyError
         with fc4: 
             if "to_dos_pending" in processed_funnel.columns and len(processed_funnel) > 0:
                 st.metric("Open Reminders/To-Dos", value=int(processed_funnel["to_dos_pending"].sum()))
