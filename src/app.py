@@ -47,7 +47,7 @@ if "faculty_retention_db" not in st.session_state:
         "semester_credit_hours_load": [420, 580, 390, 310, 620, 410, 330, 600],
         "faculty_retention_hazard_flag": ["Low Risk", "Medium Risk", "Low Risk", "Low Risk", "High Risk", "Low Risk", "Low Risk", "Medium Risk"],
         "estimated_departure_timeline": ["Stable (>5 Years)", "Review in 1-2 Years", "Stable (>5 Years)", "Stable (>5 Years)", "Immediate Risk (<1 Year)", "Stable (>5 Years)", "Stable (>5 Years)", "Review in 1-2 Years"],
-        "retention_notes": ["Stable institutional asset.", "Seeking promotion track clarification.", "Progressing toward tenure review.", "Endowed chairholder.", "Needs retention strategy intervention.", "Research grant funding secured.", "Approaching retirement horizon.", "Market salary compression issues logged."]
+        "retention_notes": ["Stable institutional asset.", "Seeking promotion track clarification.", "Progressing toward tenure review.", "Endowed chairholder.", "Needs retention strategy intervention.", "Research grant funding secured.", "Approaching retirement horizon.", "Market salary compensation compression issues logged."]
     })
 
 if "coles_capacity_db" not in st.session_state:
@@ -67,39 +67,24 @@ st.sidebar.write("---")
 
 st.sidebar.subheader("🗂️ Global Scope Filters")
 
-# 1. Department Focus Filter
-dept_filter = st.sidebar.selectbox(
-    "Filter by Academic Department:", 
-    options=["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique())
-)
+dept_filter = st.sidebar.selectbox("Filter by Academic Department:", options=["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
+year_filter = st.sidebar.selectbox("Longitudinal Timeline Context:", options=["All Timelines", "Past Cycles (2025)", "Active/Upcoming Cycles (2026)"])
+studentvue_filter = st.sidebar.selectbox("StudentVue Portal Status Updates:", options=["All Sync States", "Synced", "Hold Alert"])
 
-# 2. Longitudinal Timeline Filter (Last Year vs Current/Next)
-year_filter = st.sidebar.selectbox(
-    "Longitudinal Timeline Context:",
-    options=["All Timelines", "Past Cycles (2025)", "Active/Upcoming Cycles (2026)"]
-)
-
-# 3. StudentVue Status Live Stream Filter
-studentvue_filter = st.sidebar.selectbox(
-    "StudentVue Portal Status Updates:",
-    options=["All Sync States", "Synced", "Hold Alert"]
-)
-
-# Apply global side-filter logic to datasets dynamically
-filtered_students = st.session_state.enrollment_funnel_db.copy()
+processed_students = st.session_state.enrollment_funnel_db.copy()
 filtered_faculty = st.session_state.faculty_retention_db.copy()
 
 if dept_filter != "All Departments":
-    filtered_students = filtered_students[filtered_students["department_scope"] == dept_filter]
+    processed_students = processed_students[processed_students["department_scope"] == dept_filter]
     filtered_faculty = filtered_faculty[filtered_faculty["department_assignment"] == dept_filter]
 
 if year_filter == "Past Cycles (2025)":
-    filtered_students = filtered_students[filtered_students["academic_term"].str.contains("2025")]
+    processed_students = processed_students[processed_students["academic_term"].str.contains("2025")]
 elif year_filter == "Active/Upcoming Cycles (2026)":
-    filtered_students = filtered_students[filtered_students["academic_term"].str.contains("2026")]
+    processed_students = processed_students[processed_students["academic_term"].str.contains("2026")]
 
 if studentvue_filter != "All Sync States":
-    filtered_students = filtered_students[filtered_students["studentvue_sync_status"] == studentvue_filter]
+    processed_students = processed_students[processed_students["studentvue_sync_status"] == studentvue_filter]
 
 st.sidebar.write("---")
 st.sidebar.subheader("🏁 Navigation Terminal")
@@ -117,9 +102,11 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
     st.markdown("##### *Isolating academic paths, performance indices, and portal alert metrics on demand.*")
     st.write("---")
     
-    if len(filtered_students) > 0:
-        student_picker = st.selectbox("🔍 Search and Inspect Profile directly:", options=list(filtered_students["student_name"].unique()))
-        s_row = filtered_students[filtered_students["student_name"] == student_picker].iloc[0]
+    if len(processed_students) > 0:
+        student_picker = st.selectbox("🔍 Search and Inspect Profile directly:", options=list(processed_students["student_name"].unique()))
+        
+        # FIXED: Pure boolean matching to preserve scalar key extracts safely
+        s_row = processed_students[processed_students["student_name"] == student_picker].iloc[0]
         
         with st.container(border=True):
             st.markdown(f"### Profile File: **{s_row['student_name']}** | ID: `{s_row['applicant_id']}`")
@@ -139,7 +126,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
 
     st.write("---")
     st.subheader("📋 Ingested Dataset Grid Output View")
-    st.dataframe(filtered_students, use_container_width=True, hide_index=True)
+    st.dataframe(processed_students, use_container_width=True, hide_index=True)
 
 elif app_panel == "🏛️ Faculty Retention Terminal":
     st.header("🏛️ Faculty Roster Retention & Attrition Manager")
@@ -188,7 +175,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Standardized vs. Ad Hoc Query Compilations (`Key 1`)")
-        st.dataframe(filtered_students[["applicant_id", "student_name", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        st.dataframe(processed_students[["applicant_id", "student_name", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
         
     elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### 🏛️ Departmental Faculty Interpretation Summary Matrix (`Key 2`)")
