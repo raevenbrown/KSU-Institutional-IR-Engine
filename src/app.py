@@ -214,4 +214,3 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         
     else:
         st.info("💡 Select another framework compliance line from the dropdown to check its reporting metrics panel.")
-        
