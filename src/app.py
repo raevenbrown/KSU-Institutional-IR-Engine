@@ -87,7 +87,7 @@ if "coles_capacity_db" not in st.session_state:
 ksu_gold_palette = ["#FFC400", "#161B22", "#FFA000", "#FF8F00", "#4E5D6C", "#FF5722", "#00E676"]
 
 # ==========================================
-# RESTORED SIDEBAR SELECTION SYSTEM
+# SIDEBAR SELECTION SYSTEM
 # ==========================================
 st.sidebar.title("🛡️ Navigate360 Core")
 st.sidebar.markdown("**Operational Hub:** `Center for Student Success`")
@@ -95,28 +95,23 @@ st.sidebar.write("---")
 
 st.sidebar.subheader("🗂️ Global Scope Filters")
 
-# Filter 1: Department Scope Loop
 dept_filter = st.sidebar.selectbox("Filter by Academic Department Major:", options=["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
 
-# Filter 2: Granular Timeline Horizon Focus
 term_filter = st.sidebar.selectbox(
     "Target Academic Term Horizon:", 
     options=["All Semesters", "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview"]
 )
 
-# Filter 3: Detailed StudentVue Status Update Sync
 studentvue_filter = st.sidebar.selectbox(
     "StudentVue Registration Profile Status:",
     options=["All Student Tiers", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", "Financial Hold - Balance Due", "Probation Sync Alert"]
 )
 
-# Filter 4: Detailed Faculty Staff Status Update Sync
 faculty_status_filter = st.sidebar.selectbox(
     "Faculty Staff Administrative Status:",
     options=["All Faculty Tiers", "Active - Full Instructional Load", "Pending Tenure Review Notice", "Sabbatical - Research Active", "Medical Leave"]
 )
 
-# Operational Data Processing Matrices
 processed_funnel = st.session_state.enrollment_funnel_db.copy()
 processed_faculty = st.session_state.faculty_retention_db.copy()
 
@@ -156,7 +151,13 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         with fc1: st.metric("Sourced Active Records Focus", value=len(processed_funnel))
         with fc2: st.metric("Admitted Student Pipeline", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Admitted"]))
         with fc3: st.metric("Enrolled Yield Conversion", value=len(processed_funnel[processed_funnel["funnel_stage"] == "Enrolled"]))
-        with fc4: st.metric("Open Reminders/To-Dos", value=int(processed_funnel["to_dos_pending"].sum()))
+        
+        # FIXED: Safe column presence evaluation check logic to stop KeyError
+        with fc4: 
+            if "to_dos_pending" in processed_funnel.columns and len(processed_funnel) > 0:
+                st.metric("Open Reminders/To-Dos", value=int(processed_funnel["to_dos_pending"].sum()))
+            else:
+                st.metric("Open Reminders/To-Dos", value=0)
         
         st.write("")
         if len(processed_funnel) > 0:
@@ -325,13 +326,16 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
 
     elif "3. Identifies areas of opportunity" in selected_key_tab:
         st.markdown("### 💡 Leadership Findings & Strategic Recommendations Engine (`Key 3`)")
-        low_yield_leads = processed_funnel[processed_funnel["predicted_yield_probability"] == "Low"]
-        with st.container(border=True):
-            st.markdown("🏆 **Executive Data Insights Memorandum**")
-            st.write(f"1. **Identified Area of Opportunity:** Found **{len(low_yield_leads)}** active records maintaining low yield conversion markers within filter scope.")
-            st.write("2. **Actionable Recommendation:** Apply targeted nudge text automation strings to mitigate process registration bottlenecks.")
-            st.error("🚨 Opportunity Tracking Scope List:")
-            st.dataframe(low_yield_leads[["student_name", "intended_major", "academic_term", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        if len(processed_funnel) > 0:
+            low_yield_leads = processed_funnel[processed_funnel["predicted_yield_probability"] == "Low"]
+            with st.container(border=True):
+                st.markdown("🏆 **Executive Data Insights Memorandum**")
+                st.write(f"1. **Identified Area of Opportunity:** Found **{len(low_yield_leads)}** active records maintaining low yield conversion markers within filter scope.")
+                st.write("2. **Actionable Recommendation:** Apply targeted nudge text automation strings to mitigate process registration bottlenecks.")
+                st.error("🚨 Opportunity Tracking Scope List:")
+                st.dataframe(low_yield_leads[["student_name", "intended_major", "academic_term", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        else:
+            st.warning("No records found within current scope filter.")
 
     elif "4. Provides productivity analysis" in selected_key_tab:
         st.markdown("### ⏳ Outreach Campaign Effectiveness Productivity Audit Log (`Key 4`)")
@@ -341,7 +345,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         else: st.warning("No records to aggregate for productivity evaluation metrics.")
 
     elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
-        st.markdown("### ⚙️ Operational Utilization & Activity Benchmarks (`Key 5`)")
+        st.markdown("### ⚙️ Operational Utilization & Communication Activity Benchmarks (`Key 5`)")
         if len(processed_funnel) > 0:
             util_df = processed_funnel.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
             fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Channel Share", color_discrete_sequence=ksu_gold_palette)
