@@ -52,7 +52,7 @@ if "enrollment_funnel_db" not in st.session_state:
             "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
             "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"
         ],
-        "cumulative_gpa": [3.00 for _ in range(40)], # Placeholder to override dynamically below
+        "cumulative_gpa": [0.00 for _ in range(40)], # Set dynamically by true calculator mapping
         "studentvue_sync_status": [
             "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", 
             "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync", 
@@ -210,7 +210,7 @@ if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
 
 # ==========================================
-# RELATIONAL REGISTRY COMPILATION (WITH MATHEMATICAL INTEGRITY REPAIR)
+# RELATIONAL REGISTRY COMPILATION (MATHEMATICALLY BALANCED EXPLICIT MATRIX)
 # ==========================================
 def assign_faculty_and_grades(row):
     major = row["intended_major"]
@@ -225,14 +225,17 @@ def assign_faculty_and_grades(row):
         current_prof = "Dr. Thomas Anderson (Adjunct)"
         past_prof = "Prof. Minerva McGonagall"
         
-    # FIXED: Generate balanced career grades based on a structural layout signature matrix
-    name_len = len(row["student_name"])
-    if name_len % 3 == 0:
-        grades = ["A", "A", "B", "A"]  # Avg GPA calculation: 3.75
-    elif name_len % 3 == 1:
-        grades = ["B", "B", "A", "B"]  # Avg GPA calculation: 3.25
+    # FIXED REALISTIC MATHEMATICAL SHIFT: Weighed grades calculated realistically from row applicant sequences
+    student_num = int(row["applicant_id"].split("-")[1])
+    
+    if student_num % 4 == 0:
+        grades = ["A", "A", "A", "A"]  # Straight A's -> Weighed GPA: 4.00
+    elif student_num % 4 == 1:
+        grades = ["A", "B", "A", "A"]  # Single B -> Weighed GPA: 3.75
+    elif student_num % 4 == 2:
+        grades = ["A", "B", "B", "A"]  # Mix -> Weighed GPA: 3.50
     else:
-        grades = ["A", "B", "B", "B"]  # Avg GPA calculation: 3.25
+        grades = ["B", "B", "C", "B"]  # Slower run -> Weighed GPA: 2.75
         
     grade_points = {"A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0}
     true_gpa = round(sum(grade_points[g] for g in grades) / len(grades), 2)
