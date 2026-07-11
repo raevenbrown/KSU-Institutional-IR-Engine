@@ -301,7 +301,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
 
 # ==========================================
-# MODULE 2: UPDATED FACULTY RETENTION TERMINAL
+# MODULE 2: FACULTY RETENTION TERMINAL (TEXT FORMAT REFACTOR)
 # ==========================================
 elif app_panel == "🏛️ Faculty Retention Terminal":
     st.header("🏛️ Faculty Roster Retention & Workload Terminal")
@@ -329,18 +329,20 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
             
             st.write("---")
             
-            # UPDATED SECTION ONLY: Dynamic evaluation calculations showing live breakdown metrics
+            # FIXED VISUAL CUTOFFS: Formatted counts using clear markdown syntax mapping to expand sizing
             total_taught = int(f_row['tenure_years_at_institution'] * (f_row['semester_credit_hours_load'] / 3) * 1.8)
             passed_students = int(total_taught * 0.88)
+            graduated_students = int(passed_students * 0.94)
             failed_students = int(total_taught * 0.07)
             current_students = int(f_row['semester_credit_hours_load'] / 3)
             
             st.markdown("#### 🎓 Longitudinal Instructional & Student Outcomes Ledger")
-            m1, m2, m3, m4 = st.columns(4)
-            with m1: st.metric("Total Taught (Career)", f"{total_taught:,} Students")
-            with m2: st.metric("Historical Passed (Career)", f"{passed_students:,} Students")
-            with m3: st.metric("Historical Failed (Career)", f"{failed_students:,} Students")
-            with m4: st.metric("Active Current Enrollment", f"{current_students} Students")
+            m1, m2, m3, m4, m5 = st.columns(5)
+            with m1: st.markdown(f"**Total Taught (Career):**  \n### {total_taught:,} Students")
+            with m2: st.markdown(f"**Historical Passed:**  \n### {passed_students:,} Students")
+            with m3: st.markdown(f"**Historical Graduated:**  \n### {graduated_students:,} Students")
+            with m4: st.markdown(f"**Historical Failed:**  \n### {failed_students:,} Students")
+            with m5: st.markdown(f"**Active Enrollment:**  \n### {current_students} Students")
             
             st.write("---")
             st.markdown(f"**📥 HR Analyst Log entries:** *\"{f_row['retention_notes']}\"*")
