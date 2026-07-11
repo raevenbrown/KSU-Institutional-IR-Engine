@@ -102,9 +102,6 @@ if "enrollment_funnel_db" not in st.session_state:
         "staff_meeting_prep_notes": [f"Sourced cohort record update tracking slot sequence flag {i}." for i in range(1, 41)]
     })
 
-# ==========================================
-# CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES (20 REALISTIC FACULTY RECORDS)
-# ==========================================
 if "faculty_retention_db" not in st.session_state:
     st.session_state.faculty_retention_db = pd.DataFrame({
         "faculty_id": [f"FAC-{200+i}" for i in range(1, 21)],
@@ -113,7 +110,7 @@ if "faculty_retention_db" not in st.session_state:
             "Prof. Emily Holzgrefe", "Dr. Sarah Jenkins", "Dr. David Vance", "Prof. Elena Rostova",
             "Dr. Robert Langdon", "Prof. Minerva McGonagall", "Dr. Alan Grant", "Dr. Ellie Sattler",
             "Prof. Charles Xavier", "Dr. Henry Wu", "Dr. Ian Malcolm", "Prof. Albus Dumbledore",
-            "Dr. Severus Snape", "Prof. Gilderoy Lockhart", "Dr. Remus Lupin", "Dr. Pomona Sprout"
+            "Dr. Severus Snape", "Gilderoy Lockhart", "Remus Lupin", "Pomona Sprout"
         ],
         "department_assignment": [
             "Biology", "Information Systems", "Economics", "Management", "Marketing", 
@@ -181,7 +178,7 @@ if "coles_capacity_db" not in st.session_state:
         "department_inventory_count": [45, 120, 85, 30, 25, 110, 15, 60, 140, 130]
     })
 
-ksu_gold_palette = ["#FFC400", "#161B22", "#FFA000", "#FF8F00", "#4E5D6C", "#FF5722", "#00E676"]
+ksu_gold_palette = ["#FFC400", "#00E676", "#FF5722", "#00B0FF", "#AA00FF", "#FF3D00", "#E0E0E0"]
 
 # ==========================================
 # SIDEBAR NAVIGATION INTERFACE
@@ -343,7 +340,7 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
-# MODULE 3: EAB TARGETED CAMPAIGN MANAGER
+# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (PATCHED DATA-BINDING BARS FIX)
 # ==========================================
 elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.header("📢 EAB Custom Communications Campaign Manager")
@@ -356,11 +353,19 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
             st.success(f"Outreach track '{c_name}' deployed successfully!")
 
     st.write("---")
-    fig_funnel = px.bar(processed_funnel, x="funnel_stage", title="Continuous Progress Funnel Monitor", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
+    st.subheader("Continuous Progress Funnel Monitor")
+    # THE RE-BINDING INTEGRITY SWAP: Changed to a responsive histogram to force immediate canvas re-counts when sidebar options shift
+    fig_funnel = px.histogram(
+        processed_funnel, 
+        x="funnel_stage", 
+        title="Active Progress Pipeline Allocations Profile", 
+        color="funnel_stage", 
+        color_discrete_sequence=ksu_gold_palette
+    )
     st.plotly_chart(fig_funnel, use_container_width=True)
 
 # ==========================================
-# MODULE 4: REPORTS & ANALYTICS GATEWAY (ALL 10 KEYS LIVE)
+# MODULE 4: REPORTS & ANALYTICS GATEWAY
 # ==========================================
 elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     st.header("📈 Reports & Analytics Portfolio Gateway")
