@@ -33,14 +33,14 @@ if "enrollment_funnel_db" not in st.session_state:
             "Economics", "Accounting", "Finance", "Cybersecurity", "Management"
         ],
         "academic_term": [
-            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2025", "Fall 2025", 
+            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", 
             "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview",
-            "Spring 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Spring 2025",
-            "Summer 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Spring 2025",
-            "Summer 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Spring 2025",
-            "Summer 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Spring 2025",
-            "Summer 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Spring 2025",
-            "Summer 2025", "Fall 2025", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview"
+            "Spring 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview"
         ],
         "classification": [
             "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
@@ -248,7 +248,7 @@ nav_options.append("📈 Reports & Analytics Gateway (All 10 Keys)")
 app_panel = st.sidebar.radio("Select Operational Workspace Desk:", options=nav_options)
 
 # ==========================================
-# MODULE 1: STUDENT LIFECYCLE PORTAL (LIFECYCLE OVERHAUL)
+# MODULE 1: STUDENT LIFECYCLE PORTAL (FULL TRANCRIPT UPGRADE)
 # ==========================================
 if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
     main_workspace, ai_assistant_col = st.columns([3, 1])
@@ -273,7 +273,6 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             idx = master_match.index[0]
             p_row = master_match.loc[idx]
             
-            # THE LIFECYCLE EXTENSION: Dynamically calculating outcomes based on funnel variables
             status_map = {
                 "Enrolled": "🎓 On-Track / Approved for Graduation Degree Yield",
                 "Admitted": "⏳ Active Enrolled / Pre-Registration Advising Track",
@@ -287,24 +286,42 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
                 st.markdown(f"**🆔 Student Identification Hash:** `{p_row['applicant_id']}` | **🗂️ Classification:** `{p_row['classification']}`")
                 st.write("---")
                 
-                # Dynamic timeline tracker rows
                 t1, t2, t3 = st.columns(3)
                 with t1:
                     st.markdown("#### 📥 1. Entry & Enrollment")
                     st.write(f"* **Initial Matriculation Term:** {p_row['academic_term']}")
                     st.write(f"* **Declared Focus Field Major:** {p_row['intended_major']}")
-                    st.write(f"* **Historical Course Professor:** {p_row['Past Professor']}")
-                with t2:
-                    st.markdown("#### ✏️ 2. Current Standing")
-                    st.write(f"* **Active In-Flight Course Professor:** {p_row['Current Professor']}")
-                    st.write(f"* **Midterm Performance Evaluation Grade:** `{p_row['Core Course Grade']}`")
                     st.write(f"* **Cumulative Grade Point Index (GPA):** **{p_row['cumulative_gpa']}**")
-                with t3:
-                    st.markdown("#### 🏁 3. Retention Outcome")
+                with t2:
+                    st.markdown("#### ✏️ 2. Current Status")
                     st.write(f"* **EAB Campaign Track Status:** {p_row['outreach_campaign_group']}")
                     st.write(f"* **Current Registry Sync Vector:** {p_row['studentvue_sync_status']}")
+                with t3:
+                    st.markdown("#### 🏁 3. Retention Retention Outcome")
                     st.info(f"**Current Standing Result:**\n{current_status}")
-            
+                
+                st.write("---")
+                
+                # FIXED TRANSCRIPT HISTORY ADDTION: Renders the entire course listing career path history for the specific student file
+                st.markdown("#### 📜 Complete Student Career Academic Transcript Matrix")
+                transcript_history = pd.DataFrame({
+                    "Academic Semester": [p_row['academic_term'], "Fall 2025", "Spring 2025", "Fall 2024"],
+                    "Course Code & Subject Title": [
+                        f"{p_row['intended_major']} 4400: Senior Seminar Capstone", 
+                        f"{p_row['intended_major']} 3300: Advanced Analytical Systems", 
+                        "BUSA 2100: Business Communication Foundations", 
+                        "ENGL 1101: Composition Rhetoric Core"
+                    ],
+                    "Assigned Instructor": [
+                        p_row['Current Professor'], 
+                        p_row['Past Professor'], 
+                        "Dr. Stacey Nebriaga (Gen-Ed)", 
+                        "Prof. Minerva McGonagall"
+                    ],
+                    "Earned Mark / Letter Grade": [p_row['Core Course Grade'], "B", "A", "B"]
+                })
+                st.dataframe(transcript_history, use_container_width=True, hide_index=True)
+
             st.write("")
             st.subheader("🤖 AI Assistant: Automated Meeting Prep Insights")
             with st.container(border=True):
