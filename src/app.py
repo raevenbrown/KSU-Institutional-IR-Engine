@@ -468,20 +468,19 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util, use_container_width=True)
 
-    # ==========================================
-    # MODULE 4: DYNAMIC pass-through LOGIC PASSED ON KEY 6 Dropdown selections
-    # ==========================================
     elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance Framework Gateway")
         st.caption("🔗 **Navigate360 Implementation Workflow:** Compiled by executing structured exports inside `Navigate360 -> Analytics -> Scheduled Data Extractions` and piping the output into external encryption masks matching USG, AACSB, or IPEDS guidelines.")
         
         reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
         
+        # BINDING INTEGRITY DATA PASS FOR KEY 6 DYNAMIC TABLES
+        key6_data = processed_funnel.copy()
+        
         with st.container(border=True):
             st.markdown(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
             st.write(f"*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
             
-            # THE INTERACTIVE CONDITIONAL EXPANSION FIX: Values completely morph based on page selections
             if reg_target == "USG State System Board Intake":
                 st.write("*   **USG Extraction Protocol:** Employs cell-suppression methods on cohorts where $n < 10$ to ensure complete data integrity protection.")
                 st.write("*   **Frequency Model:** Configured for scheduled state file generation loops.")
@@ -496,6 +495,10 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 st.write("*   **Federal Tracking Horizon:** Extracts 12-month trailing total undergraduate full-time equivalents (FTE).")
                 st.write("*   **Sourced Metrics:** Disaggregates structural cohort flags, first-generation Pell eligibility distribution shares, and retention milestones.")
                 st.success("🟢 Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to the National Center for Education Statistics (NCES).")
+
+        st.write("")
+        st.markdown("#### 📊 Compliance Sub-Cohort Ledger Data View")
+        st.dataframe(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### 📈 Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
@@ -538,3 +541,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             st.write("🔒 **Schema Security Protocol:** Validated under AES-256 state database taxonomy parameters.")
             st.write("🔄 **Synchronization Cycle Frequency:** Automated night-run incremental data refresh routine occurs at 02:00 EST daily.")
             st.success("🟢 **Alignment Confirmed:** Local fields mapped to Navigate360 structures perfectly match KSU's central data taxonomy rules.")
+
+        st.write("")
+        st.markdown("#### 📊 Central Synchronization Taxonomy Audit Ledger")
+        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
