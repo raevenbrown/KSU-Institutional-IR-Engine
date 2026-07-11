@@ -7,9 +7,8 @@ from datetime import date
 st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 
 # ==========================================
-# CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES
+# CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES (40 REALISTIC STUDENT RECORDS)
 # ==========================================
-
 if "enrollment_funnel_db" not in st.session_state:
     st.session_state.enrollment_funnel_db = pd.DataFrame({
         "applicant_id": [f"APP-{2600+i}" for i in range(1, 41)],
@@ -103,6 +102,9 @@ if "enrollment_funnel_db" not in st.session_state:
         "staff_meeting_prep_notes": [f"Sourced cohort record update tracking slot sequence flag {i}." for i in range(1, 41)]
     })
 
+# ==========================================
+# CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES (20 REALISTIC FACULTY RECORDS)
+# ==========================================
 if "faculty_retention_db" not in st.session_state:
     st.session_state.faculty_retention_db = pd.DataFrame({
         "faculty_id": [f"FAC-{200+i}" for i in range(1, 21)],
@@ -131,7 +133,7 @@ if "faculty_retention_db" not in st.session_state:
             "Sabbatical - Research Active", "Active - Full Instructional Load", "Pending Tenure Review Notice", 
             "Active - Full Instructional Load", "Medical Leave", "Active - Full Instructional Load",
             "Active - Full Instructional Load", "Pending Tenure Review Notice", "Active - Full Instructional Load",
-            "Sabbatical - Research Active", "Active - Full Instructional Load", "Active - Full Instructional Load",
+            "Sabbatical - Research Active", "Active - Full Operations Load", "Active - Full Instructional Load",
             "Active - Full Instructional Load", "Active - Full Instructional Load", "Medical Leave",
             "Pending Tenure Review Notice", "Active - Full Instructional Load"
         ],
@@ -155,7 +157,18 @@ if "faculty_retention_db" not in st.session_state:
             "Stable (>5 Years)", "Stable (>5 Years)", "Review in 1-2 Years", "Stable (>5 Years)", "Stable (>5 Years)", "Immediate Risk (<1 Year)", "Immediate Risk (<1 Year)", "Stable (>5 Years)",
             "Stable (>5 Years)", "Immediate Risk (<1 Year)", "Stable (>5 Years)", "Stable (>5 Years)"
         ],
-        "retention_notes": [f"Operational portfolio verification sequence tag {i}." for i in range(1, 21)]
+        "retention_notes": [
+            "Stable institutional asset profiles verified.", "Seeking timeline promotion track clarification.",
+            "Progressing toward standard tenure review.", "Endowed academic chairholder active.",
+            "Needs structural retention strategy intervention.", "Research grant funding targets secured.",
+            "Approaching standard retirement matrix horizon.", "Market salary compression issues logged.",
+            "Stable institutional asset profiles verified.", "Seeking timeline promotion track clarification.",
+            "Progressing toward standard tenure review.", "Endowed academic chairholder active.",
+            "Needs structural retention strategy intervention.", "Research grant funding targets secured.",
+            "Approaching standard retirement matrix horizon.", "Market salary compensation logs updated.",
+            "Stable institutional asset profiles verified.", "Seeking timeline promotion track clarification.",
+            "Progressing toward standard tenure review.", "Endowed academic chairholder active."
+        ]
     })
 
 if "coles_capacity_db" not in st.session_state:
@@ -171,9 +184,9 @@ if "coles_capacity_db" not in st.session_state:
 ksu_gold_palette = ["#FFC400", "#161B22", "#FFA000", "#FF8F00", "#4E5D6C", "#FF5722", "#00E676"]
 
 # ==========================================
-# SIDEBAR SELECTION SYSTEM
+# SIDEBAR NAVIGATION INTERFACE
 # ==========================================
-st.sidebar.title("🛡️ Navigate360 Core")
+st.sidebar.title("🛡️ Coles Navigate360")
 st.sidebar.markdown("**Operational Hub:** `Center for Student Success`")
 st.sidebar.write("---")
 
@@ -183,11 +196,10 @@ show_faculty = st.sidebar.checkbox("Show Faculty Staff Tracks", value=True)
 st.sidebar.write("---")
 
 st.sidebar.subheader("🗂️ Global Scope Filters")
-
 dept_filter = st.sidebar.selectbox("Filter by Academic Department Major:", options=["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
 term_filter = st.sidebar.selectbox("Target Academic Term Horizon:", options=["All Semesters", "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview"])
 studentvue_filter = st.sidebar.selectbox("StudentVue Registration Profile Status:", options=["All Student Tiers", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", "Financial Hold - Balance Due", "Probation Sync Alert"])
-faculty_status_filter = st.sidebar.selectbox("Faculty Staff Administrative Status:", options=["All Faculty Tiers", "Active - Full Instructional Load", "Pending Tenure Review Notice", "Sabbatical - Research Active", "Medical Leave"])
+faculty_status_filter = st.sidebar.selectbox("Faculty Staff Administrative Status:", options=["All Faculty Tiers", "Active - Full Instructional Load", "Pending Tenure Review Notice", "Sabbatical - Research Active"])
 
 processed_funnel = st.session_state.enrollment_funnel_db.copy()
 processed_faculty = st.session_state.faculty_retention_db.copy()
@@ -271,7 +283,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
                 st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
                 st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
                 if append_note: st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
-                st.success("Funnel attributes modified.")
+                st.success("Funnel attributes modified updates pushed live.")
                 st.rerun()
         else: st.warning("No tracking records match filters.")
             
@@ -328,7 +340,7 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
         with f_g2:
             fig_hazard = px.pie(processed_faculty, values="semester_credit_hours_load", names="faculty_retention_hazard_flag", title="Workload (SCH) Distribution Tiers", hole=0.4, color_discrete_sequence=["#00E676", "#FFC400", "#FF5722"])
             st.plotly_chart(fig_hazard, use_container_width=True)
-    else: st.warning("No teacher metrics log segments match active global sidebar constraints.")
+    else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
 # MODULE 3: EAB TARGETED CAMPAIGN MANAGER
@@ -348,10 +360,11 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.plotly_chart(fig_funnel, use_container_width=True)
 
 # ==========================================
-# MODULE 4: REPORTS & ANALYTICS GATEWAY (ALL 10 KEYS)
+# MODULE 4: REPORTS & ANALYTICS GATEWAY (ALL 10 KEYS LIVE)
 # ==========================================
 elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     st.header("📈 Reports & Analytics Portfolio Gateway")
+    st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities outlined in the data analyst job profile framework.*")
     st.write("---")
     
     ledger_df = pd.DataFrame({
@@ -376,149 +389,113 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
     st.write("---")
     
-    # ====================================================
-    # BRINGING 10 UNIQUE DYNAMIC ANALYTIC DASHBOARDS LIVE
-    # ====================================================
-    
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Key 1: Standardized vs. Ad Hoc Query Compilations")
-        st.markdown("##### *Guidelines Frequency Distribution Matrix Analysis*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Generated inside `Navigate360 -> Reports -> Custom Report Builder`. Saved configurations are scheduled to compile automatically on Monday mornings (guidelines frequency distribution context).")
         rep_type = st.radio("Select Guidelines Frequency Distribution Format:", ["Standard Recurring (Weekly Intake)", "Ad Hoc Live Extract"])
         if rep_type == "Standard Recurring (Weekly Intake)":
-            st.info("📦 **Standard Guideline Run:** Extracting structured multi-semester headcount and demographic benchmarks across the Coles campus landscape.")
+            st.info("📦 **Standard Guideline Run:** Sourced multi-semester headcount and demographic benchmarks.")
             st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage"]], use_container_width=True, hide_index=True)
         else:
-            st.warning("⚡ **Ad Hoc Command Executed:** Running dynamic cross-sectional splice targeting unassigned holds or critical priority risks.")
+            st.warning("⚡ **Ad Hoc Command Executed:** Running dynamic cross-sectional splice targeting critical priority risks.")
             ad_hoc_subset = processed_funnel[processed_funnel["predicted_yield_probability"] == "Low"]
             st.dataframe(ad_hoc_subset, use_container_width=True, hide_index=True)
 
     elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### 🏛️ Key 2: Departmental Interpretation Ledger Matrix")
-        st.markdown("##### *Assigned department performance logs cross-referenced with faculty infrastructure variables.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Pulled directly via `Navigate360 Analytics -> Staff & Advisor Utilization Hub`. Generates localized tables cross-referencing care unit assignments against overall baseline instructional capacities.")
         c_act, c_graph = st.columns(2)
         with c_act:
-            st.info("📊 **Departmental Core Profile Aggregations**")
+            st.info("📊 **Assigned Department Core Infrastructure Summary Profile**")
             st.dataframe(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]], use_container_width=True, hide_index=True)
         with c_graph:
-            fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color_discrete_sequence=["#FFC400"])
+            fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_key2, use_container_width=True)
 
     elif "3. Identifies areas of opportunity" in selected_key_tab:
         st.markdown("### 💡 Key 3: Leadership Findings & Strategic Recommendations Engine")
-        st.markdown("##### *Automated script checking for institutional funnel risk bottlenecks to construct a stakeholder summary.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Evaluated by setting specific risk boundary values inside `Navigate360 -> Advanced Search -> Category Tags Matrix` to target systemic friction elements.")
         low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 2.5] if len(processed_funnel) > 0 else pd.DataFrame()
-        
         with st.container(border=True):
             st.markdown("🏆 **Executive Data Insights Memorandum**")
             st.write(f"1. **Identified Area of Opportunity:** Found **{len(low_gpa_leads)}** active records maintaining cumulative GPA indices under the 2.5 milestone line.")
-            st.write("2. **Analytical Interpretation:** Communication logs show high correlation with pending or missing transcript submission hold flags.")
-            st.write("3. **Actionable Recommendation to Leadership:** Deploy automated EAB push communications targeting verification parameters to reduce registration friction.")
-            
+            st.write("2. **Analytical Interpretation:** Communication logs reveal structural correlations with active registry file holds.")
+            st.write("3. **Actionable Recommendation:** Deploy automated EAB communications targeting validation parameters to reduce block friction.")
         if len(low_gpa_leads) > 0:
-            st.error("🚨 Opportunity Tracking Scope List:")
+            st.error("🚨 Opportunity Tracking Watchlist:")
             st.dataframe(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
-        else:
-            st.success("🟢 No urgent low GPA risk thresholds breached within current filtering matrices.")
 
     elif "4. Provides productivity analysis reports" in selected_key_tab:
         st.markdown("### ⏳ Key 4: Outreach Campaign Effectiveness Productivity Audit Log")
-        st.markdown("##### *Analyzing consultation delivery and assignment loads across active marketing campaign groupings.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Tracked natively via `Navigate360 -> Analytics Suite -> Intervention Campaign Reports`. Measures exact engagement metrics and assigned tasks across specific targeted cohorts.")
         if len(processed_funnel) > 0:
-            prod_df = processed_funnel.groupby("outreach_campaign_group").agg(
-                total_prospects_reached=("applicant_id", "count"),
-                total_pending_tasks=("to_dos_pending", "sum"),
-                mean_gpa_index=("cumulative_gpa", "mean")
-            ).reset_index()
-            
+            prod_df = processed_funnel.groupby("outreach_campaign_group").agg(total_prospects_reached=("applicant_id", "count"), total_pending_tasks=("to_dos_pending", "sum"), mean_gpa_index=("cumulative_gpa", "mean")).reset_index()
             c_p1, c_p2 = st.columns(2)
-            with c_p1:
-                st.dataframe(prod_df, use_container_width=True, hide_index=True)
+            with c_p1: st.dataframe(prod_df, use_container_width=True, hide_index=True)
             with c_p2:
-                fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign", color_discrete_sequence=["#161B22"])
+                fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign Group", color="outreach_campaign_group", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_prod, use_container_width=True)
-        else:
-            st.warning("No student records available to calculate productivity aggregations.")
 
     elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
         st.markdown("### ⚙️ Key 5: Operational Utilization & Activity Benchmarks")
-        st.markdown("##### *Measuring preferred student contact methods to optimize resource utilization activity.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Monitored using `Navigate360 -> Dashboard -> Student Interaction Preferences Log` tracking preferred contact modalities.")
         if len(processed_funnel) > 0:
             util_df = processed_funnel.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
-            
             c_u1, c_u2 = st.columns(2)
-            with c_u1:
-                st.dataframe(util_df, use_container_width=True, hide_index=True)
+            with c_u1: st.dataframe(util_df, use_container_width=True, hide_index=True)
             with c_u2:
-                fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Resource Channels Allocation", color_discrete_sequence=ksu_gold_palette)
+                fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util, use_container_width=True)
-        else:
-            st.warning("No student records available to measure operational utilization attributes.")
 
     elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
-        st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance USG Framework Gateway")
-        st.markdown("##### *Ad hoc auditing tools configured to target oversight requirements of association affiliations.*")
-        
+        st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance Framework Gateway")
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Compiled by executing structured exports inside `Navigate360 -> Analytics -> Scheduled Data Extractions` and piping the output into external encryption masks matching USG, AACSB, or IPEDS guidelines.")
         reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
-        
         with st.container(border=True):
             st.markdown(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
-            st.write(f"* **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
-            st.write(f"* **Data Verification Status:** Cryptographically Suppressed to comply with privacy shield guidelines.")
-            st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for external data ingestion loops.")
+            st.write("*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
+            st.write("*   **USG Extraction Protocol:** Employs cell-suppression methods on cohorts where $n < 10$ to ensure complete data integrity protection.")
+            st.write("*   **Frequency Model:** Configured for scheduled state file generation loops.")
+            st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### 📈 Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
-        st.markdown("##### *Compiling longitudinal retention metrics across major academic concentrations.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Generated inside `Navigate360 Analytics -> Population Health -> Historical Cohort Trends` to view multi-semester performance variations across specific majors.")
         trend_df = st.session_state.coles_capacity_db.copy()
         trend_df["retention_shortfall"] = trend_df["retention_goal_pct"] - trend_df["actual_retention_pct"]
-        
         c_t1, c_t2 = st.columns([2, 3])
-        with c_t1:
-            st.dataframe(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]], use_container_width=True, hide_index=True)
+        with c_t1: st.dataframe(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]], use_container_width=True, hide_index=True)
         with c_t2:
-            fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Profile Trends", markers=True, color_discrete_sequence=["#FF5722"])
+            fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Trends Profile", markers=True, color_discrete_sequence=["#FF5722"])
             st.plotly_chart(fig_trend, use_container_width=True)
 
     elif "8. May assists with departmental inventory" in selected_key_tab:
         st.markdown("### 🖥️ Key 8: Departmental Technology Asset Inventory Analysis")
-        st.markdown("##### *Auditing hardware resources and kiosk terminal units deployed across Coles CSS departments.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Extracted via `Navigate360 -> Local Infrastructure -> Asset Allocation Auditing Logs` tracking physical hardware nodes deployed across various academic zones.")
         c_i1, c_i2 = st.columns(2)
-        with c_i1:
-            st.dataframe(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]], use_container_width=True, hide_index=True)
+        with c_i1: st.dataframe(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]], use_container_width=True, hide_index=True)
         with c_i2:
-            fig_inv = px.bar(st.session_state.coles_capacity_db, x="major_name", y="department_inventory_count", title="Hardware Kiosk Terminals Deployed by Care Unit Major", color_discrete_sequence=["#4E5D6C"])
+            fig_inv = px.bar(st.session_state.coles_capacity_db, x="major_name", y="department_inventory_count", title="Hardware Kiosk Terminals Deployed by Care Hub Unit", color="major_name", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_inv, use_container_width=True)
 
     elif "9. May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
         st.markdown("### 🎯 Key 9: Center Performance & Program Effectiveness Matrix")
-        st.markdown("##### *Evaluating recruitment pipeline progress and volume trends to analyze department effectiveness.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Generated via `Navigate360 -> Advisor Analytics -> Care Unit Performance Metrics` to isolate specific conversion milestones and pipeline throughput volumes.")
         if len(processed_funnel) > 0:
             res_counts = processed_funnel.groupby("funnel_stage").size().reset_index(name="total_cases")
-            
             c_pf1, f_pf2 = st.columns(2)
-            with c_pf1:
-                st.dataframe(res_counts, use_container_width=True, hide_index=True)
+            with c_pf1: st.dataframe(res_counts, use_container_width=True, hide_index=True)
             with f_pf2:
-                fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Profile", color_discrete_sequence=["#00E676"])
+                fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_perf, use_container_width=True)
-        else:
-            st.warning("No funnel records available to measure overall center conversion performance.")
 
     elif "10. Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### 🤝 Key 10: Office of University Data Strategy Alignment Matrix")
-        st.markdown("##### *Maintaining data taxonomy alignment with central university data strategy models.*")
-        
+        st.caption("🔗 **Navigate360 Implementation Workflow:** Managed using `Navigate360 -> Admin Console -> App Center -> API Ingestion Mappings`. Connects your local variables directly to KSU's master university data strategy server.")
         with st.container(border=True):
             st.markdown("### 🏛️ University Policy Policy Mapping Framework Terminal")
             st.write("🔗 **Data Governance Layer:** Kennesaw State University Master Data Strategy Directive Compliance standard verified.")
             st.write("📡 **API Synchronization Endpoint Handshake:** `https://data-strategy.kennesaw.edu/v1/sync` active.")
-            st.write("🔒 **Encryption Security Protocol:** AES-256 System Handshake Validated.")
+            st.write("🔒 **Schema Security Protocol:** Validated under AES-256 state database taxonomy parameters.")
+            st.write("🔄 **Synchronization Cycle Frequency:** Automated night-run incremental data refresh routine occurs at 02:00 EST daily.")
             st.success("🟢 **Alignment Confirmed:** Local fields mapped to Navigate360 structures perfectly match KSU's central data taxonomy rules.")
