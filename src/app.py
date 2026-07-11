@@ -340,24 +340,42 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
-# MODULE 3: EAB TARGETED CAMPAIGN MANAGER
+# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (LIVE ON-PAGE FILTERS)
 # ==========================================
 elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.header("📢 EAB Custom Communications Campaign Manager")
     st.write("---")
-    with st.form("campaign_creation_desk"):
-        c_name = st.text_input("Campaign Name Target Label:", value="Fall 2026 Orientation Completion Nudge")
-        c_channel = st.selectbox("Primary Communication Channel Strategy:", options=["Targeted Email Sequences", "Personalized Text/SMS Blasts", "Shared Event Invitation Portals"])
-        c_cohort = st.selectbox("Target Audience Filter Group Stage:", options=["Inquiry Population Pool", "Applied - Awaiting Decision", "Admitted - Yield Acceleration Focus"])
-        if st.form_submit_button("🚀 Deploy Nuanced Outreach & Launch Campaign"):
-            st.success(f"Outreach track '{c_name}' deployed successfully!")
+    
+    # On-page dropdown selectors
+    c_name = st.text_input("Campaign Name Target Label:", value="Fall 2026 Orientation Completion Nudge")
+    c_channel = st.selectbox("Primary Communication Channel Strategy:", options=["All Strategy Channels", "Personalized Text/SMS Blasts", "Targeted Email Sequences", "Shared Event Invitation Portals"])
+    c_cohort = st.selectbox("Target Audience Filter Group Stage:", options=["All Cohort Groups", "Inquiry Population Pool", "Applied - Awaiting Decision", "Admitted - Yield Acceleration Focus"])
+    
+    st.write("")
+    if st.button("🚀 Deploy Nuanced Outreach & Launch Campaign", use_container_width=True):
+        st.success(f"Outreach track '{c_name}' deployed successfully!")
 
     st.write("---")
     st.subheader("Continuous Progress Funnel Monitor")
     
-    # FIXED: Re-bound directly to the reactive data state variable 'processed_funnel' instead of the raw engine base to capture live sidebar adjustments
+    # BINDING THE ON-PAGE DROPDOWN CHANNELS TO THE DATA SPLICE
+    chart_data = processed_funnel.copy()
+    
+    if c_channel == "Personalized Text/SMS Blasts":
+        chart_data = chart_data[chart_data["communication_preference"] == "Text/SMS"]
+    elif c_channel == "Targeted Email Sequences":
+        chart_data = chart_data[chart_data["communication_preference"] == "Email"]
+        
+    if c_cohort == "Inquiry Population Pool":
+        chart_data = chart_data[chart_data["funnel_stage"] == "Inquiry"]
+    elif c_cohort == "Applied - Awaiting Decision":
+        chart_data = chart_data[chart_data["funnel_stage"] == "Applied"]
+    elif c_cohort == "Admitted - Yield Acceleration Focus":
+        chart_data = chart_data[chart_data["funnel_stage"] == "Admitted"]
+
+    # Renders data slices natively using the live on-page dropdown choices
     fig_funnel = px.histogram(
-        processed_funnel, 
+        chart_data, 
         x="funnel_stage", 
         title="Active Progress Pipeline Allocations Profile", 
         color="funnel_stage", 
