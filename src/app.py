@@ -98,7 +98,6 @@ if "enrollment_funnel_db" not in st.session_state:
         "last_interaction_date": ["2026-03-10" for _ in range(40)],
         "to_dos_pending": [i % 4 for i in range(40)],
         "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
-        "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
         "category_tags": ["First Generation, Pell-Eligible" if i % 3 == 0 else "Good Academic Standing" for i in range(40)],
         "staff_meeting_prep_notes": [f"Sourced cohort record update tracking slot sequence flag {i}." for i in range(1, 41)]
     })
@@ -216,7 +215,7 @@ if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
 
 # ==========================================
-# THE RELATION FILTER MAPPING ENGINE BRIDGE
+# RELATIONAL REGISTRY COMPILATION
 # ==========================================
 def assign_faculty_and_grades(row):
     major = row["intended_major"]
@@ -249,7 +248,7 @@ nav_options.append("📈 Reports & Analytics Gateway (All 10 Keys)")
 app_panel = st.sidebar.radio("Select Operational Workspace Desk:", options=nav_options)
 
 # ==========================================
-# MODULE 1: STUDENT LIFECYCLE PORTAL
+# MODULE 1: STUDENT LIFECYCLE PORTAL (LIFECYCLE OVERHAUL)
 # ==========================================
 if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
     main_workspace, ai_assistant_col = st.columns([3, 1])
@@ -269,23 +268,42 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         
         st.write("")
         if len(processed_funnel) > 0:
-            selected_prospect = st.selectbox("🔍 Select Active Applicant File to Audit:", options=list(processed_funnel["student_name"].unique()))
+            selected_prospect = st.selectbox("🔍 Select Active Student Record Dossier to Audit:", options=list(processed_funnel["student_name"].unique()))
             master_match = processed_funnel[processed_funnel["student_name"] == selected_prospect]
             idx = master_match.index[0]
             p_row = master_match.loc[idx]
             
+            # THE LIFECYCLE EXTENSION: Dynamically calculating outcomes based on funnel variables
+            status_map = {
+                "Enrolled": "🎓 On-Track / Approved for Graduation Degree Yield",
+                "Admitted": "⏳ Active Enrolled / Pre-Registration Advising Track",
+                "Applied": "🔄 Institutional Outbound Route / Voluntarily Transferred",
+                "Inquiry": "⚠️ Academic Dismissal / Flunked Out Risk"
+            }
+            current_status = status_map.get(p_row['funnel_stage'], "Active Tracking")
+            
             with st.container(border=True):
-                st.markdown(f"### Applicant Portal: **{p_row['student_name']}** | ID: `{p_row['applicant_id']}`")
-                st.write("")
-                det_col1, det_col2 = st.columns(2)
-                with det_col1:
-                    st.markdown(f"**📚 Intended Academic Major:** `{p_row['intended_major']}`")
-                    st.markdown(f"**🗓️ Target Academic Term:** `{p_row['academic_term']}`")
-                    st.markdown(f"**🎯 Current Funnel Stage:** `{p_row['funnel_stage']}`")
-                with det_col2:
-                    st.markdown(f"**🔮 Predicted Yield Probability:** `{p_row['predicted_yield_probability']}`")
-                    st.markdown(f"**🔒 StudentVue Sync Update:** `{p_row['studentvue_sync_status']}`")
-                    st.markdown(f"**🏷️ Category Flags Matrix:** `{p_row['category_tags']}`")
+                st.markdown(f"### 📑 Comprehensive Student Lifecycle Dossier: **{p_row['student_name']}**")
+                st.markdown(f"**🆔 Student Identification Hash:** `{p_row['applicant_id']}` | **🗂️ Classification:** `{p_row['classification']}`")
+                st.write("---")
+                
+                # Dynamic timeline tracker rows
+                t1, t2, t3 = st.columns(3)
+                with t1:
+                    st.markdown("#### 📥 1. Entry & Enrollment")
+                    st.write(f"* **Initial Matriculation Term:** {p_row['academic_term']}")
+                    st.write(f"* **Declared Focus Field Major:** {p_row['intended_major']}")
+                    st.write(f"* **Historical Course Professor:** {p_row['Past Professor']}")
+                with t2:
+                    st.markdown("#### ✏️ 2. Current Standing")
+                    st.write(f"* **Active In-Flight Course Professor:** {p_row['Current Professor']}")
+                    st.write(f"* **Midterm Performance Evaluation Grade:** `{p_row['Core Course Grade']}`")
+                    st.write(f"* **Cumulative Grade Point Index (GPA):** **{p_row['cumulative_gpa']}**")
+                with t3:
+                    st.markdown("#### 🏁 3. Retention Outcome")
+                    st.write(f"* **EAB Campaign Track Status:** {p_row['outreach_campaign_group']}")
+                    st.write(f"* **Current Registry Sync Vector:** {p_row['studentvue_sync_status']}")
+                    st.info(f"**Current Standing Result:**\n{current_status}")
             
             st.write("")
             st.subheader("🤖 AI Assistant: Automated Meeting Prep Insights")
@@ -295,7 +313,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             st.write("---")
             st.subheader("🛠️ Streamline Applicant Progress Queue Tasks")
             w1, w2, w3 = st.columns([1, 1, 2])
-            with w1: stage_update = st.selectbox("Advance Funnel Stage:", options=["Inquiry", "Applied", "Admitted", "Enrolled"])
+            with w1: stage_update = st.selectbox("Advance Student Status Outcome:", options=["Enrolled", "Admitted", "Applied", "Inquiry"])
             with w2: camp_update = st.selectbox("Reassign Outreach Campaign:", options=["Completed Yield", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"])
             with w3: append_note = st.text_input("Append Diagnostic Communication Log Entry:")
                 
@@ -309,7 +327,6 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             
         st.write("---")
         st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
-        # FIXED TABLE COLUMNS: Adding professor assignments and core grades directly into the view array
         st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "Core Course Grade"]], use_container_width=True, hide_index=True)
 
     with ai_assistant_col:
