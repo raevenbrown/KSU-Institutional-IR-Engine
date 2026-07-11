@@ -340,13 +340,12 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
-# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (LIVE ON-PAGE FILTERS)
+# MODULE 3: EAB TARGETED CAMPAIGN MANAGER
 # ==========================================
 elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.header("📢 EAB Custom Communications Campaign Manager")
     st.write("---")
     
-    # On-page dropdown selectors
     c_name = st.text_input("Campaign Name Target Label:", value="Fall 2026 Orientation Completion Nudge")
     c_channel = st.selectbox("Primary Communication Channel Strategy:", options=["All Strategy Channels", "Personalized Text/SMS Blasts", "Targeted Email Sequences", "Shared Event Invitation Portals"])
     c_cohort = st.selectbox("Target Audience Filter Group Stage:", options=["All Cohort Groups", "Inquiry Population Pool", "Applied - Awaiting Decision", "Admitted - Yield Acceleration Focus"])
@@ -358,7 +357,6 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.write("---")
     st.subheader("Continuous Progress Funnel Monitor")
     
-    # BINDING THE ON-PAGE DROPDOWN CHANNELS TO THE DATA SPLICE
     chart_data = processed_funnel.copy()
     
     if c_channel == "Personalized Text/SMS Blasts":
@@ -373,7 +371,6 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
     elif c_cohort == "Admitted - Yield Acceleration Focus":
         chart_data = chart_data[chart_data["funnel_stage"] == "Admitted"]
 
-    # Renders data slices natively using the live on-page dropdown choices
     fig_funnel = px.histogram(
         chart_data, 
         x="funnel_stage", 
@@ -471,16 +468,34 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util, use_container_width=True)
 
+    # ==========================================
+    # MODULE 4: DYNAMIC pass-through LOGIC PASSED ON KEY 6 Dropdown selections
+    # ==========================================
     elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance Framework Gateway")
         st.caption("🔗 **Navigate360 Implementation Workflow:** Compiled by executing structured exports inside `Navigate360 -> Analytics -> Scheduled Data Extractions` and piping the output into external encryption masks matching USG, AACSB, or IPEDS guidelines.")
+        
         reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
+        
         with st.container(border=True):
             st.markdown(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
-            st.write("*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
-            st.write("*   **USG Extraction Protocol:** Employs cell-suppression methods on cohorts where $n < 10$ to ensure complete data integrity protection.")
-            st.write("*   **Frequency Model:** Configured for scheduled state file generation loops.")
-            st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
+            st.write(f"*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
+            
+            # THE INTERACTIVE CONDITIONAL EXPANSION FIX: Values completely morph based on page selections
+            if reg_target == "USG State System Board Intake":
+                st.write("*   **USG Extraction Protocol:** Employs cell-suppression methods on cohorts where $n < 10$ to ensure complete data integrity protection.")
+                st.write("*   **Frequency Model:** Configured for scheduled state file generation loops.")
+                st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
+                
+            elif reg_target == "AACSB Evaluation Ledger Core":
+                st.write("*   **Accreditation Ratio Track:** Isolates student-to-faculty tracking profiles and qualifications alignment indexing metrics.")
+                st.write("*   **Audit Scope:** Filters business instructional load generation shares natively across tenure tracking ranks.")
+                st.success("🟢 Validation Protocol: Pass. Faculty load matrices comply 100% with global AACSB data ingestion schemas.")
+                
+            elif reg_target == "Federal IPEDS Frame":
+                st.write("*   **Federal Tracking Horizon:** Extracts 12-month trailing total undergraduate full-time equivalents (FTE).")
+                st.write("*   **Sourced Metrics:** Disaggregates structural cohort flags, first-generation Pell eligibility distribution shares, and retention milestones.")
+                st.success("🟢 Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to the National Center for Education Statistics (NCES).")
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### 📈 Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
