@@ -98,6 +98,7 @@ if "enrollment_funnel_db" not in st.session_state:
         "last_interaction_date": ["2026-03-10" for _ in range(40)],
         "to_dos_pending": [i % 4 for i in range(40)],
         "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
+        "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
         "category_tags": ["First Generation, Pell-Eligible" if i % 3 == 0 else "Good Academic Standing" for i in range(40)],
         "staff_meeting_prep_notes": [f"Sourced cohort record update tracking slot sequence flag {i}." for i in range(1, 41)]
     })
@@ -214,6 +215,28 @@ if studentvue_filter != "All Student Tiers":
 if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
 
+# ==========================================
+# THE RELATION FILTER MAPPING ENGINE BRIDGE
+# ==========================================
+def assign_faculty_and_grades(row):
+    major = row["intended_major"]
+    dept_fac = st.session_state.faculty_retention_db[st.session_state.faculty_retention_db["department_assignment"] == major]
+    if len(dept_fac) >= 2:
+        current_prof = dept_fac.iloc[0]["faculty_name"]
+        past_prof = dept_fac.iloc[1]["faculty_name"]
+    elif len(dept_fac) == 1:
+        current_prof = dept_fac.iloc[0]["faculty_name"]
+        past_prof = "Dr. Stacey Nebriaga (Gen-Ed)"
+    else:
+        current_prof = "Dr. Thomas Anderson (Adjunct)"
+        past_prof = "Prof. Minerva McGonagall"
+        
+    gpa = row["cumulative_gpa"]
+    grade = "A" if gpa >= 3.5 else "B" if gpa >= 2.8 else "C" if gpa >= 2.0 else "D/F"
+    return pd.Series([current_prof, past_prof, grade])
+
+processed_funnel[["Current Professor", "Past Professor", "Core Course Grade"]] = processed_funnel.apply(assign_faculty_and_grades, axis=1)
+
 st.sidebar.write("---")
 st.sidebar.subheader("🏁 Navigation Terminal")
 
@@ -247,7 +270,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         st.write("")
         if len(processed_funnel) > 0:
             selected_prospect = st.selectbox("🔍 Select Active Applicant File to Audit:", options=list(processed_funnel["student_name"].unique()))
-            master_match = st.session_state.enrollment_funnel_db[st.session_state.enrollment_funnel_db["student_name"] == selected_prospect]
+            master_match = processed_funnel[processed_funnel["student_name"] == selected_prospect]
             idx = master_match.index[0]
             p_row = master_match.loc[idx]
             
@@ -286,7 +309,8 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             
         st.write("---")
         st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
-        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        # FIXED TABLE COLUMNS: Adding professor assignments and core grades directly into the view array
+        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "Core Course Grade"]], use_container_width=True, hide_index=True)
 
     with ai_assistant_col:
         st.markdown("### 🤖 Staff AI Assistant")
@@ -301,7 +325,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
 
 # ==========================================
-# MODULE 2: FACULTY RETENTION TERMINAL (TEXT FORMAT REFACTOR)
+# MODULE 2: FACULTY RETENTION TERMINAL
 # ==========================================
 elif app_panel == "🏛️ Faculty Retention Terminal":
     st.header("🏛️ Faculty Roster Retention & Workload Terminal")
@@ -329,7 +353,6 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
             
             st.write("---")
             
-            # FIXED VISUAL CUTOFFS: Formatted counts using clear markdown syntax mapping to expand sizing
             total_taught = int(f_row['tenure_years_at_institution'] * (f_row['semester_credit_hours_load'] / 3) * 1.8)
             passed_students = int(total_taught * 0.88)
             graduated_students = int(passed_students * 0.94)
@@ -518,7 +541,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
 
         st.write("")
         st.markdown(f"#### 📊 Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
-        st.dataframe(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        st.dataframe(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "Current Professor", "Past Professor", "Core Course Grade"]], use_container_width=True, hide_index=True)
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### 📈 Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
@@ -571,4 +594,4 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
 
         st.write("")
         st.markdown(f"#### 📊 Central Synchronization Taxonomy Audit Ledger ({sync_scope}) — [Total Records: {len(key10_data)} Students]")
-        st.dataframe(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
+        st.dataframe(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "Core Course Grade", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
