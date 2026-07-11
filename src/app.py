@@ -340,7 +340,7 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
-# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (UPDATED LIVE INTERFACES)
+# MODULE 3: EAB TARGETED CAMPAIGN MANAGER
 # ==========================================
 elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.header("📢 EAB Custom Communications Campaign Manager")
@@ -355,7 +355,7 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.write("---")
     st.subheader("Continuous Progress Funnel Monitor")
     
-    # FIXED: Re-bound directly to 'processed_funnel' so chart counts shift when dropdown selectors change
+    # FIXED: Re-bound directly to the reactive data state variable 'processed_funnel' instead of the raw engine base to capture live sidebar adjustments
     fig_funnel = px.histogram(
         processed_funnel, 
         x="funnel_stage", 
