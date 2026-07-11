@@ -468,9 +468,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util, use_container_width=True)
 
-    # ==========================================
-    # MODULE 4: DYNAMIC REACTIVE LOGIC FOR KEY 6 TABLES
-    # ==========================================
     elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance Framework Gateway")
         st.caption("🔗 **Navigate360 Implementation Workflow:** Compiled by executing structured exports inside `Navigate360 -> Analytics -> Scheduled Data Extractions` and piping the output into external encryption masks matching USG, AACSB, or IPEDS guidelines.")
@@ -483,30 +480,27 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             st.markdown(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
             st.write(f"*   **Relational Assets Bound:** Coles Center for Student Success core database matrices.")
             
-            # FIXED: Underlying data filters now morph contextually based on your page drop choice!
             if reg_target == "USG State System Board Intake":
                 st.write("*   **USG Extraction Protocol:** Employs cell-suppression methods on cohorts where $n < 10$ to ensure complete data integrity protection.")
                 st.write("*   **Frequency Model:** Configured for scheduled state file generation loops.")
                 st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
-                # Slice logic matching standard high GPA benchmarks 
                 key6_data = key6_data[key6_data["cumulative_gpa"] >= 3.0]
                 
             elif reg_target == "AACSB Evaluation Ledger Core":
                 st.write("*   **Accreditation Ratio Track:** Isolates student-to-faculty tracking profiles and qualifications alignment indexing metrics.")
                 st.write("*   **Audit Scope:** Filters business instructional load generation shares natively across tenure tracking ranks.")
                 st.success("🟢 Validation Protocol: Pass. Faculty load matrices comply 100% with global AACSB data ingestion schemas.")
-                # Filter down to business major segments specifically
                 key6_data = key6_data[key6_data["intended_major"].isin(["Accounting", "Economics", "Finance", "Management", "Marketing"])]
                 
             elif reg_target == "Federal IPEDS Frame":
                 st.write("*   **Federal Tracking Horizon:** Extracts 12-month trailing total undergraduate full-time equivalents (FTE).")
                 st.write("*   **Sourced Metrics:** Disaggregates structural cohort flags, first-generation Pell eligibility distribution shares, and retention milestones.")
                 st.success("🟢 Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to the National Center for Education Statistics (NCES).")
-                # Filter strictly down to records with pending tasks/flags
                 key6_data = key6_data[key6_data["to_dos_pending"] > 0]
 
         st.write("")
-        st.markdown(f"#### 📊 Compliance Sub-Cohort Ledger Data View ({reg_target})")
+        # FIXED: Added live dynamic row length length calculation parameter metrics string to title header
+        st.markdown(f"#### 📊 Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
         st.dataframe(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
@@ -540,14 +534,10 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_perf, use_container_width=True)
 
-    # ==========================================
-    # MODULE 4: DYNAMIC REACTIVE LOGIC FOR KEY 10 TABLES
-    # ==========================================
     elif "10. Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### 🤝 Key 10: Office of University Data Strategy Alignment Matrix")
         st.caption("🔗 **Navigate360 Implementation Workflow:** Managed using `Navigate360 -> Admin Console -> App Center -> API Ingestion Mappings`. Connects your local variables directly to KSU's master university data strategy server.")
         
-        # FIXED: Added local on-page dropdown selector filter loop for Key 10!
         sync_scope = st.selectbox("Select Synchronization Scope Ring Natively:", ["All Synced Records", "Sync Failures / Alerts Only"])
         
         key10_data = processed_funnel.copy()
@@ -563,5 +553,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             st.success("🟢 **Alignment Confirmed:** Local fields mapped to Navigate360 structures perfectly match KSU's central data taxonomy rules.")
 
         st.write("")
-        st.markdown(f"#### 📊 Central Synchronization Taxonomy Audit Ledger ({sync_scope})")
+        # FIXED: Added live dynamic row length calculation metrics string to data ledger header
+        st.markdown(f"#### 📊 Central Synchronization Taxonomy Audit Ledger ({sync_scope}) — [Total Records: {len(key10_data)} Students]")
         st.dataframe(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
