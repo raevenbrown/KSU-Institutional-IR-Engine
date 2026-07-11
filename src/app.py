@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import date
@@ -110,7 +110,7 @@ if "faculty_retention_db" not in st.session_state:
             "Prof. Emily Holzgrefe", "Dr. Sarah Jenkins", "Dr. David Vance", "Prof. Elena Rostova",
             "Dr. Robert Langdon", "Prof. Minerva McGonagall", "Dr. Alan Grant", "Dr. Ellie Sattler",
             "Prof. Charles Xavier", "Dr. Henry Wu", "Dr. Ian Malcolm", "Prof. Albus Dumbledore",
-            "Dr. Severus Snape", "Gilderoy Lockhart", "Remus Lupin", "Pomona Sprout"
+            "Dr. Severus Snape", "Prof. Gilderoy Lockhart", "Dr. Remus Lupin", "Dr. Pomona Sprout"
         ],
         "department_assignment": [
             "Biology", "Information Systems", "Economics", "Management", "Marketing", 
@@ -301,7 +301,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
         st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
 
 # ==========================================
-# MODULE 2: FACULTY RETENTION TERMINAL
+# MODULE 2: UPDATED FACULTY RETENTION TERMINAL
 # ==========================================
 elif app_panel == "🏛️ Faculty Retention Terminal":
     st.header("🏛️ Faculty Roster Retention & Workload Terminal")
@@ -326,6 +326,22 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
             with f_c3:
                 st.markdown(f"**🔮 Attrition Risk Tier:** `{f_row['faculty_retention_hazard_flag']}`")
                 st.markdown(f"**📅 Departure Horizon Estimate:** `{f_row['estimated_departure_timeline']}`")
+            
+            st.write("---")
+            
+            # UPDATED SECTION ONLY: Dynamic evaluation calculations showing live breakdown metrics
+            total_taught = int(f_row['tenure_years_at_institution'] * (f_row['semester_credit_hours_load'] / 3) * 1.8)
+            passed_students = int(total_taught * 0.88)
+            failed_students = int(total_taught * 0.07)
+            current_students = int(f_row['semester_credit_hours_load'] / 3)
+            
+            st.markdown("#### 🎓 Longitudinal Instructional & Student Outcomes Ledger")
+            m1, m2, m3, m4 = st.columns(4)
+            with m1: st.metric("Total Taught (Career)", f"{total_taught:,} Students")
+            with m2: st.metric("Historical Passed (Career)", f"{passed_students:,} Students")
+            with m3: st.metric("Historical Failed (Career)", f"{failed_students:,} Students")
+            with m4: st.metric("Active Current Enrollment", f"{current_students} Students")
+            
             st.write("---")
             st.markdown(f"**📥 HR Analyst Log entries:** *\"{f_row['retention_notes']}\"*")
             
@@ -499,7 +515,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 key6_data = key6_data[key6_data["to_dos_pending"] > 0]
 
         st.write("")
-        # FIXED: Added live dynamic row length length calculation parameter metrics string to title header
         st.markdown(f"#### 📊 Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
         st.dataframe(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
 
@@ -553,6 +568,5 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             st.success("🟢 **Alignment Confirmed:** Local fields mapped to Navigate360 structures perfectly match KSU's central data taxonomy rules.")
 
         st.write("")
-        # FIXED: Added live dynamic row length calculation metrics string to data ledger header
         st.markdown(f"#### 📊 Central Synchronization Taxonomy Audit Ledger ({sync_scope}) — [Total Records: {len(key10_data)} Students]")
         st.dataframe(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "studentvue_sync_status"]], use_container_width=True, hide_index=True)
