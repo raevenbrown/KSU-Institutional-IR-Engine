@@ -340,7 +340,7 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
-# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (PATCHED DATA-BINDING BARS FIX)
+# MODULE 3: EAB TARGETED CAMPAIGN MANAGER (UPDATED LIVE INTERFACES)
 # ==========================================
 elif app_panel == "📢 EAB Targeted Campaign Manager":
     st.header("📢 EAB Custom Communications Campaign Manager")
@@ -354,7 +354,8 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
 
     st.write("---")
     st.subheader("Continuous Progress Funnel Monitor")
-    # THE RE-BINDING INTEGRITY SWAP: Changed to a responsive histogram to force immediate canvas re-counts when sidebar options shift
+    
+    # FIXED: Re-bound directly to 'processed_funnel' so chart counts shift when dropdown selectors change
     fig_funnel = px.histogram(
         processed_funnel, 
         x="funnel_stage", 
