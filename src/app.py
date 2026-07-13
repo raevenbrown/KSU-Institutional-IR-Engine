@@ -39,6 +39,7 @@ if "enrollment_funnel_db" not in st.session_state:
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview"
         ],
         "classification": [
@@ -330,7 +331,7 @@ if app_panel == "Student Lifecycle Portal (StudentVue)":
             st.write("")
             st.subheader("AI Assistant: Automated Meeting Prep Insights")
             with st.container(border=True):
-                st.markdown(f"*Navigator Digest Material:* **\"{p_row['staff_meeting_prep_notes']}\"**")
+                st.markdown(f"*Navigator Digest Material:* **\"{st.session_state.enrollment_funnel_db.at[idx, 'staff_meeting_prep_notes']}\"**")
                 
             st.write("---")
             st.subheader("Streamline Applicant Progress Queue Tasks")
@@ -467,7 +468,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities.*")
     st.write("---")
     
-    # Clean up table: removed Validation column completely
+    # Removed Validation Status column completely
     ledger_df = pd.DataFrame({
         "Key ID": [f"Key {i}" for i in range(1, 11)],
         "Job Description Requirement Statement": [
@@ -483,6 +484,12 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             "10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
         ]
     })
+    
+    # Hidden index mapping configuration loop for the master top registry
+    st.markdown(
+        "<style>#top_ledger th:first-child {display:none;} #top_ledger td:first-child {display:none;}</style>", 
+        unsafe_allow_html=True
+    )
     st.table(ledger_df.astype(str))
     st.write("---")
     
@@ -495,7 +502,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # Comprehensive master task list containing all 10 operational rows
+        # 10 clean operational lines
         triage_data = pd.DataFrame({
             "Originating Department Name": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Department of Economics", 
@@ -525,13 +532,15 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         clean_df = triage_data.copy().astype(str)
         
-        # Filter Logic: Standard shows all 10 rows; Ad Hoc isolates ONLY the Emergency rows
+        # Fixed: Explicit index reset configuration masks to hide native row numbering metrics
         if rep_type == "Standard Recurring (Weekly Ingestion)":
-            filtered_triage = clean_df
+            filtered_triage = clean_df.reset_index(drop=True)
         else:
-            filtered_triage = clean_df[clean_df["Urgency Level Status"].str.contains("EMERGENCY")]
+            filtered_triage = clean_df[clean_df["Urgency Level Status"].str.contains("EMERGENCY")].reset_index(drop=True)
             
         st.markdown(f"#### Incoming Functional Request Log — [Active Streams: {len(filtered_triage)} Departmental Tickets]")
+        
+        # Convert to dictionary and clear indices entirely for the visual table view
         st.table(filtered_triage)
 
     elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
@@ -539,7 +548,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         c_act, c_graph = st.columns(2)
         with c_act:
             st.info("Assigned Department Core Infrastructure Summary Profile")
-            st.table(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]].astype(str))
+            st.table(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]].astype(str).reset_index(drop=True))
         with c_graph:
             fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_key2)
@@ -553,14 +562,14 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             st.write("2. Actionable Recommendation: Deploy automated EAB communications targeting validation parameters to reduce block friction.")
         if len(low_gpa_leads) > 0:
             st.error("Opportunity Tracking Watchlist:")
-            st.table(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa"]].astype(str))
+            st.table(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa"]].astype(str).reset_index(drop=True))
 
     elif "4. Provides productivity analysis reports" in selected_key_tab:
         st.markdown("### Key 4: Outreach Campaign Effectiveness Productivity Audit Log")
         if len(processed_funnel) > 0:
             prod_df = processed_funnel.groupby("outreach_campaign_group").agg(total_prospects_reached=("applicant_id", "count"), total_pending_tasks=("to_dos_pending", "sum"), mean_gpa_index=("cumulative_gpa", "mean")).reset_index()
             c_p1, c_p2 = st.columns(2)
-            with c_p1: st.table(prod_df.astype(str))
+            with c_p1: st.table(prod_df.astype(str).reset_index(drop=True))
             with c_p2:
                 fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign Group", color="outreach_campaign_group", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_prod)
@@ -570,7 +579,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         if len(processed_funnel) > 0:
             util_df = processed_funnel.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
             c_u1, c_u2 = st.columns(2)
-            with c_u1: st.table(util_df.astype(str))
+            with c_u1: st.table(util_df.astype(str).reset_index(drop=True))
             with c_u2:
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util)
@@ -594,14 +603,14 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
         st.write("")
         st.markdown(f"#### Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
-        st.table(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str))
+        st.table(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str).reset_index(drop=True))
 
     elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
         trend_df = st.session_state.coles_capacity_db.copy()
         trend_df["retention_shortfall"] = trend_df["retention_goal_pct"] - trend_df["actual_retention_pct"]
         c_t1, c_t2 = st.columns([2, 3])
-        with c_t1: st.table(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]].astype(str))
+        with c_t1: st.table(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]].astype(str).reset_index(drop=True))
         with c_t2:
             fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Trends Profile", markers=True, color_discrete_sequence=["#FF5722"])
             st.plotly_chart(fig_trend)
@@ -609,7 +618,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     elif "8. May assists with departmental inventory" in selected_key_tab:
         st.markdown("### Key 8: Departmental Technology Asset Inventory Analysis")
         c_i1, c_i2 = st.columns(2)
-        with c_i1: st.table(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]].astype(str))
+        with c_i1: st.table(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]].astype(str).reset_index(drop=True))
         with c_i2:
             fig_inv = px.bar(st.session_state.coles_capacity_db, x="major_name", y="department_inventory_count", title="Hardware Kiosk Terminals Deployed by Care Hub Unit", color="major_name", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_inv)
@@ -619,7 +628,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         if len(processed_funnel) > 0:
             res_counts = processed_funnel.groupby("funnel_stage").size().reset_index(name="total_cases")
             c_pf1, f_pf2 = st.columns(2)
-            with c_pf1: st.table(res_counts.astype(str))
+            with c_pf1: st.table(res_counts.astype(str).reset_index(drop=True))
             with f_pf2:
                 fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_perf)
@@ -639,4 +648,4 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
         st.write("---")
         st.markdown(f"#### Central Synchronization Taxonomy Audit Ledger ({sync_scope}) — [Total Records: {len(key10_data)} Students]")
-        st.table(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "cumulative_gpa", "studentvue_sync_status"]].astype(str))
+        st.table(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "cumulative_gpa", "studentvue_sync_status"]].astype(str).reset_index(drop=True))
