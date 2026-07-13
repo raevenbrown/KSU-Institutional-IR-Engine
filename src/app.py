@@ -39,7 +39,6 @@ if "enrollment_funnel_db" not in st.session_state:
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview"
         ],
         "classification": [
@@ -465,47 +464,38 @@ elif app_panel == "EAB Targeted Campaign Manager":
 # ==========================================
 elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     st.header("Reports and Analytics Portfolio Gateway")
+    st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities.*")
     st.write("---")
     
-    # NEW CLEAN TEXT LIST DESK: Replaces the multi-column table overview layout up top
-    st.markdown("### Core Key Performance Responsibilities Framework Profile")
-    st.markdown("1. Compiles standard and ad hoc reports per established guidelines and frequency")
-    st.markdown("2. Provides reports, analysis and data interpretation for all assigned departments")
-    st.markdown("3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders")
-    st.markdown("4. Provides productivity analysis reports")
-    st.markdown("5. Develops and maintains reports to measure operational and/or utilization activity")
-    st.markdown("6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements")
-    st.markdown("7. Compiles recurring operational review that includes trend analysis")
-    st.markdown("8. May assists with departmental inventory reporting and analysis")
-    st.markdown("9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness")
-    st.markdown("10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy")
+    # Clean up table: removed Validation column completely
+    ledger_df = pd.DataFrame({
+        "Key ID": [f"Key {i}" for i in range(1, 11)],
+        "Job Description Requirement Statement": [
+            "1. Compiles standard and ad hoc reports per established guidelines and frequency",
+            "2. Provides reports, analysis and data interpretation for all assigned departments",
+            "3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders",
+            "4. Provides productivity analysis reports",
+            "5. Develops and maintains reports to measure operational and/or utilization activity",
+            "6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements",
+            "7. Compiles recurring operational review that includes trend analysis",
+            "8. May assists with departmental inventory reporting and analysis",
+            "9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness",
+            "10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
+        ]
+    })
+    st.table(ledger_df.astype(str))
     st.write("---")
     
-    # Active query selector dropdown remains cleanly positioned underneath the master guide list
-    selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=[
-        "1. Compiles standard and ad hoc reports per established guidelines and frequency",
-        "2. Provides reports, analysis and data interpretation for all assigned departments",
-        "3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders",
-        "4. Provides productivity analysis reports",
-        "5. Develops and maintains reports to measure operational and/or utilization activity",
-        "6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements",
-        "7. Compiles recurring operational review that includes trend analysis",
-        "8. May assists with departmental inventory reporting and analysis",
-        "9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness",
-        "10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
-    ])
+    selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
     st.write("---")
     
-    # ==========================================
-    # ENHANCED KEY 1 MAPPING: HOLDS INTEGRATED OPERATIONAL MATRIX
-    # ==========================================
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### Key 1: Standardized vs. Ad Hoc Task Triage Console")
         st.caption("Navigate360 Implementation Workflow: Inbound queue tracking live request tickets generated by assigned KSU departments.")
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # Comprehensive Master Log: Holds all 10 rows to show complete tracking portfolio desk
+        # Comprehensive master task list containing all 10 operational rows
         triage_data = pd.DataFrame({
             "Originating Department Name": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Department of Economics", 
@@ -525,35 +515,24 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 "Emergency Cybersecurity Lab Software Key Utilization Pull",
                 "Ad-Hoc High-Risk Dropout Cohort Extraction Analysis"
             ],
-            "Request Classification Track": [
-                "Ad Hoc Live Extract Requests", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
-                "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", 
-                "Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
-                "Standard Recurring (Weekly Ingestion)"
-            ],
-            "Urgency Matrix Rating Indicator": [
-                "CRITICAL SEVERITY (Immediate Turnaround Vector)", "HIGH URGENCY (Same-Day Processing Queue)", 
-                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
-                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
-                "ROUTINE TIMELINE (Monday Morning Autopilot)", "CRITICAL SEVERITY (Immediate Turnaround Vector)",
-                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)"
+            "Urgency Level Status": [
+                "CRITICAL EMERGENCY", "HIGH EMERGENCY", "ROUTINE", 
+                "ROUTINE", "ROUTINE", "ROUTINE", 
+                "ROUTINE", "CRITICAL EMERGENCY", "ROUTINE", 
+                "ROUTINE"
             ]
         })
         
         clean_df = triage_data.copy().astype(str)
         
-        # MASTER ASSUMPTION UPDATE: Keep all 10 tasks visible, but add a highlighted column flag targeting filter matches
-        if rep_type == "Ad Hoc Live Extract Requests":
-            clean_df["Isolation Highlight Focus"] = clean_df["Request Classification Track"].apply(
-                lambda x: "EMERGENCY ALERT TASK" if x == "Ad Hoc Live Extract Requests" else "Routine Standard Log"
-            )
+        # Filter Logic: Standard shows all 10 rows; Ad Hoc isolates ONLY the Emergency rows
+        if rep_type == "Standard Recurring (Weekly Ingestion)":
+            filtered_triage = clean_df
         else:
-            clean_df["Isolation Highlight Focus"] = clean_df["Request Classification Track"].apply(
-                lambda x: "Active Standard Processing" if x == "Standard Recurring (Weekly Ingestion)" else "Exception Background Track"
-            )
+            filtered_triage = clean_df[clean_df["Urgency Level Status"].str.contains("EMERGENCY")]
             
-        st.markdown(f"#### Incoming Functional Request Log — [Active Workspace: {len(clean_df)} Total Master Ledger Entries]")
-        st.table(clean_df)
+        st.markdown(f"#### Incoming Functional Request Log — [Active Streams: {len(filtered_triage)} Departmental Tickets]")
+        st.table(filtered_triage)
 
     elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
