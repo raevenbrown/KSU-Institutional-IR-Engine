@@ -343,7 +343,7 @@ if app_panel == "Student Lifecycle Portal (StudentVue)":
             if st.button("Commit Adjustments to Centralized Funnel View"):
                 st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
                 st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
-                if append_note: st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CD Edit: {append_note}"
+                if append_note: st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
                 st.success("Funnel attributes modified updates pushed live.")
                 st.rerun()
         else: st.warning("No tracking records match filters.")
@@ -465,36 +465,47 @@ elif app_panel == "EAB Targeted Campaign Manager":
 # ==========================================
 elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     st.header("Reports and Analytics Portfolio Gateway")
-    st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities.*")
     st.write("---")
     
-    ledger_df = pd.DataFrame({
-        "Key ID": [f"Key {i}" for i in range(1, 11)],
-        "Job Description Requirement Statement": [
-            "Compiles standard and ad hoc reports per established guidelines and frequency",
-            "Provides reports, analysis and data interpretation for all assigned departments",
-            "Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders",
-            "Provides productivity analysis reports",
-            "Develops and maintains reports to measure operational and/or utilization activity",
-            "May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements",
-            "Compiles recurring operational review that includes trend analysis",
-            "May assists with departmental inventory reporting and analysis",
-            "May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness",
-            "Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
-        ]
-    })
-    
-    selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
+    # NEW CLEAN TEXT LIST DESK: Replaces the multi-column table overview layout up top
+    st.markdown("### Core Key Performance Responsibilities Framework Profile")
+    st.markdown("1. Compiles standard and ad hoc reports per established guidelines and frequency")
+    st.markdown("2. Provides reports, analysis and data interpretation for all assigned departments")
+    st.markdown("3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders")
+    st.markdown("4. Provides productivity analysis reports")
+    st.markdown("5. Develops and maintains reports to measure operational and/or utilization activity")
+    st.markdown("6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements")
+    st.markdown("7. Compiles recurring operational review that includes trend analysis")
+    st.markdown("8. May assists with departmental inventory reporting and analysis")
+    st.markdown("9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness")
+    st.markdown("10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy")
     st.write("---")
     
-    if "Compiles standard and ad hoc" in selected_key_tab:
+    # Active query selector dropdown remains cleanly positioned underneath the master guide list
+    selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=[
+        "1. Compiles standard and ad hoc reports per established guidelines and frequency",
+        "2. Provides reports, analysis and data interpretation for all assigned departments",
+        "3. Identifies areas of opportunity and presents findings and recommendations to leadership and stakeholders",
+        "4. Provides productivity analysis reports",
+        "5. Develops and maintains reports to measure operational and/or utilization activity",
+        "6. May be required to prepare ad hoc reports required of association affiliations and/or oversight and regulatory requirements",
+        "7. Compiles recurring operational review that includes trend analysis",
+        "8. May assists with departmental inventory reporting and analysis",
+        "9. May be required to prepare ad hoc reporting that assists with measuring department performance and/or effectiveness",
+        "10. Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
+    ])
+    st.write("---")
+    
+    # ==========================================
+    # ENHANCED KEY 1 MAPPING: HOLDS INTEGRATED OPERATIONAL MATRIX
+    # ==========================================
+    if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### Key 1: Standardized vs. Ad Hoc Task Triage Console")
         st.caption("Navigate360 Implementation Workflow: Inbound queue tracking live request tickets generated by assigned KSU departments.")
         
-        # FILTER MODE: Master view vs Triage filter view
-        triage_filter_mode = st.radio("Select View Mapping Framework Protocol:", ["Master List (All Active Tasks)", "Isolate Emergency Requests (Ad Hoc Matrix)"])
+        rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # Cleaned textual row structures matching your workflow catch
+        # Comprehensive Master Log: Holds all 10 rows to show complete tracking portfolio desk
         triage_data = pd.DataFrame({
             "Originating Department Name": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Department of Economics", 
@@ -514,33 +525,37 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 "Emergency Cybersecurity Lab Software Key Utilization Pull",
                 "Ad-Hoc High-Risk Dropout Cohort Extraction Analysis"
             ],
-            "Task Classification Track": [
+            "Request Classification Track": [
                 "Ad Hoc Live Extract Requests", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
                 "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", 
                 "Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
                 "Standard Recurring (Weekly Ingestion)"
             ],
             "Urgency Matrix Rating Indicator": [
-                "CRITICAL SEVERITY (Immediate Turnaround)", "HIGH URGENCY (Same-Day Processing Queue)", 
+                "CRITICAL SEVERITY (Immediate Turnaround Vector)", "HIGH URGENCY (Same-Day Processing Queue)", 
                 "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
                 "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
-                "ROUTINE TIMELINE (Monday Morning Autopilot)", "CRITICAL SEVERITY (Immediate Turnaround)",
+                "ROUTINE TIMELINE (Monday Morning Autopilot)", "CRITICAL SEVERITY (Immediate Turnaround Vector)",
                 "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)"
             ]
         })
         
         clean_df = triage_data.copy().astype(str)
         
-        # Unified structural filtering logic
-        if triage_filter_mode == "Isolate Emergency Requests (Ad Hoc Matrix)":
-            filtered_triage = clean_df[clean_df["Task Classification Track"] == "Ad Hoc Live Extract Requests"]
+        # MASTER ASSUMPTION UPDATE: Keep all 10 tasks visible, but add a highlighted column flag targeting filter matches
+        if rep_type == "Ad Hoc Live Extract Requests":
+            clean_df["Isolation Highlight Focus"] = clean_df["Request Classification Track"].apply(
+                lambda x: "EMERGENCY ALERT TASK" if x == "Ad Hoc Live Extract Requests" else "Routine Standard Log"
+            )
         else:
-            filtered_triage = clean_df
+            clean_df["Isolation Highlight Focus"] = clean_df["Request Classification Track"].apply(
+                lambda x: "Active Standard Processing" if x == "Standard Recurring (Weekly Ingestion)" else "Exception Background Track"
+            )
             
-        st.markdown(f"#### Functional Request Workspace Desk — [Active Task Registry Segment: {len(filtered_triage)} Tickets]")
-        st.table(filtered_triage)
+        st.markdown(f"#### Incoming Functional Request Log — [Active Workspace: {len(clean_df)} Total Master Ledger Entries]")
+        st.table(clean_df)
 
-    elif "Provides reports, analysis and data interpretation" in selected_key_tab:
+    elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
         c_act, c_graph = st.columns(2)
         with c_act:
@@ -550,7 +565,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_key2)
 
-    elif "Identifies areas of opportunity" in selected_key_tab:
+    elif "3. Identifies areas of opportunity" in selected_key_tab:
         st.markdown("### Key 3: Leadership Findings & Strategic Recommendations Engine")
         low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 3.4] if len(processed_funnel) > 0 else pd.DataFrame()
         with st.container(border=True):
@@ -561,7 +576,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             st.error("Opportunity Tracking Watchlist:")
             st.table(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa"]].astype(str))
 
-    elif "Provides productivity analysis reports" in selected_key_tab:
+    elif "4. Provides productivity analysis reports" in selected_key_tab:
         st.markdown("### Key 4: Outreach Campaign Effectiveness Productivity Audit Log")
         if len(processed_funnel) > 0:
             prod_df = processed_funnel.groupby("outreach_campaign_group").agg(total_prospects_reached=("applicant_id", "count"), total_pending_tasks=("to_dos_pending", "sum"), mean_gpa_index=("cumulative_gpa", "mean")).reset_index()
@@ -571,7 +586,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign Group", color="outreach_campaign_group", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_prod)
 
-    elif "Develops and maintains reports to measure operational" in selected_key_tab:
+    elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
         st.markdown("### Key 5: Operational Utilization & Activity Benchmarks")
         if len(processed_funnel) > 0:
             util_df = processed_funnel.groupby("communication_preference").size().reset_index(name="active_allocated_leads")
@@ -581,7 +596,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
                 st.plotly_chart(fig_util)
 
-    elif "May be required to prepare ad hoc reports required of association" in selected_key_tab:
+    elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### Key 6: External Oversight & Regulatory Compliance Framework Gateway")
         reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
         key6_data = processed_funnel.copy()
@@ -602,7 +617,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         st.markdown(f"#### Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
         st.table(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str))
 
-    elif "Compiles recurring operational review that includes trend analysis" in selected_key_tab:
+    elif "7. Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
         trend_df = st.session_state.coles_capacity_db.copy()
         trend_df["retention_shortfall"] = trend_df["retention_goal_pct"] - trend_df["actual_retention_pct"]
@@ -612,7 +627,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Trends Profile", markers=True, color_discrete_sequence=["#FF5722"])
             st.plotly_chart(fig_trend)
 
-    elif "May assists with departmental inventory" in selected_key_tab:
+    elif "8. May assists with departmental inventory" in selected_key_tab:
         st.markdown("### Key 8: Departmental Technology Asset Inventory Analysis")
         c_i1, c_i2 = st.columns(2)
         with c_i1: st.table(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]].astype(str))
@@ -620,7 +635,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             fig_inv = px.bar(st.session_state.coles_capacity_db, x="major_name", y="department_inventory_count", title="Hardware Kiosk Terminals Deployed by Care Hub Unit", color="major_name", color_discrete_sequence=ksu_gold_palette)
             st.plotly_chart(fig_inv)
 
-    elif "May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
+    elif "9. May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
         st.markdown("### Key 9: Center Performance & Program Effectiveness Matrix")
         if len(processed_funnel) > 0:
             res_counts = processed_funnel.groupby("funnel_stage").size().reset_index(name="total_cases")
@@ -630,7 +645,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
                 st.plotly_chart(fig_perf)
 
-    elif "Collaborate with a variety of stakeholders across campus" in selected_key_tab:
+    elif "10. Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### Key 10: Office of University Data Strategy Alignment Matrix")
         sync_scope = st.selectbox("Select Synchronization Scope Ring Natively:", ["All Synced Records", "Sync Failures / Alerts Only"])
         key10_data = processed_funnel.copy()
