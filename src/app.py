@@ -326,7 +326,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
                     ],
                     "Earned Mark / Letter Grade": [p_row['G1'], p_row['G2'], p_row['G3'], p_row['G4']]
                 })
-                st.dataframe(transcript_history, hide_index=True)
+                st.dataframe(transcript_history, width='stretch', hide_index=True)
 
             st.write("")
             st.subheader("🤖 AI Assistant: Automated Meeting Prep Insights")
@@ -340,7 +340,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             with w2: camp_update = st.selectbox("Reassign Outreach Campaign:", options=["Completed Yield", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"])
             with w3: append_note = st.text_input("Append Diagnostic Communication Log Entry:")
                 
-            if st.button("🚀 Commit Adjustments to Centralized Funnel View", use_container_width=True):
+            if st.button("🚀 Commit Adjustments to Centralized Funnel View", use_container_width=False):
                 st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
                 st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
                 if append_note: st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
@@ -350,7 +350,7 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
             
         st.write("---")
         st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
-        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "cumulative_gpa", "Current Professor", "Past Professor"]], hide_index=True)
+        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "cumulative_gpa", "Current Professor", "Past Professor"]], width='stretch', hide_index=True)
 
     with ai_assistant_col:
         st.markdown("### 🤖 Staff AI Assistant")
@@ -361,8 +361,8 @@ if app_panel == "👤 Student Lifecycle Portal (StudentVue)":
                 st.write(f"* **Term Scope:** {p_row['academic_term']}")
                 st.write(f"* **Yield Probability:** {p_row['predicted_yield_probability']}")
         st.write("")
-        st.button("✉️ Deploy Automated Nudge reminder", use_container_width=True)
-        st.button("📅 Invite to Connect with Staff/Events", use_container_width=True)
+        st.button("✉️ Deploy Automated Nudge reminder")
+        st.button("📅 Invite to Connect with Staff/Events")
 
 # ==========================================
 # MODULE 2: FACULTY RETENTION TERMINAL
@@ -401,11 +401,11 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
             
             st.markdown("#### 🎓 Longitudinal Instructional & Student Outcomes Ledger")
             m1, m2, m3, m4, m5 = st.columns(5)
-            with m1: st.markdown(f"**Total Taught (Career):**  \n### {total_taught:,} Students")
-            with m2: st.markdown(f"**Historical Passed:**  \n### {passed_students:,} Students")
-            with m3: st.markdown(f"**Historical Graduated:**  \n### {graduated_students:,} Students")
-            with m4: st.markdown(f"**Historical Failed:**  \n### {failed_students:,} Students")
-            with m5: st.markdown(f"**Active Enrollment:**  \n### {current_students} Students")
+            st.markdown(f"**Total Taught:** {total_taught:,}")
+            st.markdown(f"**Historical Passed:** {passed_students:,}")
+            st.markdown(f"**Historical Graduated:** {graduated_students:,}")
+            st.markdown(f"**Historical Failed:** {failed_students:,}")
+            st.markdown(f"**Active Enrollment:** {current_students}")
             
             st.write("---")
             st.markdown(f"**📥 HR Analyst Log entries:** *\"{f_row['retention_notes']}\"*")
@@ -414,10 +414,10 @@ elif app_panel == "🏛️ Faculty Retention Terminal":
         f_g1, f_g2 = st.columns(2)
         with f_g1:
             fig_tenure = px.bar(processed_faculty, x="faculty_name", y="tenure_years_at_institution", title="Institutional Tenure Longevity Profiles", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
-            st.plotly_chart(fig_tenure, use_container_width=True)
+            st.plotly_chart(fig_tenure, width='stretch')
         with f_g2:
             fig_hazard = px.pie(processed_faculty, values="semester_credit_hours_load", names="faculty_retention_hazard_flag", title="Workload (SCH) Distribution Tiers", hole=0.4, color_discrete_sequence=["#00E676", "#FFC400", "#FF5722"])
-            st.plotly_chart(fig_hazard, use_container_width=True)
+            st.plotly_chart(fig_hazard, width='stretch')
     else: st.warning("No teacher metrics log segments match active filters.")
 
 # ==========================================
@@ -432,7 +432,7 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
     c_cohort = st.selectbox("Target Audience Filter Group Stage:", options=["All Cohort Groups", "Inquiry Population Pool", "Applied - Awaiting Decision", "Admitted - Yield Acceleration Focus"])
     
     st.write("")
-    if st.button("🚀 Deploy Nuanced Outreach & Launch Campaign", use_container_width=True):
+    if st.button("🚀 Deploy Nuanced Outreach & Launch Campaign"):
         st.success(f"Outreach track '{c_name}' deployed successfully!")
 
     st.write("---")
@@ -459,7 +459,7 @@ elif app_panel == "📢 EAB Targeted Campaign Manager":
         color="funnel_stage", 
         color_discrete_sequence=ksu_gold_palette
     )
-    st.plotly_chart(fig_funnel, use_container_width=True)
+    st.plotly_chart(fig_funnel, width='stretch')
 
 # ==========================================
 # MODULE 4: REPORTS & ANALYTICS GATEWAY
@@ -491,9 +491,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
     st.write("---")
     
-    # ==========================================
-    # COMPLETE EMOPJILESS AND TABLE-LESS TEXT DESK FOR COMPATIBILITY
-    # ==========================================
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Key 1: Standardized vs. Ad Hoc Task Triage Console")
         st.caption("🔗 **Navigate360 Implementation Workflow:** Inbound queue tracking live request tickets generated by assigned KSU departments.")
@@ -539,7 +536,6 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         
         st.markdown(f"#### 📥 Incoming Functional Request Log — [Active Streams: {len(filtered_triage)} Departmental Tickets]")
         
-        # COMPLETE TABLE OVERRIDE: Renders row information purely as crash-proof HTML/Markdown blocks
         if len(filtered_triage) == 0:
             st.info("No active tickets found matching this category workflow track.")
         else:
@@ -557,7 +553,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             st.dataframe(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]], hide_index=True)
         with c_graph:
             fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
-            st.plotly_chart(fig_key2, use_container_width=True)
+            st.plotly_chart(fig_key2, width='stretch')
 
     elif "3. Identifies areas of opportunity" in selected_key_tab:
         st.markdown("### 💡 Key 3: Leadership Findings & Strategic Recommendations Engine")
@@ -578,7 +574,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             with c_p1: st.dataframe(prod_df, hide_index=True)
             with c_p2:
                 fig_prod = px.bar(prod_df, x="outreach_campaign_group", y="total_prospects_reached", title="Total Sourced Engagement Volume per Campaign Group", color="outreach_campaign_group", color_discrete_sequence=ksu_gold_palette)
-                st.plotly_chart(fig_prod, use_container_width=True)
+                st.plotly_chart(fig_prod, width='stretch')
 
     elif "5. Develops and maintains reports to measure operational" in selected_key_tab:
         st.markdown("### ⚙️ Key 5: Operational Utilization & Activity Benchmarks")
@@ -588,7 +584,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             with c_u1: st.dataframe(util_df, hide_index=True)
             with c_u2:
                 fig_util = px.pie(util_df, values="active_allocated_leads", names="communication_preference", title="Preferred Communication Channel Share Metrics Allocation", color_discrete_sequence=ksu_gold_palette, hole=0.4)
-                st.plotly_chart(fig_util, use_container_width=True)
+                st.plotly_chart(fig_util, width='stretch')
 
     elif "6. May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### 🏛️ Key 6: External Oversight & Regulatory Compliance Framework Gateway")
@@ -619,7 +615,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         with c_t1: st.dataframe(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]], hide_index=True)
         with c_t2:
             fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Trends Profile", markers=True, color_discrete_sequence=["#FF5722"])
-            st.plotly_chart(fig_trend, use_container_width=True)
+            st.plotly_chart(fig_trend, width='stretch')
 
     elif "8. May assists with departmental inventory" in selected_key_tab:
         st.markdown("### 🖥️ Key 8: Departmental Technology Asset Inventory Analysis")
@@ -627,7 +623,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         with c_i1: st.dataframe(st.session_state.coles_capacity_db[["major_name", "undergrad_seat_count", "department_inventory_count"]], hide_index=True)
         with c_i2:
             fig_inv = px.bar(st.session_state.coles_capacity_db, x="major_name", y="department_inventory_count", title="Hardware Kiosk Terminals Deployed by Care Hub Unit", color="major_name", color_discrete_sequence=ksu_gold_palette)
-            st.plotly_chart(fig_inv, use_container_width=True)
+            st.plotly_chart(fig_inv, width='stretch')
 
     elif "9. May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
         st.markdown("### 🎯 Key 9: Center Performance & Program Effectiveness Matrix")
@@ -637,7 +633,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
             with c_pf1: st.dataframe(res_counts, hide_index=True)
             with f_pf2:
                 fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
-                st.plotly_chart(fig_perf, use_container_width=True)
+                st.plotly_chart(fig_perf, width='stretch')
 
     elif "10. Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### 🤝 Key 10: Office of University Data Strategy Alignment Matrix")
