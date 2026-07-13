@@ -467,7 +467,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     st.markdown("##### *Mapping interactive query views to verify all 10 Key Responsibilities.*")
     st.write("---")
     
-    # REMOVED Dashboard Validation section from the main display matrix loop
     ledger_df = pd.DataFrame({
         "Key ID": [
             "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", 
@@ -489,7 +488,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     st.table(ledger_df.astype(str))
     st.write("---")
     
-    # Dropdown tracking the exact stripped description statements safely
     selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
     st.write("---")
     
@@ -499,7 +497,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # COMPLETE MASTER TASK SCHEDULER: Ordered chronologically by priority submission vectors
+        # Centralized queue database with clean day counts and priority values
         master_triage_db = pd.DataFrame({
             "Source Assigned Department": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Coles College Office of Finance",
@@ -525,29 +523,27 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 "ROUTINE TASK", "ROUTINE TASK", "ROUTINE TASK", 
                 "ROUTINE TASK"
             ],
-            "Ticket Submission Timestamp": [
-                "2026-07-13 01:15 AM", "2026-07-13 01:30 AM", "2026-07-13 01:45 AM",
-                "2026-07-10 08:00 AM", "2026-07-10 09:15 AM", "2026-07-11 10:00 AM", 
-                "2026-07-11 11:30 AM", "2026-07-12 02:00 PM", "2026-07-12 04:15 PM", 
-                "2026-07-12 05:00 PM"
+            "Days Open Pending": [
+                1, 2, 0, 14, 7, 5, 4, 3, 2, 1
             ]
         })
         
-        # FILTER LAYER AND ENFORCED ORDINAL ROW LEVEL NUMBERING RE-INDEXES
+        clean_df = master_triage_db.copy().astype(str)
+        
+        # Safe syntax routing: bracket grouping fixes the or-filter environment fault
         if rep_type == "Standard Recurring (Weekly Ingestion)":
-            # Standard contains ONLY your 7 routine weekly tasks
-            output_df = master_triage_db[master_triage_db["Operational Priority Tier"] == "ROUTINE TASK"].copy()
+            output_df = clean_df[clean_df["Operational Priority Tier"] == "ROUTINE TASK"].copy()
+            output_df = output_df.sort_values(by="Days Open Pending", ascending=False)
         else:
-            # Ad Hoc contains ONLY your 3 urgent emergency fire tasks sorted chronologically
-            output_df = master_triage_db[master_triage_db["Operational Priority Tier"] == "CRITICAL EMERGENCY" or master_triage_db["Operational Priority Tier"] == "HIGH EMERGENCY"].copy()
-            output_df = output_df.sort_values(by="Ticket Submission Timestamp", ascending=True)
+            output_df = clean_df[(clean_df["Operational Priority Tier"] == "CRITICAL EMERGENCY") | (clean_df["Operational Priority Tier"] == "HIGH EMERGENCY")].copy()
+            output_df = output_df.sort_values(by="Days Open Pending", ascending=False)
             
-        # Cleanly rebuild numbering index labels from 1 to avoid raw Pandas array leakage codes (0, 1, 7)
+        # Re-index row rows from 1 to keep layout cleanly ordered
         output_df.index = range(1, len(output_df) + 1)
         output_df.index.name = "Queue Position ID"
         
         st.markdown(f"#### Incoming Functional Request Log — [Active Streams: {len(output_df)} Departmental Tickets]")
-        st.table(output_df.astype(str))
+        st.table(output_df)
 
     elif "Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
