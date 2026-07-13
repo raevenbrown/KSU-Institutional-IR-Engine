@@ -492,7 +492,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     st.write("---")
     
     # ==========================================
-    # OVERHAULED UPDATE: KEY 1 LIVE REQUEST TRIAGE INTERFACE
+    # OVERHAULED TASK QUEUE MAPPING (EXACTLY 7 RECURRING & 3 AD-HOC)
     # ==========================================
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Key 1: Standardized vs. Ad Hoc Task Triage Console")
@@ -500,31 +500,38 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # Live task matrix mapping out explicit department names and urgency details
+        # 10 Operational rows mapping exactly 7 Standard and 3 Ad-Hoc requests
         triage_data = pd.DataFrame({
             "Originating Department Name": [
-                "Coles College Office of Finance", 
-                "Information Systems Care Unit", 
-                "Department of Economics", 
+                "Coles College Office of Finance", "Information Systems Care Unit", "Department of Economics", 
+                "Admissions & Yield Hub", "Coles Undergraduate Advising", "Office of the Registrar", 
+                "Department of Management", "Coles College Office of Finance", "Information Systems Care Unit", 
                 "Admissions & Yield Hub"
             ],
             "Requested Operational Task": [
                 "Daily Sales Summary Metric Audit & Workload Extract", 
                 "Ad-Hoc Equipment Inventory Hardware Utilization Audit", 
                 "Recurring Trailing Longitudinal Multi-Semester Trend Run", 
-                "EAB Targeted Campaign Communication Productivity Analysis"
+                "EAB Targeted Campaign Communication Productivity Analysis",
+                "Weekly StudentVue Advising Sync Status Exception Report",
+                "FTE Census Enrollment Validation Ledger Data Compilations",
+                "Standard Core Course Grade Distribution Capacity Audit",
+                "Urgent End-of-Month Revenue & Fee Discrepancy Reconciliation",
+                "Emergency Cybersecurity Lab Software Key Utilization Pull",
+                "Ad-Hoc High-Risk Dropout Cohort Extraction Analysis"
             ],
             "Request Classification Track": [
-                "Ad Hoc Live Extract Requests", 
-                "Ad Hoc Live Extract Requests", 
-                "Standard Recurring (Weekly Ingestion)", 
+                "Ad Hoc Live Extract Requests", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
+                "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", "Standard Recurring (Weekly Ingestion)", 
+                "Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests", "Standard Recurring (Weekly Ingestion)", 
                 "Standard Recurring (Weekly Ingestion)"
             ],
             "Urgency Matrix Rating Indicator": [
-                "🚨 CRITICAL SEVERITY (Immediate Turnaround Vector)", 
-                "⚠️ HIGH URGENCY (Same-Day Processing Queue)", 
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", 
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)"
+                "🚨 CRITICAL SEVERITY (Immediate Turnaround Vector)", "⚠️ HIGH URGENCY (Same-Day Processing Queue)", 
+                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)",
+                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)",
+                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🚨 CRITICAL SEVERITY (Immediate Turnaround Vector)",
+                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)"
             ]
         })
         
