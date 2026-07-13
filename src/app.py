@@ -492,7 +492,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
     st.write("---")
     
     # ==========================================
-    # FIXED: STABILIZED TASK QUEUE MAPPING
+    # SANITIZED EMOPJILESS TRIAGE INTERFACE TO PREVENT ARROW SEAFAN DATA CRASHES
     # ==========================================
     if "1. Compiles standard and ad hoc" in selected_key_tab:
         st.markdown("### 📊 Key 1: Standardized vs. Ad Hoc Task Triage Console")
@@ -500,22 +500,23 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
+        # Cleaned strings down to raw textual arrays to resolve Arrow object segment block errors
         triage_data = pd.DataFrame({
             "Originating Department Name": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Department of Economics", 
-                "Admissions & Yield Hub", "Coles Undergraduate Advising", "Office of the Registrar", 
+                "Admissions and Yield Hub", "Coles Undergraduate Advising", "Office of the Registrar", 
                 "Department of Management", "Coles College Office of Finance", "Information Systems Care Unit", 
-                "Admissions & Yield Hub"
+                "Admissions and Yield Hub"
             ],
             "Requested Operational Task": [
-                "Daily Sales Summary Metric Audit & Workload Extract", 
+                "Daily Sales Summary Metric Audit and Workload Extract", 
                 "Ad-Hoc Equipment Inventory Hardware Utilization Audit", 
                 "Recurring Trailing Longitudinal Multi-Semester Trend Run", 
                 "EAB Targeted Campaign Communication Productivity Analysis",
                 "Weekly StudentVue Advising Sync Status Exception Report",
                 "FTE Census Enrollment Validation Ledger Data Compilations",
                 "Standard Core Course Grade Distribution Capacity Audit",
-                "Urgent End-of-Month Revenue & Fee Discrepancy Reconciliation",
+                "Urgent End-of-Month Revenue and Fee Discrepancy Reconciliation",
                 "Emergency Cybersecurity Lab Software Key Utilization Pull",
                 "Ad-Hoc High-Risk Dropout Cohort Extraction Analysis"
             ],
@@ -526,24 +527,26 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
                 "Standard Recurring (Weekly Ingestion)"
             ],
             "Urgency Matrix Rating Indicator": [
-                "🚨 CRITICAL SEVERITY (Immediate Turnaround Vector)", "⚠️ HIGH URGENCY (Same-Day Processing Queue)", 
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)",
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)",
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🚨 CRITICAL SEVERITY (Immediate Turnaround Vector)",
-                "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)", "🟢 ROUTINE TIMELINE (Monday Morning Autopilot)"
+                "CRITICAL SEVERITY (Immediate Turnaround Vector)", "HIGH URGENCY (Same-Day Processing Queue)", 
+                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
+                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)",
+                "ROUTINE TIMELINE (Monday Morning Autopilot)", "CRITICAL SEVERITY (Immediate Turnaround Vector)",
+                "ROUTINE TIMELINE (Monday Morning Autopilot)", "ROUTINE TIMELINE (Monday Morning Autopilot)"
             ]
         })
         
-        # SAFE FILTER BLOCK: Overwriting variable with strict string matching constraints
-        filtered_triage = triage_data[triage_data["Request Classification Track"] == str(rep_type)]
+        # Safe string copy casting loop to enforce memory space insulation
+        clean_df = triage_data.copy().astype(str)
+        filtered_triage = clean_df[clean_df["Request Classification Track"] == str(rep_type)]
         
         st.markdown(f"#### 📥 Incoming Functional Request Log — [Active Streams: {len(filtered_triage)} Departmental Tickets]")
         
-        # Fallback render gate prevents absolute container crashing if empty
-        if filtered_triage.empty:
-            st.info("No records found matching selection loop parameters.")
+        if len(filtered_triage) == 0:
+            st.info("No active tickets found matching this category workflow track parameter selection.")
         else:
-            st.dataframe(filtered_triage, use_container_width=True, hide_index=True)
+            # Safe text dict block conversion to guarantee zero rendering crashes
+            display_dict = filtered_triage.to_dict(orient="records")
+            st.table(display_dict)
 
     elif "2. Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### 🏛️ Key 2: Departmental Interpretation Ledger Matrix")
@@ -614,7 +617,7 @@ elif app_panel == "📈 Reports & Analytics Gateway (All 10 Keys)":
         trend_df["retention_shortfall"] = trend_df["retention_goal_pct"] - trend_df["actual_retention_pct"]
         c_t1, c_t2 = st.columns([2, 3])
         with c_t1: st.dataframe(trend_df[["major_name", "retention_goal_pct", "actual_retention_pct", "retention_shortfall"]], use_container_width=True, hide_index=True)
-        with c_t2:
+        with r_t2:
             fig_trend = px.line(trend_df, x="major_name", y="retention_shortfall", title="Longitudinal Retention Shortfall Gaps Trends Profile", markers=True, color_discrete_sequence=["#FF5722"])
             st.plotly_chart(fig_trend, use_container_width=True)
 
