@@ -326,12 +326,12 @@ if app_panel == "Student Lifecycle Portal (StudentVue)":
                     ],
                     "Earned Mark / Letter Grade": [p_row['G1'], p_row['G2'], p_row['G3'], p_row['G4']]
                 })
-                st.dataframe(transcript_history.astype(str), hide_index=True)
+                st.dataframe(transcript_history.astype(str), width="stretch", hide_index=True)
 
             st.write("")
             st.subheader("AI Assistant: Automated Meeting Prep Insights")
             with st.container(border=True):
-                st.markdown(f"*Institutional Digest Material:* **\"{p_row['staff_meeting_prep_notes']}\"**")
+                st.markdown(f"*Navigator Digest Material:* **\"{p_row['staff_meeting_prep_notes']}\"**")
                 
             st.write("---")
             st.subheader("Streamline Applicant Progress Queue Tasks")
@@ -349,8 +349,8 @@ if app_panel == "Student Lifecycle Portal (StudentVue)":
         else: st.warning("No tracking records match filters.")
             
         st.write("---")
-        st.subheader("📋 Centralized View: Filtered Recruitment Pipeline Ledger")
-        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str), hide_index=True)
+        st.subheader("Centralized View: Filtered Recruitment Pipeline Ledger")
+        st.dataframe(processed_funnel[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str), width="stretch", hide_index=True)
 
     with ai_assistant_col:
         st.markdown("### AI Assistant")
@@ -558,11 +558,11 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         st.markdown("### Key 3: Leadership Findings & Strategic Recommendations Engine")
         low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 3.4] if len(processed_funnel) > 0 else pd.DataFrame()
         with st.container(border=True):
-            st.markdown("🏆 **Executive Data Insights Memorandum**")
-            st.write(f"1. **Identified Area of Opportunity:** Found **{len(low_gpa_leads)}** active records maintaining cumulative GPA indices under the 3.4 line.")
-            st.write("2. **Actionable Recommendation:** Deploy automated EAB communications targeting validation parameters to reduce block friction.")
+            st.markdown("Executive Data Insights Memorandum")
+            st.write(f"1. Identified Area of Opportunity: Found {len(low_gpa_leads)} active records maintaining cumulative GPA indices under the 3.4 line.")
+            st.write("2. Actionable Recommendation: Deploy automated EAB communications targeting validation parameters to reduce block friction.")
         if len(low_gpa_leads) > 0:
-            st.error("🚨 Opportunity Tracking Watchlist:")
+            st.error("Opportunity Tracking Watchlist:")
             st.dataframe(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa"]].astype(str), hide_index=True)
 
     elif "4. Provides productivity analysis reports" in selected_key_tab:
@@ -591,15 +591,15 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         key6_data = processed_funnel.copy()
         
         with st.container(border=True):
-            st.markdown(f"📁 **Active Compliance Manifest Structure:** `{reg_target}`")
+            st.markdown(f"Active Compliance Manifest Structure: {reg_target}")
             if reg_target == "USG State System Board Intake":
-                st.success("🟢 Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
+                st.success("Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
                 key6_data = key6_data[key6_data["cumulative_gpa"] >= 3.5]
             elif reg_target == "AACSB Evaluation Ledger Core":
-                st.success("🟢 Validation Protocol: Pass. Faculty load matrices comply 100% with global AACSB data ingestion schemas.")
+                st.success("Validation Protocol: Pass. Faculty load matrices comply 100% with global AACSB data ingestion schemas.")
                 key6_data = key6_data[key6_data["intended_major"].isin(["Accounting", "Economics", "Finance", "Management", "Marketing"])]
             elif reg_target == "Federal IPEDS Frame":
-                st.success("🟢 Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to NCES.")
+                st.success("Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to NCES.")
                 key6_data = key6_data[key6_data["cumulative_gpa"] < 3.5]
 
         st.write("")
@@ -643,12 +643,10 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             
         with st.container(border=True):
             st.markdown("### University Policy Policy Mapping Framework Terminal")
-            st.write("🔗 **Data Governance Layer:** Kennesaw State University Master Data Strategy Directive Compliance standard verified.")
-            st.write("📡 **API Synchronization Endpoint Handshake:** `https://data-strategy.kennesaw.edu/v1/sync` active.")
-            st.success("🟢 **Alignment Confirmed:** Local fields mapped perfectly match KSU's central data strategy taxonomy.")
+            st.write("Data Governance Layer: Kennesaw State University Master Data Strategy Directive Compliance standard verified.")
+            st.write("API Synchronization Endpoint Handshake: https://data-strategy.kennesaw.edu/v1/sync active.")
+            st.success("Alignment Confirmed: Local fields mapped perfectly match KSU's central data strategy taxonomy.")
 
         st.write("---")
         st.markdown(f"#### Central Synchronization Taxonomy Audit Ledger ({sync_scope}) — [Total Records: {len(key10_data)} Students]")
         st.dataframe(key10_data[["applicant_id", "student_name", "intended_major", "academic_term", "funnel_stage", "Current Professor", "Past Professor", "cumulative_gpa", "studentvue_sync_status"]].astype(str), hide_index=True)
-
-I think it's because python 3.14 can you write it over without emojis anywhere in data states please completely text safe no emoji even in keys or maps tags anywhere? Make everything pure text string safely. Use basic markdown style elements instead of emojis. Fix line 9 error. Change use container width to false for safety fallback everywhere.
