@@ -485,7 +485,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             "Collaborate with a variety of stakeholders across campus, including working closely with the Office of University Data Strategy to maintain alignment with overall university data strategy"
         ]
     })
-    st.table(ledger_df.astype(str))
+    st.dataframe(ledger_df.astype(str), use_container_width=True, hide_index=True)
     st.write("---")
     
     selected_key_tab = st.selectbox("Select Active Compliance Report to Query Natively:", options=list(ledger_df["Job Description Requirement Statement"]))
