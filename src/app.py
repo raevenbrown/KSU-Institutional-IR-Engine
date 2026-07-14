@@ -539,7 +539,7 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         st.markdown(f"#### Incoming Functional Request Log — [Active Streams: {len(output_df)} Departmental Tickets]")
         st.table(output_df)
 
-elif "Provides reports, analysis and data interpretation" in selected_key_tab:
+   elif "Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
         
         # Pull raw data for this specific report
