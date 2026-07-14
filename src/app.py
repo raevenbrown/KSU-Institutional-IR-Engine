@@ -39,7 +39,9 @@ if "enrollment_funnel_db" not in st.session_state:
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview"
+            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview",
+            # Added these 5 missing entries to total 40:
+            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Summer 2026"
         ],
         "classification": [
             "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
