@@ -519,15 +519,42 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         st.markdown(f"#### Incoming Functional Request Log — [Active Streams: {len(output_df)} Departmental Tickets]")
         st.table(output_df)
 
-    elif "Provides reports, analysis and data interpretation" in selected_key_tab:
+   elif "Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
-        c_act, c_graph = st.columns(2)
-        with c_act:
-            st.info("Assigned Department Core Infrastructure Summary Profile")
-            st.table(processed_faculty[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]].astype(str))
-        with c_graph:
-            fig_key2 = px.bar(processed_faculty, x="faculty_name", y="semester_credit_hours_load", title="Semester Credit Hours Generation Load by Faculty Member", color="appointment_track", color_discrete_sequence=ksu_gold_palette)
-            st.plotly_chart(fig_key2)
+        
+        # Pull raw data for this specific report
+        raw_fac_data = st.session_state.faculty_retention_db.copy()
+        
+        # 1. Add Filtering and Sorting Controls
+        c_filt, c_sort = st.columns(2)
+        with c_filt:
+            dept_select = st.selectbox("Filter Key 2 by Department:", ["All Departments"] + list(raw_fac_data["department_assignment"].unique()), key="k2_dept")
+        with c_sort:
+            # Setting index=1 makes "Tenure Years" the default selection
+            sort_by = st.selectbox("Sort Key 2 Faculty By:", ["Name (A-Z)", "Tenure Years (High to Low)"], index=1, key="k2_sort")
+            
+        # 2. Apply Filtering and Sorting
+        if dept_select != "All Departments":
+            raw_fac_data = raw_fac_data[raw_fac_data["department_assignment"] == dept_select]
+            
+        if sort_by == "Tenure Years (High to Low)":
+            raw_fac_data = raw_fac_data.sort_values(by="tenure_years_at_institution", ascending=False)
+        else:
+            raw_fac_data = raw_fac_data.sort_values(by="faculty_name")
+
+        # 3. Display Data
+        st.info(f"Viewing: {dept_select} Faculty Profiles")
+        st.dataframe(raw_fac_data[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]].astype(str), use_container_width=True, hide_index=True)
+        
+        fig_key2 = px.bar(
+            raw_fac_data, 
+            x="faculty_name", 
+            y="semester_credit_hours_load", 
+            title=f"SCH Generation Load: {dept_select}", 
+            color="appointment_track", 
+            color_discrete_sequence=ksu_gold_palette
+        )
+        st.plotly_chart(fig_key2, use_container_width=True)
 
     elif "Identifies areas of opportunity and presents findings" in selected_key_tab:
         st.markdown("### Key 3: Leadership Findings & Strategic Recommendations Engine")
