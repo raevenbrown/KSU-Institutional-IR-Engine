@@ -7,41 +7,14 @@ from datetime import date
 st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 
 # ==========================================
-# CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES
+# DATA STATES
 # ==========================================
 if "enrollment_funnel_db" not in st.session_state:
     st.session_state.enrollment_funnel_db = pd.DataFrame({
         "applicant_id": [f"APP-{2600+i}" for i in range(1, 41)],
-        "student_name": [
-            "Michael Adam", "Nancy Aguas", "Peggy Aguila", "Margaret Aldrege", "James Alexander", 
-            "Nathan Amador", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel",
-            "Alex Rivera", "Jordan Chang", "Sarah Jenkins", "Marcus Vance", "Elena Rostova", 
-            "Ryan Gallagher", "Christian Diaz", "Olivia Martinez", "Ethan Wright", "Sophia Lopez",
-            "Liam Gallagher", "Emma Watson", "Noah Centineo", "Ava DuVernay", "Oliver Stone", 
-            "Isabella Rossellini", "Lucas Hedges", "Mia Farrow", "Benjamin Bratt", "Charlotte Gainsbourg",
-            "Amos Diggory", "Cedric Diggory", "Fleur Delacour", "Viktor Krum", "Luna Lovegood", 
-            "Neville Longbottom", "Ginny Weasley", "Fred Weasley", "George Weasley", "Percy Weasley"
-        ],
-        "intended_major": [
-            "Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", 
-            "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing",
-            "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", 
-            "Marketing", "Biology", "Accounting", "Cybersecurity", "Finance",
-            "Management", "Marketing", "Information Systems", "Economics", "Biology",
-            "Hospitality Management", "Accounting", "Finance", "Cybersecurity", "Management",
-            "Entrepreneurship", "Marketing", "Hospitality Management", "Information Systems", "Biology",
-            "Economics", "Accounting", "Finance", "Cybersecurity", "Management"
-        ],
-        "academic_term": [
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", 
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview",
-            "Spring 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview",
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Summer 2026"
-        ],
+        "student_name": ["Michael Adam", "Nancy Aguas", "Peggy Aguila", "Margaret Aldrege", "James Alexander", "Nathan Amador", "Chloe Bennett", "David Kim", "Taylor Brooks", "Maya Patel", "Alex Rivera", "Jordan Chang", "Sarah Jenkins", "Marcus Vance", "Elena Rostova", "Ryan Gallagher", "Christian Diaz", "Olivia Martinez", "Ethan Wright", "Sophia Lopez", "Liam Gallagher", "Emma Watson", "Noah Centineo", "Ava DuVernay", "Oliver Stone", "Isabella Rossellini", "Lucas Hedges", "Mia Farrow", "Benjamin Bratt", "Charlotte Gainsbourg", "Amos Diggory", "Cedric Diggory", "Fleur Delacour", "Viktor Krum", "Luna Lovegood", "Neville Longbottom", "Ginny Weasley", "Fred Weasley", "George Weasley", "Percy Weasley"],
+        "intended_major": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"] * 4,
+        "academic_term": ["Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview"] * 4,
         "classification": ["Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"] * 4,
         "cumulative_gpa": [0.00 for _ in range(40)], 
         "studentvue_sync_status": ["Good Standing - Regular Sync", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Financial Hold - Balance Due", "Good Standing - Regular Sync", "Probation Sync Alert"] * 4,
@@ -82,16 +55,11 @@ if "coles_capacity_db" not in st.session_state:
 ksu_gold_palette = ["#FFC400", "#00E676", "#FF5722", "#00B0FF", "#AA00FF", "#FF3D00", "#E0E0E0"]
 
 # ==========================================
-# SIDEBAR NAVIGATION
+# NAVIGATION
 # ==========================================
 st.sidebar.title("Coles Navigate360")
 processed_funnel = st.session_state.enrollment_funnel_db.copy()
 processed_faculty = st.session_state.faculty_retention_db.copy()
-
-dept_filter = st.sidebar.selectbox("Filter by Department:", ["All Departments"] + list(st.session_state.coles_capacity_db["major_name"].unique()))
-if dept_filter != "All Departments":
-    processed_funnel = processed_funnel[processed_funnel["intended_major"] == dept_filter]
-    processed_faculty = processed_faculty[processed_faculty["department_assignment"] == dept_filter]
 
 nav_options = ["Student Lifecycle Portal (StudentVue)", "Faculty Retention Terminal", "EAB Targeted Campaign Manager", "Reports and Analytics Gateway (All 10 Keys)"]
 app_panel = st.sidebar.radio("Select Operational Workspace Desk:", options=nav_options)
@@ -101,35 +69,18 @@ app_panel = st.sidebar.radio("Select Operational Workspace Desk:", options=nav_o
 # ==========================================
 if app_panel == "Student Lifecycle Portal (StudentVue)":
     st.markdown("## Staff Home: Funnel Progress")
-    if len(processed_funnel) > 0:
-        selected_prospect = st.selectbox("Select Student Record:", options=list(processed_funnel["student_name"].unique()))
-        p_row = processed_funnel[processed_funnel["student_name"] == selected_prospect].iloc[0]
-        st.write(f"**Classification:** {p_row['classification']} | **Major:** {p_row['intended_major']}")
     st.table(processed_funnel)
 
 elif app_panel == "Faculty Retention Terminal":
     st.header("Faculty Retention Terminal")
-    col1, col2 = st.columns(2)
-    with col1:
-        dept_fac_filter = st.selectbox("Filter by Department:", ["All Departments"] + list(processed_faculty["department_assignment"].unique()))
-    with col2:
-        sort_choice = st.selectbox("Sort Faculty By:", ["Name (A-Z)", "Tenure Years (High to Low)"])
-
+    dept_fac_filter = st.selectbox("Filter by Department:", ["All Departments"] + list(processed_faculty["department_assignment"].unique()))
     display_df = processed_faculty.copy()
     if dept_fac_filter != "All Departments":
         display_df = display_df[display_df["department_assignment"] == dept_fac_filter]
-    
-    if sort_choice == "Tenure Years (High to Low)":
-        display_df = display_df.sort_values(by="tenure_years_at_institution", ascending=False)
-    else:
-        display_df = display_df.sort_values(by="faculty_name")
-        
     st.table(display_df)
-    st.plotly_chart(px.bar(display_df, x="faculty_name", y="tenure_years_at_institution", color="appointment_track"))
 
 elif app_panel == "EAB Targeted Campaign Manager":
     st.header("EAB Targeted Campaign Manager")
-    st.write("Campaign management controls active.")
     st.plotly_chart(px.histogram(processed_funnel, x="funnel_stage", color="funnel_stage"))
 
 elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
@@ -148,25 +99,14 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     ])
 
     if "Compiles standard and ad hoc reports" in selected_key_tab:
-        st.write("Key 1: Standardized Triage Console active.")
-    
+        st.write("Key 1: Standardized Triage Console.")
     elif "Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
-        raw_fac_data = st.session_state.faculty_retention_db.copy()
-        c_filt, c_sort = st.columns(2)
-        with c_filt:
-            dept_select = st.selectbox("Filter Key 2 by Department:", ["All Departments"] + list(raw_fac_data["department_assignment"].unique()), key="k2_dept")
-        with c_sort:
-            sort_by = st.selectbox("Sort Key 2 Faculty By:", ["Name (A-Z)", "Tenure Years (High to Low)"], key="k2_sort")
+        raw_fac = st.session_state.faculty_retention_db.copy()
+        dept_select = st.selectbox("Filter Key 2 by Department:", ["All Departments"] + list(raw_fac["department_assignment"].unique()), key="k2_dept")
         if dept_select != "All Departments":
-            raw_fac_data = raw_fac_data[raw_fac_data["department_assignment"] == dept_select]
-        if sort_by == "Tenure Years (High to Low)":
-            raw_fac_data = raw_fac_data.sort_values(by="tenure_years_at_institution", ascending=False)
-        else:
-            raw_fac_data = raw_fac_data.sort_values(by="faculty_name")
-        st.table(raw_fac_data)
-        st.plotly_chart(px.bar(raw_fac_data, x="faculty_name", y="semester_credit_hours_load", color="appointment_track"))
-
+            raw_fac = raw_fac[raw_fac["department_assignment"] == dept_select]
+        st.table(raw_fac)
     elif "Identifies areas of opportunity and presents findings" in selected_key_tab:
         st.write("Key 3: Leadership Findings active.")
     elif "Provides productivity analysis reports" in selected_key_tab:
