@@ -42,55 +42,27 @@ if "enrollment_funnel_db" not in st.session_state:
             "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview",
             "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Summer 2026"
         ],
-        ],
         "classification": [
             "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
-            "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year",
-            "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
-            "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year",
-            "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
-            "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year",
-            "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
             "First Year", "Fourth Year", "Third Year", "Second Year", "Fourth Year"
-        ],
+        ] * 4,
         "cumulative_gpa": [0.00 for _ in range(40)], 
         "studentvue_sync_status": [
             "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", 
             "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync", 
             "Good Standing - Regular Sync", "Financial Hold - Balance Due", "Good Standing - Regular Sync", 
-            "Probation Sync Alert", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript",
-            "Good Standing - Regular Sync", "Probation Sync Alert", "Good Standing - Regular Sync",
-            "Good Standing - Regular Sync", "Financial Hold - Balance Due", "Good Standing - Regular Sync",
-            "Academic Hold - Missing Transcript", "Good Standing - Regular Sync", "Good Standing - Regular Sync",
-            "Probation Sync Alert", "Good Standing - Regular Sync", "Financial Hold - Balance Due",
-            "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync",
-            "Academic Hold - Missing Transcript", "Good Standing - Regular Sync", "Good Standing - Regular Sync",
-            "Probation Sync Alert", "Good Standing - Regular Sync", "Financial Hold - Balance Due",
-            "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript",
-            "Good Standing - Regular Sync", "Probation Sync Alert", "Good Standing - Regular Sync", "Financial Hold - Balance Due"
-        ],
+            "Probation Sync Alert"
+        ] * 4,
         "funnel_stage": [
-            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry",
-            "Enrolled", "Enrolled", "Enrolled", "Admitted", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Enrolled",
-            "Enrolled", "Enrolled", "Enrolled", "Admitted", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Enrolled",
-            "Enrolled", "Enrolled", "Enrolled", "Admitted", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Inquiry"
-        ],
+            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry"
+        ] * 4,
         "outreach_campaign_group": [
             "Completed Yield", "Completed Yield", "Completed Yield", "Completed Yield", "Completed Yield", 
-            "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Scholarship Push", "Fall Preview Invite",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Completed Yield",
-            "Completed Yield", "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Fall Preview Invite"
-        ],
+            "Completed Yield", "Completed Yield", "Housing Deposit Nudge", "Scholarship Push", "Fall Preview Invite"
+        ] * 4,
         "predicted_yield_probability": [
-            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High", "Medium", "Low",
-            "Enrolled", "Enrolled", "Enrolled", "High", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High", "Enrolled",
-            "Enrolled", "Enrolled", "Enrolled", "High", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High", "Enrolled",
-            "Enrolled", "Enrolled", "Enrolled", "High", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High", "Low"
-        ],
+            "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "High", "Medium", "Low"
+        ] * 4,
         "last_interaction_date": ["2026-03-10" for _ in range(40)],
         "to_dos_pending": [i % 4 for i in range(40)],
         "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
