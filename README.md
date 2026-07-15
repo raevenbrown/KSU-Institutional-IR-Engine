@@ -4,6 +4,7 @@ An enterprise-grade, data-driven operational control desk built with Streamlit t
 
 The workspace connects relational data metrics across student lifecycle pipelines, faculty instructional loads, and target communications while prioritizing real-time operational workflows.
 
+Live Demo: https://ksu-institutional-ir-engine-nsfzyeyxgrogvxuzssmxib.streamlit.app/
 ---
 
 ## 🛠️ Key Technical Implementations
@@ -24,7 +25,7 @@ The workspace connects relational data metrics across student lifecycle pipeline
 
 ---
 
-## 📈 Job Responsibility Alignment Mapping
+## 📈 Responsibility Alignment Mapping
 
 *   **Key 1 (Standard & Ad Hoc Reporting):** Validated via the dynamic Task Triage Console routing urgent vs. routine streams.
 *   **Key 2 & Key 7 (Departmental Interpretation & Trend Analysis):** Mapped natively inside the core infrastructure panels to run trailing longitudinal multi-semester trend analytics profiles.
