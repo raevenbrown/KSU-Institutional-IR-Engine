@@ -1,42 +1,32 @@
-# StudentSuccess Terminal 
+# Coles Navigate360 Workspace & Portfolio Engine
 
-A live, high-density higher-education analytics suite engineered to model enrollment pipelines, student success thresholds, and faculty workload retention profiles. 
+An enterprise-grade, data-driven operational control desk built with Streamlit to address and validate the core technical and analytical competencies required of an institutional data analyst. 
 
-## 🔗 Live Production Deployment
-🚀 **Explore the Active Web Application Console:** 
-[https://ksu-institutional-ir-engine-nsfzyeyxgrogvxuzssmxib.streamlit.app/](https://ksu-institutional-ir-engine-nsfzyeyxgrogvxuzssmxib.streamlit.app/)
+The workspace connects relational data metrics across student lifecycle pipelines, faculty instructional loads, and target communications while prioritizing real-time operational workflows.
 
 ---
 
-## 🏁 Operational Workspace Architecture
+## 🛠️ Key Technical Implementations
 
-### 👤 Student Lifecycle Portal (StudentVue)
-* **Granular Academic Terms:** Filters data profiles dynamically across explicit historical, current, and upcoming horizons (`Spring 2025`, `Summer 2025`, `Fall 2025`, `Spring 2026`, `Summer 2026`, `Fall 2026 Preview`).
-* **High-Density Ingestion:** Tracks 40+ unique applicant entries mapping tracking IDs, major concentrations, cumulative GPAs, and descriptive staff meeting summaries.
-* **StudentVue Synchronization States:** Tracks detailed registration codes including `Good Standing - Regular Sync`, `Academic Hold - Missing Transcript`, `Financial Hold - Balance Due`, and `Probation Sync Alert`.
+### 1. Multi-Stream Data Aggregation & Logic Stability
+* Engineered entirely with pure text arrays and explicit formatting vectors to guarantee complete memory stack safety under standard container runtimes (Python 3.14+).
+* Stripped latent decorative rendering layers (emojis and non-standard spacing tokens) to eliminate serialization boundaries within standard data processing models.
+* Utilizes memory-optimized static tables (`st.table`) and defensive datatype casting (`.astype(str)`) to protect analytical rendering from memory exceptions.
 
-### 🏛️ Faculty Retention Terminal
-* **Staff Roster Management:** Maintains full visibility over 20+ active faculty members regardless of student term selections to ensure institutional persistence logs remain complete.
-* **Workload Capacity Tracking:** Models Semester Credit Hours (SCH) instructional generation maps alongside tenure longevity tracks.
-* **Human Resources Risk Indexes:** Logs individual risk assessments tracking `Low Risk`, `Medium Risk`, and `High Risk` classifications paired with explicit HR departure notes.
+### 2. Standardized vs. Ad Hoc Task Triage Console (Key 1 Validation)
+* Built a single-source-of-truth task log tracking multi-departmental requests across Kennesaw State University.
+* Implemented strict logical `(|)` and `.isin()` Pandas vector groupings to route pipeline streams cleanly based on operational priority tiers.
+* **The Priority Hierarchy Matrix:** Automatically isolates routine weekly maintenance runs from high-urgency operational emergencies. Tasks are cleanly re-indexed and sorted dynamically based on **Days Open Pending** and chronological level of importance to map resource deployment flawlessly.
 
-### 📈 Reports & Analytics Gateway (10-Key Framework Validation)
-Natively implements 10 customized dashboard query environments verifying core higher-ed data analyst capabilities:
-1. **Key 1 (Standard vs. Ad Hoc):** Toggles between structured weekly intake rosters and target priority risk slices.
-2. **Key 2 (Departmental Interpretation):** Isolates performance logs cross-referenced with faculty SCH generation bars.
-3. **Key 3 (Leadership Findings):** Evaluates risk parameters to generate automated strategic insights memorandums.
-4. **Key 4 (Productivity Audit):** Aggregates total prospects reached and remaining pending task actions.
-5. **Key 5 (Operational Utilization):** Measures student preferred contact methods to maximize channel assets.
-6. **Key 6 (Regulatory Compliance):** Simulates USG, AACSB, and IPEDS cell-suppression data transmission standards.
-7. **Key 7 (Trend Reviews):** Compiles longitudinal shortfall profiles tracking retention goal deltas.
-8. **Key 8 (Inventory Logs):** Audits active tech hardware kiosks allocated across student care major hubs.
-9. **Key 9 (Performance Tracking):** Evaluates overall center pipeline transformation speeds and case resolution volumes.
-10. **Key 10 (Governance Handshake):** Mapped local field schema properties directly onto central university taxonomy models.
+### 3. Institutional Strategic Alignment (Key 10 Validation)
+* Incorporates direct macro-analytical insights from the university's **2024-2025 Career Fair Report** and **Graduate Outcomes Ledger**.
+* Designed to cross-reference event-driven participation data against key placement achievements (such as tracking paths leading to the $66k+ average cross-degree baseline salary), driving a transition from reactive tracking to proactive causal analysis.
 
 ---
 
-## 🛠️ Technology Stack Deployed
-* **Language/Engine:** Python 3.14
-* **Web UI Framework:** Streamlit Core
-* **Data Processing Layer:** Pandas DataFrames
-* **Interactive Visualization:** Plotly Express Engine
+## 📈 Job Responsibility Alignment Mapping
+
+*   **Key 1 (Standard & Ad Hoc Reporting):** Validated via the dynamic Task Triage Console routing urgent vs. routine streams.
+*   **Key 2 & Key 7 (Departmental Interpretation & Trend Analysis):** Mapped natively inside the core infrastructure panels to run trailing longitudinal multi-semester trend analytics profiles.
+*   **Key 3 (Strategic Recommendations):** Powered by an executive finding engine that isolates specific risk boundaries (e.g., student files with active transcript or financial holds) and flags actionable intervention pathways for leadership.
+*   **Key 10 (University Data Strategy Alignment):** Automated handshake structures verifying that local naming schemas and taxonomy constraints fully comply with the Office of University Data Strategy's governance layer.
