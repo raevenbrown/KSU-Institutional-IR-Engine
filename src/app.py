@@ -43,6 +43,9 @@ st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 # CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES (40 REALISTIC STUDENT RECORDS)
 # ==========================================
 if "enrollment_funnel_db" not in st.session_state:
+    # Set up realistic cycling of communication preferences to show true multichannel effort
+    comm_effort_cycle = ["Email", "Text/SMS", "Phone Consultation Call", "Shared Event Portal Link"]
+    
     st.session_state.enrollment_funnel_db = pd.DataFrame({
         "applicant_id": [f"APP-{2600+i}" for i in range(1, 41)],
         "student_name": [
@@ -97,7 +100,7 @@ if "enrollment_funnel_db" not in st.session_state:
         ] * 4,
         "last_interaction_date": ["2026-03-10" for _ in range(40)],
         "to_dos_pending": [i % 4 for i in range(40)],
-        "communication_preference": ["Email" if i % 2 == 0 else "Text/SMS" for i in range(40)],
+        "communication_preference": [comm_effort_cycle[i % 4] for i in range(40)],
         "category_tags": ["First Generation, Pell-Eligible" if i % 3 == 0 else "Good Academic Standing" for i in range(40)],
         "staff_meeting_prep_notes": [f"Sourced cohort record update tracking slot sequence flag {i}." for i in range(1, 41)]
     })
@@ -419,6 +422,10 @@ elif app_panel == "EAB Targeted Campaign Manager":
         chart_data = chart_data[chart_data["communication_preference"] == "Text/SMS"]
     elif c_channel == "Targeted Email Sequences":
         chart_data = chart_data[chart_data["communication_preference"] == "Email"]
+    elif c_channel == "Phone Consultation Call":
+        chart_data = chart_data[chart_data["communication_preference"] == "Phone Consultation Call"]
+    elif c_channel == "Shared Event Invitation Portals":
+        chart_data = chart_data[chart_data["communication_preference"] == "Shared Event Portal Link"]
         
     if c_cohort == "Inquiry Population Pool":
         chart_data = chart_data[chart_data["funnel_stage"] == "Inquiry"]
