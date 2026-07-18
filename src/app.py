@@ -822,11 +822,9 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     elif "Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
         
-        # Grounding note explaining the 3-year cohort timeline
         st.info("📈 **Cohort Trajectory Brief:** Tracking the Fall 2023 undergraduate cohort ($N=1,200$) over 6 consecutive terms. This lets us visualize retention drops over time and pinpoint exactly when our automated workflows changed the timeline.")
         st.write("")
         
-        # High-fidelity dataset tracing a genuine historical higher-ed timeline narrative
         longitudinal_cohort_db = pd.DataFrame({
             "Academic Semester Timeframe": ["Fall 2023", "Spring 2024", "Fall 2024 (Year 2 Drop)", "Spring 2025 (Intervention)", "Fall 2025", "Spring 2026 (Current)"],
             "Active Enrolled Headcount": [1200, 1140, 888, 864, 846, 834],
@@ -843,7 +841,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             ]
         })
         
-        # Render a scannable table with completely clean formatting (no long Python float decimals)
         st.markdown("#### Longitudinal Cohort Retention Trend Ledger")
         
         formatted_trend_df = longitudinal_cohort_db.copy()
@@ -860,7 +857,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         st.write("")
         
-        # Re-engineered line chart displaying true temporal sequences on the X-axis
         fig_trend = px.line(
             longitudinal_cohort_db, 
             x="Academic Semester Timeframe", 
@@ -870,7 +866,9 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             text="Sequential Retention Rate"
         )
         fig_trend.update_traces(line=dict(color="#FFC400", width=4), marker=dict(size=10), textposition="top right")
-        fig_trend.update_layout(yaxis_suffix="%")
+        
+        # FIX: Swapped out yaxis_suffix for the correct native Plotly layout property
+        fig_trend.update_layout(yaxis_ticksuffix="%")
         st.plotly_chart(fig_trend, use_container_width=True)
         
         st.write("---")
