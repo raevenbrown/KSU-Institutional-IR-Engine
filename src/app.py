@@ -3,6 +3,39 @@ import pandas as pd
 import plotly.express as px
 from datetime import date
 
+# ==========================================
+# RELATIONAL REGISTRY COMPILATION (Registered at top to prevent NameError)
+# ==========================================
+def assign_faculty_and_grades(row):
+    major = row["intended_major"]
+    dept_fac = st.session_state.faculty_retention_db[st.session_state.faculty_retention_db["department_assignment"] == major]
+    if len(dept_fac) >= 2:
+        current_prof = dept_fac.iloc[0]["faculty_name"]
+        past_prof = dept_fac.iloc[1]["faculty_name"]
+    elif len(dept_fac) == 1:
+        current_prof = dept_fac.iloc[0]["faculty_name"]
+        past_prof = "Dr. Stacey Nebriaga (Gen-Ed)"
+    else:
+        current_prof = "Dr. Thomas Anderson (Adjunct)"
+        past_prof = "Prof. Minerva McGonagall"
+        
+    student_num = int(row["applicant_id"].split("-")[1])
+    
+    if student_num % 4 == 0:
+        grades = ["A", "A", "A", "A"]  
+    elif student_num % 4 == 1:
+        grades = ["A", "B", "A", "A"]  
+    elif student_num % 4 == 2:
+        grades = ["A", "B", "B", "A"]  
+    else:
+        grades = ["B", "B", "C", "B"]  
+        
+    grade_points = {"A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0}
+    true_gpa = round(sum(grade_points[g] for g in grades) / len(grades), 2)
+    
+    return pd.Series([current_prof, past_prof, grades[0], grades[1], grades[2], grades[3], true_gpa])
+
+
 # 1. Main Page Canvas Configuration
 st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 
@@ -186,40 +219,6 @@ if studentvue_filter != "All Student Tiers":
 
 if faculty_status_filter != "All Faculty Tiers":
     processed_faculty = processed_faculty[processed_faculty["faculty_staff_status"] == faculty_status_filter]
-
-# ==========================================
-# RELATIONAL REGISTRY COMPILATION
-# ==========================================
-def assign_faculty_and_grades(row):
-    major = row["intended_major"]
-    dept_fac = st.session_state.faculty_retention_db[st.session_state.faculty_retention_db["department_assignment"] == major]
-    if len(dept_fac) >= 2:
-        current_prof = dept_fac.iloc[0]["faculty_name"]
-        past_prof = dept_fac.iloc[1]["faculty_name"]
-    elif len(dept_fac) == 1:
-        current_prof = dept_fac.iloc[0]["faculty_name"]
-        past_prof = "Dr. Stacey Nebriaga (Gen-Ed)"
-    else:
-        current_prof = "Dr. Thomas Anderson (Adjunct)"
-        past_prof = "Prof. Minerva McGonagall"
-        
-    student_num = int(row["applicant_id"].split("-")[1])
-    
-    if student_num % 4 == 0:
-        grades = ["A", "A", "A", "A"]  
-    elif student_num % 4 == 1:
-        grades = ["A", "B", "A", "A"]  
-    elif student_num % 4 == 2:
-        grades = ["A", "B", "B", "A"]  
-    else:
-        grades = ["B", "B", "C", "B"]  
-        
-    grade_points = {"A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0}
-    true_gpa = round(sum(grade_points[g] for g in grades) / len(grades), 2)
-    
-    return pd.Series([current_prof, past_prof, grades[0], grades[1], grades[2], grades[3], true_gpa])
-
-processed_funnel[["Current Professor", "Past Professor", "G1", "G2", "G3", "G4", "cumulative_gpa"]] = processed_funnel.apply(assign_faculty_and_grades, axis=1)
 
 st.sidebar.write("---")
 st.sidebar.subheader("Navigation Terminal")
@@ -563,7 +562,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
     elif "Identifies areas of opportunity and presents findings" in selected_key_tab:
         st.markdown("### Key 3: Leadership Findings & Strategic Recommendations Engine")
-        # ... (rest of your existing Key 3 code)
         low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 3.4] if len(processed_funnel) > 0 else pd.DataFrame()
         with st.container(border=True):
             st.markdown("Executive Data Insights Memorandum")
