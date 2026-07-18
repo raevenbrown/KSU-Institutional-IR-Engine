@@ -482,7 +482,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         rep_type = st.radio("Select Target Data Intake Flow Stream:", ["Standard Recurring (Weekly Ingestion)", "Ad Hoc Live Extract Requests"])
         
-        # Centralized queue database with clean day counts and priority values
         master_triage_db = pd.DataFrame({
             "Source Assigned Department": [
                 "Coles College Office of Finance", "Information Systems Care Unit", "Coles College Office of Finance",
@@ -515,7 +514,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         clean_df = master_triage_db.copy().astype(str)
         
-        # Safe syntax routing: bracket grouping fixes the or-filter environment fault
         if rep_type == "Standard Recurring (Weekly Ingestion)":
             output_df = clean_df[clean_df["Operational Priority Tier"] == "ROUTINE TASK"].copy()
             output_df = output_df.sort_values(by="Days Open Pending", ascending=False)
@@ -523,7 +521,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             output_df = clean_df[(clean_df["Operational Priority Tier"] == "CRITICAL EMERGENCY") | (clean_df["Operational Priority Tier"] == "HIGH EMERGENCY")].copy()
             output_df = output_df.sort_values(by="Days Open Pending", ascending=False)
             
-        # Re-index row rows from 1 to keep layout cleanly ordered
         output_df.index = range(1, len(output_df) + 1)
         output_df.index.name = "Queue Position ID"
         
@@ -533,20 +530,17 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     elif "Provides reports, analysis and data interpretation" in selected_key_tab:
         st.markdown("### Key 2: Departmental Interpretation Ledger Matrix")
         
-        # Pull raw data for this specific report
         raw_fac_data = st.session_state.faculty_retention_db.copy()
         
         raw_fac_data["instructional_load_sch"] = raw_fac_data["semester_credit_hours_load"]
         raw_fac_data["historical_graduated_students"] = (raw_fac_data["tenure_years_at_institution"] * (raw_fac_data["semester_credit_hours_load"] / 3) * 1.8 * 0.88 * 0.94).astype(int)
         
-        # 1. Add Filtering and Sorting Controls
         c_filt, c_sort = st.columns(2)
         with c_filt:
             dept_select = st.selectbox("Filter Key 2 by Department:", ["All Departments"] + list(raw_fac_data["department_assignment"].unique()), key="k2_dept")
         with c_sort:
             sort_by = st.selectbox("Sort Key 2 Faculty By:", ["Name (A-Z)", "Tenure Years (High to Low)"], index=1, key="k2_sort")
             
-        # 2. Apply Filtering and Sorting
         if dept_select != "All Departments":
             raw_fac_data = raw_fac_data[raw_fac_data["department_assignment"] == dept_select]
             
@@ -555,7 +549,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         else:
             raw_fac_data = raw_fac_data.sort_values(by="faculty_name")
 
-        # 3. Display Data
         st.info(f"Viewing: {dept_select} Faculty Profiles")
         
         st.dataframe(
@@ -650,14 +643,12 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         st.markdown("### Key 4: Outreach Campaign Effectiveness Productivity Audit Log")
         
         if len(processed_funnel) > 0:
-            # Rebuilt aggregation block to track core marketing metrics: Conversion Rates, Efficiency Ratios, and ROI Status
             prod_df = processed_funnel.groupby("outreach_campaign_group").agg(
                 total_prospects_reached=("applicant_id", "count"),
                 total_pending_tasks=("to_dos_pending", "sum"),
                 mean_gpa_index=("cumulative_gpa", "mean")
             ).reset_index()
             
-            # Map analytical performance layers to tell a real marketing optimization story
             conversion_rates = []
             roi_efficiency = []
             growth_actions = []
@@ -665,26 +656,26 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             for row in prod_df.itertuples():
                 if "Completed Yield" in row.outreach_campaign_group:
                     conversion_rates.append("88.4% (Historical High)")
-                    roi_efficiency.append("Tier 1 - Premium Return")
+                    roi_efficiency.append("Premium Tier 1")
                     growth_actions.append("Automate baseline structure; scale to peripheral cohorts.")
                 elif "Fall Preview" in row.outreach_campaign_group:
                     conversion_rates.append("62.1% (On Target)")
-                    roi_efficiency.append("Tier 2 - Moderate Return")
+                    roi_efficiency.append("Tier 2 Standard")
                     growth_actions.append("Introduce multi-channel personalized text sequence to counter drop-offs.")
                 elif "Housing Deposit" in row.outreach_campaign_group:
                     conversion_rates.append("31.5% (Underperforming)")
-                    roi_efficiency.append("Tier 3 - Low Efficiency")
+                    roi_efficiency.append("Tier 3 Operational")
                     growth_actions.append("Deploy targeted phone consultations to overcome system friction.")
                 else:
                     conversion_rates.append("45.0% (Developing)")
-                    roi_efficiency.append("Tier 2 - Moderate Return")
+                    roi_efficiency.append("Tier 2 Standard")
                     growth_actions.append("A/B test subject headers and optimize scheduling parameters.")
                     
             prod_df["Funnel Conversion Rate"] = conversion_rates
             prod_df["Campaign ROI Status"] = roi_efficiency
             prod_df["Strategic Optimization Growth Action"] = growth_actions
             
-            c_p1, c_p2 = st.columns([4, 3])
+            c_p1, c_p2 = st.columns([5, 4])
             with c_p1: 
                 st.markdown("#### Comprehensive Performance Attribution Matrix")
                 st.dataframe(
@@ -708,9 +699,25 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 )
                 st.plotly_chart(fig_prod, use_container_width=True)
                 
+            # Integrated a native metric glossary explainer directly onto the UI layout canvas
+            st.write("---")
+            st.markdown("### 🔍 Dashboard Metrics Glossary & Data Index")
+            idx_c1, idx_c2 = st.columns(2)
+            with idx_c1:
+                with st.container(border=True):
+                    st.markdown("**Campaign Classification Structure**")
+                    st.write("💡 **Premium Tier 1 (Completed Yield):** Highly automated omnichannel campaigns (Text + Email Core Loops) running at near-zero staffing friction with massive conversions.")
+                    st.write("💡 **Tier 2 Standard:** Semi-automated tracks requiring regular operational updates (A/B testing email headers, social media ad placements).")
+                    st.write("💡 **Tier 3 Operational:** High-friction pipelines relying on slow manual tasks (1-on-1 staff consultations, missing-document chasing).")
+            with idx_c2:
+                with st.container(border=True):
+                    st.markdown("**Performance Attribution Definitions**")
+                    st.write("📊 **Audited Outreach Volume:** Total absolute headcount of unique applicants targeted during this tracking cycle.")
+                    st.write("📊 **Open Tasks Backlog:** Number of uncompleted manual flags or follow-ups triggered by student responses to our text sequences.")
+                    st.write("📊 **Funnel Conversion Rate:** Percentage of target group moving from 'Admitted' to fully committed 'Enrolled' parameters.")
+
             st.write("---")
             st.markdown("### 📋 Marketing Team Strategic Playbook & Action Plan")
-            
             pb1, pb2, pb3 = st.columns(3)
             with pb1:
                 with st.container(border=True):
