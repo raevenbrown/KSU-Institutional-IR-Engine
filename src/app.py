@@ -967,47 +967,43 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 st.write("This dual tracking model allows us to address resource shortages intelligently. Instead of arbitrarily requesting more hardware, our data indicates that we should split high-strain lecture segments into smaller sections. By coordinating directly with the Central Data Strategy team, we can reallocate under-utilized classrooms from fields with low seat utilization, creating room for new class blocks without expanding the physical campus footprint.")
 
     elif "May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
-        st.markdown("### Key 9: Center Program Operational Effectiveness & Program SLA Audit Ledger")
+        st.markdown("### Key 9: Longitudinal Cohort Graduation Velocity & Attrition Performance Audit")
         
-        st.info("🎯 **Center Effectiveness Evaluation:** Evaluating operational performance indicators, campaign response speed metrics, and programmatic retention impact records across core academic branches.")
+        st.info("🎯 **Program Effectiveness Metric Framework:** Tracking institutional success across multiple entering cohorts over a 4-year timeline. This metrics ledger isolates historical progression by evaluating First-Generation students alongside Continuing-Generation (Normal) student lines.")
         st.write("")
         
-        # High-Fidelity Performance Audit Registry Matrix
-        center_perf_db = pd.DataFrame({
-            "Assigned Program Care Branch": ["Undergraduate Advising Center", "Coles Financial Support Hub", "EAB Automated Outreach Wing", "Coles Peer Tutoring Labs", "First-Gen Success Network"],
-            "Total Handled Case Volume": [4250, 1850, 28500, 3100, 1200],
-            "Average Ticket Response SLA": ["14.2 Minutes (Optimal)", "4.8 Hours (Delayed)", "1.2 Seconds (Instantaneous)", "18.5 Minutes (Optimal)", "2.4 Days (Critical Lag)"],
-            "Student Program Satisfaction Score": ["94.6% Quality Index", "71.2% Quality Index", "88.4% Quality Index", "96.1% Quality Index", "64.8% Action Requested"],
-            "Program Attrition Prevention Rate": ["91.4% Saved Pipeline", "82.5% Saved Pipeline", "97.3% Saved Pipeline", "89.0% Saved Pipeline", "74.0% High Leak Risk"],
-            "Strategic Performance Growth Intervention": [
-                "Deploy unified workflow check-in queues to maintain responses under the 15-minute operational limit.",
-                "Introduce automated document verifiers to bypass the complex financial aid verification backlog.",
-                "Expand text/SMS nudge criteria to target critical course clearing blocks before milestone drop windows.",
-                "Increase peer student staffing load hours during heavy mid-term core exam cycles.",
-                "Reassign dedicated success coach representatives to resolve registration blocks before census lock-dates."
-            ]
+        # High-Fidelity Cohort Outcomes Database State
+        cohort_outcomes_db = pd.DataFrame({
+            "Entering Student Cohort Year": ["Fall 2020", "Fall 2020", "Fall 2021", "Fall 2021", "Fall 2022", "Fall 2022", "Fall 2023", "Fall 2023"],
+            "Student Demographic Type": ["First-Generation", "Continuing-Generation", "First-Generation", "Continuing-Generation", "First-Generation", "Continuing-Generation", "First-Generation", "Continuing-Generation"],
+            "Initial Inbound Headcount": [450, 750, 480, 810, 520, 840, 550, 890],
+            "On-Time 4-Year Grad Rate": [42.1, 64.8, 44.5, 66.2, 51.0, 68.5, 58.4, 71.2],
+            "Longitudinal 5-Year Grad Rate": [56.4, 76.1, 59.2, 78.4, 66.8, 81.0, 74.2, 83.5],
+            "Longitudinal 6-Year Grad Rate": [62.8, 81.4, 65.1, 83.0, 73.5, 85.4, 79.8, 88.0],
+            "Total Academic Dropouts Record": [128, 72, 114, 68, 82, 54, 48, 42],
+            "Intervention Performance Group": ["Pre-Navigate360 Baseline", "Pre-Navigate360 Baseline", "Manual Adviser Email Drips", "Manual Adviser Email Drips", "Early Pilot Script Tracking", "Early Pilot Script Tracking", "Full Automated Loops Active", "Full Automated Loops Active"]
         })
         
         # Filter matching standard sidebar controls
-        if dept_filter == "Accounting" or dept_filter == "Finance":
-            center_perf_df_filtered = center_perf_db[center_perf_db["Assigned Program Care Branch"].str.contains("Financial|Advising|Outreach")]
-        elif dept_filter == "Management" or dept_filter == "Marketing":
-            center_perf_df_filtered = center_perf_db[center_perf_db["Assigned Program Care Branch"].str.contains("Advising|Outreach|Tutoring")]
-        else:
-            center_perf_df_filtered = center_perf_db.copy()
-            
-        st.markdown("#### Comprehensive Program Performance Evaluation Matrix")
+        st.markdown("#### High-Fidelity Longitudinal Program Performance Ledger")
         
-        formatted_perf_df = center_perf_df_filtered.copy()
-        formatted_perf_df["Total Handled Case Volume"] = formatted_perf_df["Total Handled Case Volume"].apply(lambda x: f"{x:,}")
+        formatted_outcomes_df = cohort_outcomes_db.copy()
+        formatted_outcomes_df["On-Time 4-Year Grad Rate"] = formatted_outcomes_df["On-Time 4-Year Grad Rate"].apply(lambda x: f"{x:.1f}%")
+        formatted_outcomes_df["Longitudinal 5-Year Grad Rate"] = formatted_outcomes_df["Longitudinal 5-Year Grad Rate"].apply(lambda x: f"{x:.1f}%")
+        formatted_outcomes_df["Longitudinal 6-Year Grad Rate"] = formatted_outcomes_df["Longitudinal 6-Year Grad Rate"].apply(lambda x: f"{x:.1f}%")
+        formatted_outcomes_df["Initial Inbound Headcount"] = formatted_outcomes_df["Initial Inbound Headcount"].apply(lambda x: f"{x:,}")
+        formatted_outcomes_df["Total Academic Dropouts Record"] = formatted_outcomes_df["Total Academic Dropouts Record"].apply(lambda x: f"{x:,}")
         
         st.dataframe(
-            formatted_perf_df.rename(columns={
-                "Assigned Program Care Branch": "Program Care Branch Unit",
-                "Total Handled Case Volume": "Active Case Load Volume",
-                "Average Ticket Response SLA": "Response Speed Metric",
-                "Student Program Satisfaction Score": "Student Evaluation Index",
-                "Program Attrition Prevention Rate": "Pipeline Attrition Saved %"
+            formatted_outcomes_df.rename(columns={
+                "Entering Student Cohort Year": "Cohort Year",
+                "Student Demographic Type": "Demographic Profile",
+                "Initial Inbound Headcount": "Cohort Size",
+                "On-Time 4-Year Grad Rate": "4-Yr Grad Velocity",
+                "Longitudinal 5-Year Grad Rate": "5-Yr Longitudinal Rate",
+                "Longitudinal 6-Year Grad Rate": "6-Yr Completion Cap",
+                "Total Academic Dropouts Record": "Total Dropouts Count",
+                "Intervention Performance Group": "Center Operational Framework"
             }),
             use_container_width=True,
             hide_index=True
@@ -1017,39 +1013,43 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         perf_c1, perf_c2 = st.columns(2)
         with perf_c1:
-            fig_perf_share = px.pie(
-                center_perf_df_filtered,
-                values="Total Handled Case Volume",
-                names="Assigned Program Care Branch",
-                title="Total Center Support Case Load Distributed Volumetric Share",
-                hole=0.4,
-                color_discrete_sequence=ksu_gold_palette
+            fig_grad_trend = px.line(
+                cohort_outcomes_db,
+                x="Entering Student Cohort Year",
+                y="On-Time 4-Year Grad Rate",
+                color="Student Demographic Type",
+                markers=True,
+                text="On-Time 4-Year Grad Rate",
+                title="Historical 4-Year On-Time Graduation Velocity Trends",
+                color_discrete_sequence=["#FFC400", "#00E676"]
             )
-            st.plotly_chart(fig_perf_share, use_container_width=True)
+            fig_grad_trend.update_traces(textposition="bottom center", line=dict(width=3))
+            fig_grad_trend.update_layout(yaxis_ticksuffix="%")
+            st.plotly_chart(fig_grad_trend, use_container_width=True)
             
         with perf_c2:
-            fig_attr_bar = px.bar(
-                center_perf_df_filtered,
-                x="Assigned Program Care Branch",
-                y="Total Handled Case Volume",
-                text="Program Attrition Prevention Rate",
-                title="Program Retention Footprint Matrix vs Saved Case Volumes",
-                color="Assigned Program Care Branch",
-                color_discrete_sequence=ksu_gold_palette
+            fig_dropout_bar = px.bar(
+                cohort_outcomes_db,
+                x="Entering Student Cohort Year",
+                y="Total Academic Dropouts Record",
+                color="Student Demographic Type",
+                barmode="group",
+                title="Absolute Attrition Volume Dropouts by Entering Cohort",
+                color_discrete_sequence=["#FF3D00", "#00B0FF"]
             )
-            st.plotly_chart(fig_attr_bar, use_container_width=True)
+            st.plotly_chart(fig_dropout_bar, use_container_width=True)
             
         st.write("---")
-        st.markdown("### 📋 Program Effectiveness Strategic Playbook")
+        st.markdown("### 📋 Center Impact and Completion Playbook")
         perf_p1, perf_p2 = st.columns(2)
         with perf_p1:
             with st.container(border=True):
-                st.markdown("**The Operational Performance Bottleneck (First-Gen Success Network)**")
-                st.write("Our center-wide program audit revealed a severe programmatic risk. The **First-Gen Success Network** handles a heavy load of $1,200$ cases, yet it suffers from an unacceptable **2.4-day response lag**. This structural delay causes student satisfaction scores to drop to a low **64.8%**, directly tracking to a weak **74.0% attrition prevention rate**. Students are seeking guidance on complex registration blocks, but the delay is causing them to fall out of our enrollment pipeline.")
+                st.markdown("**The Equity and Velocity Gap Analysis (Fall 2020 Baseline)**")
+                st.write("Our tracking database reveals a major historical gap in the **Fall 2020 Baseline**. First-Generation cohorts completed on time at an abysmal rate of **42.1%**, compared to **64.8%** for Continuing-Gen students whose parents went to college. This structural variance was driven by early progression bottlenecks. Looking at the raw numbers, First-Gen students suffered an absolute loss of **128 dropouts**, dragging down our 5 and 6-year institutional completion models.")
         with perf_p2:
             with st.container(border=True):
-                st.markdown("**Data-Driven Resource Allocation Strategy**")
-                st.write("To maximize performance, this audit offers clear direction for leadership. We should leverage the efficiency of the **EAB Automated Outreach Wing**—which operates instantly using automated scripts—to offset manual tasks. Reallocating open staff slots from optimized centers to the First-Gen Hub allows us to clear the response backlog, compress response lags down to minutes, and protect our target retention metrics across Coles College.")
+                st.markdown("**The Automated Intervention Payoff (Fall 2023 Success Loop)**")
+                st.write("By using this trend database to justify shifting from manual outreach to **Full Automated Loops in Fall 2023**, we successfully flattened the equity gap. On-time 4-year completion for our First-Gen line surged from **42.1% up to 58.4%**, while absolute dropouts collapsed from **128 down to just 48**. This proves that automated hold resolution directly prevents student dropouts and stabilizes steady-state completion velocity across all student lines.")
 
     elif "Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### Key 10: Office of University Data Strategy Alignment Matrix")
