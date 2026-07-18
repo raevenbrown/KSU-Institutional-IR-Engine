@@ -884,10 +884,9 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     elif "May assists with departmental inventory reporting" in selected_key_tab:
         st.markdown("### Key 8: Departmental Capacity, Class Enrolment & Asset Inventory Audit")
         
-        st.info("🛠️ **Institutional Capacity Audit:** Mapping hardware assets AND classroom schedule availability side-by-side. This ensures teachers, class sizes, and technical equipment are fully optimized.")
+        st.info("🛠️ **Infrastructure Audit Matrix:** Mapping hardware equipment stockpiles alongside lecture seat volume limits to pinpoint administrative bottlenecks.")
         st.write("")
         
-        # Comprehensive High-Fidelity Infrastructure Database
         tech_inventory_db = pd.DataFrame({
             "Academic Department Unit": ["Biology", "Accounting", "Cybersecurity", "Economics", "Entrepreneurship", "Finance", "Hospitality Management", "Information Systems", "Management", "Marketing"],
             "Undergrad Seat Enrollment": [850, 1250, 680, 410, 350, 980, 240, 890, 1650, 1420],
@@ -897,17 +896,14 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             "Active Inventory Count": [45, 120, 85, 10, 25, 20, 15, 60, 140, 130]
         })
         
-        # Calculate dynamic scheduling & asset constraint parameters
         tech_inventory_db["Students Per Asset Unit"] = round(tech_inventory_db["Undergrad Seat Enrollment"] / tech_inventory_db["Active Inventory Count"], 1)
         tech_inventory_db["Required Core Sections"] = (tech_inventory_db["Undergrad Seat Enrollment"] / tech_inventory_db["Average Class Size Limit"]).astype(int) + 1
         tech_inventory_db["Class Seat Utilization Rate"] = round((tech_inventory_db["Undergrad Seat Enrollment"] / (tech_inventory_db["Required Core Sections"] * tech_inventory_db["Average Class Size Limit"])) * 100, 1)
         
-        # Set clean categorization rules for institutional risk flags
         tech_inventory_db["Capacity Status Flag"] = tech_inventory_db["Class Seat Utilization Rate"].apply(
             lambda x: "CRITICAL BIND (Seats Full)" if x >= 93.0 else ("BALANCED LOAD" if x >= 80.0 else "UNDER-UTILIZED SEATS")
         )
         
-        # Filter matching standard sidebar controls
         if dept_filter != "All Departments":
             tech_inventory_db = tech_inventory_db[tech_inventory_db["Academic Department Unit"] == dept_filter]
             
@@ -971,14 +967,89 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
                 st.write("This dual tracking model allows us to address resource shortages intelligently. Instead of arbitrarily requesting more hardware, our data indicates that we should split high-strain lecture segments into smaller sections. By coordinating directly with the Central Data Strategy team, we can reallocate under-utilized classrooms from fields with low seat utilization, creating room for new class blocks without expanding the physical campus footprint.")
 
     elif "May be required to prepare ad hoc reporting that assists with measuring department performance" in selected_key_tab:
-        st.markdown("### Key 9: Center Performance & Program Effectiveness Matrix")
-        if len(processed_funnel) > 0:
-            res_counts = processed_funnel.groupby("funnel_stage").size().reset_index(name="total_cases")
-            c_pf1, f_pf2 = st.columns(2)
-            with c_pf1: st.table(res_counts.astype(str))
-            with f_pf2:
-                fig_perf = px.bar(res_counts, x="funnel_stage", y="total_cases", title="Recruitment Progress Conversion Rates Performance Profile", color="funnel_stage", color_discrete_sequence=ksu_gold_palette)
-                st.plotly_chart(fig_perf)
+        st.markdown("### Key 9: Center Program Operational Effectiveness & Program SLA Audit Ledger")
+        
+        st.info("🎯 **Center Effectiveness Evaluation:** Evaluating operational performance indicators, campaign response speed metrics, and programmatic retention impact records across core academic branches.")
+        st.write("")
+        
+        # High-Fidelity Performance Audit Registry Matrix
+        center_perf_db = pd.DataFrame({
+            "Assigned Program Care Branch": ["Undergraduate Advising Center", "Coles Financial Support Hub", "EAB Automated Outreach Wing", "Coles Peer Tutoring Labs", "First-Gen Success Network"],
+            "Total Handled Case Volume": [4250, 1850, 28500, 3100, 1200],
+            "Average Ticket Response SLA": ["14.2 Minutes (Optimal)", "4.8 Hours (Delayed)", "1.2 Seconds (Instantaneous)", "18.5 Minutes (Optimal)", "2.4 Days (Critical Lag)"],
+            "Student Program Satisfaction Score": ["94.6% Quality Index", "71.2% Quality Index", "88.4% Quality Index", "96.1% Quality Index", "64.8% Action Requested"],
+            "Program Attrition Prevention Rate": ["91.4% Saved Pipeline", "82.5% Saved Pipeline", "97.3% Saved Pipeline", "89.0% Saved Pipeline", "74.0% High Leak Risk"],
+            "Strategic Performance Growth Intervention": [
+                "Deploy unified workflow check-in queues to maintain responses under the 15-minute operational limit.",
+                "Introduce automated document verifiers to bypass the complex financial aid verification backlog.",
+                "Expand text/SMS nudge criteria to target critical course clearing blocks before milestone drop windows.",
+                "Increase peer student staffing load hours during heavy mid-term core exam cycles.",
+                "Reassign dedicated success coach representatives to resolve registration blocks before census lock-dates."
+            ]
+        })
+        
+        # Filter matching standard sidebar controls
+        if dept_filter == "Accounting" or dept_filter == "Finance":
+            center_perf_df_filtered = center_perf_db[center_perf_db["Assigned Program Care Branch"].str.contains("Financial|Advising|Outreach")]
+        elif dept_filter == "Management" or dept_filter == "Marketing":
+            center_perf_df_filtered = center_perf_db[center_perf_db["Assigned Program Care Branch"].str.contains("Advising|Outreach|Tutoring")]
+        else:
+            center_perf_df_filtered = center_perf_db.copy()
+            
+        st.markdown("#### Comprehensive Program Performance Evaluation Matrix")
+        
+        formatted_perf_df = center_perf_df_filtered.copy()
+        formatted_perf_df["Total Handled Case Volume"] = formatted_perf_df["Total Handled Case Volume"].apply(lambda x: f"{x:,}")
+        
+        st.dataframe(
+            formatted_perf_df.rename(columns={
+                "Assigned Program Care Branch": "Program Care Branch Unit",
+                "Total Handled Case Volume": "Active Case Load Volume",
+                "Average Ticket Response SLA": "Response Speed Metric",
+                "Student Program Satisfaction Score": "Student Evaluation Index",
+                "Program Attrition Prevention Rate": "Pipeline Attrition Saved %"
+            }),
+            use_container_width=True,
+            hide_index=True
+        )
+        
+        st.write("")
+        
+        perf_c1, perf_c2 = st.columns(2)
+        with perf_c1:
+            fig_perf_share = px.pie(
+                center_perf_df_filtered,
+                values="Total Handled Case Volume",
+                names="Assigned Program Care Branch",
+                title="Total Center Support Case Load Distributed Volumetric Share",
+                hole=0.4,
+                color_discrete_sequence=ksu_gold_palette
+            )
+            st.plotly_chart(fig_perf_share, use_container_width=True)
+            
+        with perf_c2:
+            fig_attr_bar = px.bar(
+                center_perf_df_filtered,
+                x="Assigned Program Care Branch",
+                y="Total Handled Case Volume",
+                text="Program Attrition Prevention Rate",
+                title="Program Retention Footprint Matrix vs Saved Case Volumes",
+                color="Assigned Program Care Branch",
+                color_discrete_sequence=ksu_gold_palette
+            )
+            st.plotly_chart(fig_attr_bar, use_container_width=True)
+            
+        st.write("---")
+        st.markdown("### 📋 Program Effectiveness Strategic Playbook")
+        perf_p1, perf_p2 = st.columns(2)
+        with perf_p1:
+            with st.container(border=True):
+                st.markdown("**The Operational Performance Bottleneck (First-Gen Success Network)**")
+                st.write("Our center-wide program audit revealed a severe programmatic risk. The **First-Gen Success Network** handles a heavy load of $1,200$ cases, yet it suffers from an unacceptable **2.4-day response lag**. This structural delay causes student satisfaction scores to drop to a low **64.8%**, directly tracking to a weak **74.0% attrition prevention rate**. Students are seeking guidance on complex registration blocks, but the delay is causing them to fall out of our enrollment pipeline.")
+        with perf_p2:
+            with st.container(border=True):
+                st.markdown("**Data-Driven Resource Allocation Strategy**")
+                st.write("To maximize performance, this audit offers clear direction for leadership. We should leverage the efficiency of the **EAB Automated Outreach Wing**—which operates instantly using automated scripts—to offset manual tasks. Reallocating open staff slots from optimized centers to the First-Gen Hub allows us to clear the response backlog, compress response lags down to minutes, and protect our target retention metrics across Coles College.")
 
     elif "Collaborate with a variety of stakeholders across campus" in selected_key_tab:
         st.markdown("### Key 10: Office of University Data Strategy Alignment Matrix")
