@@ -43,7 +43,6 @@ st.set_page_config(page_title="Coles Navigate360 Workspace", layout="wide")
 # CENTRALIZED HIGH-DENSITY LIFE CYCLE DATA STATES (40 REALISTIC STUDENT RECORDS)
 # ==========================================
 if "enrollment_funnel_db" not in st.session_state:
-    # Set up realistic cycling of communication preferences to show true multichannel effort
     comm_effort_cycle = ["Email", "Text/SMS", "Phone Consultation Call", "Shared Event Portal Link"]
     
     st.session_state.enrollment_funnel_db = pd.DataFrame({
@@ -535,12 +534,15 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         # Pull raw data for this specific report
         raw_fac_data = st.session_state.faculty_retention_db.copy()
         
+        # Calculate performance columns directly to align table with interview talking points
+        raw_fac_data["instructional_load_sch"] = raw_fac_data["semester_credit_hours_load"]
+        raw_fac_data["historical_graduated_students"] = (raw_fac_data["tenure_years_at_institution"] * (raw_fac_data["semester_credit_hours_load"] / 3) * 1.8 * 0.88 * 0.94).astype(int)
+        
         # 1. Add Filtering and Sorting Controls
         c_filt, c_sort = st.columns(2)
         with c_filt:
             dept_select = st.selectbox("Filter Key 2 by Department:", ["All Departments"] + list(raw_fac_data["department_assignment"].unique()), key="k2_dept")
         with c_sort:
-            # Setting index=1 makes "Tenure Years" the default selection
             sort_by = st.selectbox("Sort Key 2 Faculty By:", ["Name (A-Z)", "Tenure Years (High to Low)"], index=1, key="k2_sort")
             
         # 2. Apply Filtering and Sorting
@@ -554,7 +556,27 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
         # 3. Display Data
         st.info(f"Viewing: {dept_select} Faculty Profiles")
-        st.dataframe(raw_fac_data[["faculty_name", "department_assignment", "appointment_track", "faculty_staff_status", "tenure_years_at_institution"]].astype(str), use_container_width=True, hide_index=True)
+        
+        # Updated columns to display performance metrics (What's on their plate & Historical Graduated count)
+        st.dataframe(
+            raw_fac_data[[
+                "faculty_name", 
+                "department_assignment", 
+                "faculty_staff_status", 
+                "tenure_years_at_institution",
+                "instructional_load_sch",
+                "historical_graduated_students"
+            ]].rename(columns={
+                "faculty_name": "Faculty Name",
+                "department_assignment": "Department",
+                "faculty_staff_status": "Status Status",
+                "tenure_years_at_institution": "Tenure Longevity (Years)",
+                "instructional_load_sch": "Current Workload Load (SCH)",
+                "historical_graduated_students": "Historical Assisted Graduates"
+            }).astype(str), 
+            use_container_width=True, 
+            hide_index=True
+        )
         
         fig_key2 = px.bar(
             raw_fac_data, 
