@@ -66,14 +66,13 @@ if "enrollment_funnel_db" not in st.session_state:
             "Economics", "Accounting", "Finance", "Cybersecurity", "Management"
         ],
         "academic_term": [
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", 
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Fall 2026 Preview", "Fall 2026 Preview",
-            "Spring 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Spring 2026",
-            "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Fall 2026 Preview", "Fall 2026 Preview",
-            "Spring 2026", "Summer 2026", "Fall 2026 Preview", "Spring 2026", "Summer 2026"
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026", "Summer 2026", "Fall 2026 Preview",
+            "Spring 2025", "Summer 2025", "Fall 2025", "Spring 2026"
         ],
         "classification": [
             "Second Year", "First Year", "Fourth Year", "Third Year", "Second Year", 
