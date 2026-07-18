@@ -166,9 +166,14 @@ term_filter = st.sidebar.selectbox("Target Academic Term Horizon:", options=["Al
 studentvue_filter = st.sidebar.selectbox("StudentVue Registration Profile Status:", options=["All Student Tiers", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", "Financial Hold - Balance Due", "Probation Sync Alert"])
 faculty_status_filter = st.sidebar.selectbox("Faculty Staff Administrative Status:", options=["All Faculty Tiers", "Active - Full Instructional Load", "Pending Tenure Review Notice", "Sabbatical - Research Active"])
 
+# 1. Start with a fresh copy of the master database
 processed_funnel = st.session_state.enrollment_funnel_db.copy()
 processed_faculty = st.session_state.faculty_retention_db.copy()
 
+# 2. RUN CALCULATIONS FIRST (This prevents the empty dataframe crash!)
+processed_funnel[["Current Professor", "Past Professor", "G1", "G2", "G3", "G4", "cumulative_gpa"]] = processed_funnel.apply(assign_faculty_and_grades, axis=1)
+
+# 3. NOW APPLY GLOBAL FILTERS SAFELY
 if dept_filter != "All Departments":
     processed_funnel = processed_funnel[processed_funnel["intended_major"] == dept_filter]
     processed_faculty = processed_faculty[processed_faculty["department_assignment"] == dept_filter]
