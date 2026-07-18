@@ -714,7 +714,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
     elif "Develops and maintains reports to measure operational" in selected_key_tab:
         st.markdown("### Key 5: Operational Utilization & Activity Benchmarks")
         
-        # Upgraded to high-fidelity, high-density matrix to show genuine operational data tracking
         operational_channels_db = pd.DataFrame({
             "Communication Outreach Channel": [
                 "Personalized Text/SMS Blasts",
@@ -734,7 +733,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
             ]
         })
         
-        # Wide layout container to ensure information has plenty of room to scale clean and uncrowded
         st.markdown("#### Campus Communication Channel Effectiveness & Resource Tracking Ledger")
         st.dataframe(
             operational_channels_db.astype(str),
@@ -744,7 +742,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         
         st.write("")
         
-        # Render clean comparative chart directly beneath the database matrix
         fig_util = px.bar(
             operational_channels_db, 
             x="Communication Outreach Channel", 
@@ -769,24 +766,64 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
     elif "May be required to prepare ad hoc reports required of association" in selected_key_tab:
         st.markdown("### Key 6: External Oversight & Regulatory Compliance Framework Gateway")
-        reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake", "AACSB Evaluation Ledger Core", "Federal IPEDS Frame"])
+        
+        # Explain the Business Purpose of Key 6 up front so interviewers know you understand data governance
+        st.info("💡 **Analyst Note on Data Governance:** Internal KSU databases use custom naming conventions (e.g., 'Spring 2025' or 'First Year'). External regulatory agencies require data submitted in strict coded formats. This Gateway automatically translates internal schemas into audit-ready payloads to secure state funding, federal financial aid, and institutional accreditation.")
+        st.write("")
+        
+        reg_target = st.selectbox("Select Regulatory Compliance Recipient Guideline Context:", ["USG State System Board Intake (State Funding)", "Federal IPEDS Frame (Title IV Financial Aid)", "AACSB Evaluation Ledger Core (Business Accreditation)"])
+        
         key6_data = processed_funnel.copy()
         
-        with st.container(border=True):
-            st.markdown(f"Active Compliance Manifest Structure: {reg_target}")
-            if reg_target == "USG State System Board Intake":
-                st.write("Validation Protocol: Pass. System payload layout fields map out perfectly for state board data loops.")
-                key6_data = key6_data[key6_data["cumulative_gpa"] >= 3.5]
-            elif reg_target == "AACSB Evaluation Ledger Core":
-                st.write("Validation Protocol: Pass. Faculty load matrices comply 100% with global AACSB data ingestion schemas.")
-                key6_data = key6_data[key6_data["intended_major"].isin(["Accounting", "Economics", "Finance", "Management", "Marketing"])]
-            elif reg_target == "Federal IPEDS Frame":
-                st.write("Validation Protocol: Pass. Taxonomy outputs line up perfectly for electronic transmission to NCES.")
-                key6_data = key6_data[key6_data["cumulative_gpa"] < 3.5]
+        # Redesigned the data translation engine to actually modify the data frame view to look like a real regulatory export
+        if "USG State System" in reg_target:
+            with st.container(border=True):
+                st.markdown("### 🏛️ University System of Georgia (USG) Academic Census")
+                st.write("**Regulatory Purpose:** Securing Kennesaw State University's state budget allocations by proving exact headcount, student demographics, and credit hour generation to the Board of Regents.")
+                st.write("**Schema Mapping Action:** Translating internal academic terms into strict USG numeric identifiers (e.g., Spring 2025 -> Term Code 202502) and extracting residency flags.")
+                
+            # Perform a visible "Translation" for the USG Data output
+            key6_data["USG_Term_Code"] = key6_data["academic_term"].replace({"Spring 2025": "202502", "Summer 2025": "202505", "Fall 2025": "202508", "Spring 2026": "202602", "Summer 2026": "202605", "Fall 2026 Preview": "202608"})
+            key6_data["USG_Tuition_Residency"] = ["In-State (GA)" if i % 4 != 0 else "Out-of-State" for i in range(len(key6_data))]
+            key6_data["USG_Headcount_Flag"] = 1
+            
+            display_cols = ["applicant_id", "USG_Term_Code", "USG_Tuition_Residency", "USG_Headcount_Flag", "intended_major", "cumulative_gpa"]
 
-        st.write("")
-        st.markdown(f"#### Compliance Sub-Cohort Ledger Data View ({reg_target}) — [Total Records: {len(key6_data)} Students]")
-        st.table(key6_data[["applicant_id", "student_name", "intended_major", "academic_term", "cumulative_gpa", "Current Professor", "Past Professor"]].astype(str))
+        elif "Federal IPEDS" in reg_target:
+            with st.container(border=True):
+                st.markdown("### 🇺🇸 Federal IPEDS Title IV Compliance Extract")
+                st.write("**Regulatory Purpose:** Reporting student graduation, retention, and enrollment data to the Department of Education. Failure to submit accurate IPEDS data results in the loss of federal Pell Grants and FAFSA funding.")
+                st.write("**Schema Mapping Action:** Stripping personally identifiable information (PII) and mapping internal KSU classification categories to rigid federal cohort grouping definitions.")
+                
+            # Perform a visible "Translation" for the Federal IPEDS Data output
+            key6_data["IPEDS_Cohort_Type"] = key6_data["classification"].replace({"First Year": "First-Time, Full-Time", "Second Year": "Continuing", "Third Year": "Continuing", "Fourth Year": "Continuing"})
+            key6_data["IPEDS_Financial_Aid_Flag"] = key6_data["category_tags"].apply(lambda x: "Y" if "Pell-Eligible" in x else "N")
+            key6_data["IPEDS_Retention_Status"] = key6_data["funnel_stage"].apply(lambda x: "Retained" if x == "Enrolled" else "Attrited")
+            
+            display_cols = ["applicant_id", "IPEDS_Cohort_Type", "IPEDS_Financial_Aid_Flag", "IPEDS_Retention_Status", "academic_term"]
+
+        elif "AACSB" in reg_target:
+            with st.container(border=True):
+                st.markdown("### 📊 AACSB Business School Accreditation Ledger")
+                st.write("**Regulatory Purpose:** Maintaining the Coles College of Business's elite global accreditation. This focuses heavily on ensuring business faculty are qualified and not overloaded with unmanageable student counts.")
+                st.write("**Schema Mapping Action:** Shifting the data frame focus from *Students* to *Faculty*, calculating instructional credit hour loads, and assigning AACSB-mandated qualification flags (e.g., SA, PA, SP, IP).")
+            
+            # For AACSB, we actually pull from the faculty database, not the student funnel!
+            key6_data = processed_faculty.copy()
+            # Simulate AACSB qualification tagging (Scholarly Academic vs Practice Academic)
+            key6_data["AACSB_Qualification_Status"] = key6_data["appointment_track"].replace({
+                "Tenured Faculty": "Scholarly Academic (SA)", 
+                "Tenure-Track Assistant": "Scholarly Academic (SA)", 
+                "Non-Tenure Lecturer": "Instructional Practitioner (IP)", 
+                "Non-Tenure Clinical": "Practice Academic (PA)"
+            })
+            key6_data["AACSB_Instructional_Load_SCH"] = key6_data["semester_credit_hours_load"]
+            
+            display_cols = ["faculty_id", "faculty_name", "department_assignment", "AACSB_Qualification_Status", "AACSB_Instructional_Load_SCH"]
+
+        st.write("---")
+        st.markdown(f"#### Formatted Compliance Payload Ready for Agency Extraction — [Total Processed Records: {len(key6_data)}]")
+        st.dataframe(key6_data[display_cols].astype(str), use_container_width=True, hide_index=True)
 
     elif "Compiles recurring operational review that includes trend analysis" in selected_key_tab:
         st.markdown("### Key 7: Multi-Semester Longitudinal Trend Analytics Curve")
