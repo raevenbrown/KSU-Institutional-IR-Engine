@@ -21,14 +21,17 @@ def assign_faculty_and_grades(row):
         
     student_num = int(row["applicant_id"].split("-")[1])
     
-    if student_num % 4 == 0:
-        grades = ["A", "A", "A", "A"]  
-    elif student_num % 4 == 1:
-        grades = ["A", "B", "A", "A"]  
-    elif student_num % 4 == 2:
-        grades = ["A", "B", "B", "A"]  
+    # Created dynamic, realistic grade allocations to generate variable GPAs across the cohort
+    if student_num % 5 == 0:
+        grades = ["A", "A", "A", "B"]  # ~3.75
+    elif student_num % 5 == 1:
+        grades = ["B", "B", "C", "B"]  # ~2.75
+    elif student_num % 5 == 2:
+        grades = ["C", "D", "B", "C"]  # ~2.00
+    elif student_num % 5 == 3:
+        grades = ["D", "F", "D", "C"]  # ~1.00 Critical Alert Risk
     else:
-        grades = ["B", "B", "C", "B"]  
+        grades = ["A", "B", "A", "A"]  # ~3.75
         
     grade_points = {"A": 4.0, "B": 3.0, "C": 2.0, "D": 1.0, "F": 0.0}
     true_gpa = round(sum(grade_points[g] for g in grades) / len(grades), 2)
@@ -534,7 +537,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         # Pull raw data for this specific report
         raw_fac_data = st.session_state.faculty_retention_db.copy()
         
-        # Calculate performance columns directly to align table with interview talking points
         raw_fac_data["instructional_load_sch"] = raw_fac_data["semester_credit_hours_load"]
         raw_fac_data["historical_graduated_students"] = (raw_fac_data["tenure_years_at_institution"] * (raw_fac_data["semester_credit_hours_load"] / 3) * 1.8 * 0.88 * 0.94).astype(int)
         
@@ -557,7 +559,6 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
         # 3. Display Data
         st.info(f"Viewing: {dept_select} Faculty Profiles")
         
-        # Updated columns to display performance metrics (What's on their plate & Historical Graduated count)
         st.dataframe(
             raw_fac_data[[
                 "faculty_name", 
@@ -590,14 +591,65 @@ elif app_panel == "Reports and Analytics Gateway (All 10 Keys)":
 
     elif "Identifies areas of opportunity and presents findings" in selected_key_tab:
         st.markdown("### Key 3: Leadership Findings & Strategic Recommendations Engine")
-        low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 3.4] if len(processed_funnel) > 0 else pd.DataFrame()
+        
+        # Filter down to the students maintaining sub-optimal GPAs under the 3.4 threshold line
+        low_gpa_leads = processed_funnel[processed_funnel["cumulative_gpa"] < 3.4].copy() if len(processed_funnel) > 0 else pd.DataFrame()
+        
+        # Build out deterministic, granular risk metrics to show a true intervention pathway matrix
+        if len(low_gpa_leads) > 0:
+            risk_drivers = []
+            assigned_interveners = []
+            pathway_statuses = []
+            
+            for i, row in enumerate(low_gpa_leads.itertuples()):
+                # Assign dynamic underlying reasons based on index distributions
+                if i % 3 == 0:
+                    risk_drivers.append("Prerequisite Course Friction / Core Math Deficiency")
+                    assigned_interveners.append("Coles Tutoring Support Center")
+                    pathway_statuses.append("Active - Accepted Outreach Pathway")
+                elif i % 3 == 1:
+                    risk_drivers.append("First-Generation Transition Gap / Adjustment Block")
+                    assigned_interveners.append("Academic Success Coach Assigned")
+                    pathway_statuses.append("Pending Outreach Response")
+                else:
+                    risk_drivers.append("Registration Hold Backlog / Financial Aid Lag")
+                    assigned_interveners.append("Office of Student Success Specialist")
+                    pathway_statuses.append("Outreach Initiated - Refused/No-Show Pathway")
+                    
+            low_gpa_leads["Risk Driver Background"] = risk_drivers
+            low_gpa_leads["Assigned Advisor Intervener"] = assigned_interveners
+            low_gpa_leads["Pathway Outreach Status"] = pathway_statuses
+
         with st.container(border=True):
             st.markdown("Executive Data Insights Memorandum")
             st.write(f"1. Identified Area of Opportunity: Found {len(low_gpa_leads)} active records maintaining cumulative GPA indices under the 3.4 line.")
             st.write("2. Actionable Recommendation: Deploy automated EAB communications targeting validation parameters to reduce block friction.")
+        
         if len(low_gpa_leads) > 0:
-            st.error("Opportunity Tracking Watchlist:")
-            st.table(low_gpa_leads[["student_name", "intended_major", "academic_term", "cumulative_gpa"]].astype(str))
+            st.error("Opportunity Tracking & Intervention Pathway Watchlist:")
+            
+            # Formatted data presentation table showcasing dynamic GPAs, qualitative root causes, and engagement metrics
+            st.dataframe(
+                low_gpa_leads[[
+                    "student_name", 
+                    "intended_major", 
+                    "academic_term", 
+                    "cumulative_gpa", 
+                    "Risk Driver Background", 
+                    "Assigned Advisor Intervener", 
+                    "Pathway Outreach Status"
+                ]].rename(columns={
+                    "student_name": "Student Name",
+                    "intended_major": "Declared Major",
+                    "academic_term": "Active Term Horizon",
+                    "cumulative_gpa": "Dynamic GPA Index",
+                    "Risk Driver Background": "Primary Academic Risk Driver",
+                    "Assigned Advisor Intervener": "Assigned Care Representative",
+                    "Pathway Outreach Status": "Pathway Engagement Response"
+                }).astype(str),
+                use_container_width=True,
+                hide_index=True
+            )
 
     elif "Provides productivity analysis reports" in selected_key_tab:
         st.markdown("### Key 4: Outreach Campaign Effectiveness Productivity Audit Log")
