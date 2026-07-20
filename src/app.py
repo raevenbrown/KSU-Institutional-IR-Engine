@@ -84,11 +84,12 @@ if "enrollment_funnel_db" not in st.session_state:
         ] * 4,
         "cumulative_gpa": [0.00 for _ in range(40)], 
         "studentvue_sync_status": [
-            "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Academic Hold - Missing Transcript", 
-            "Good Standing - Regular Sync", "Good Standing - Regular Sync", "Good Standing - Regular Sync", 
-            "Good Standing - Regular Sync", "Financial Hold - Balance Due", "Good Standing - Regular Sync", 
-            "Probation Sync Alert"
-        ] * 4,
+            "Probation Sync Alert" if (int(f"APP-{2600+i}".split("-")[1]) % 5 in [2, 3]) 
+            else ("Academic Hold - Missing Transcript" if i % 10 == 2 
+            else ("Financial Hold - Balance Due" if i % 10 == 7 
+            else "Good Standing - Regular Sync"))
+            for i in range(1, 41)
+        ],
         "funnel_stage": [
             "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Enrolled", "Admitted", "Applied", "Inquiry"
         ] * 4,
