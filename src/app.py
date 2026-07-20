@@ -315,27 +315,32 @@ if app_panel == "Student Lifecycle Portal (StudentVue)":
                 st.markdown(f"*Navigator Digest Material:* **\"{st.session_state.enrollment_funnel_db.at[idx, 'staff_meeting_prep_notes']}\"**")
                 
             st.write("---")
-            st.subheader("Streamline Applicant Progress Queue Tasks")
-            w1, w2, w3 = st.columns([1, 1, 2])
             
-            # Map default indices safely based on row data to fix UI layout mismatch
-            stage_opts = ["Enrolled", "Admitted", "Applied", "Inquiry"]
-            camp_opts = ["Completed Yield", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"]
-            
-            default_stage_idx = stage_opts.index(p_row['funnel_stage']) if p_row['funnel_stage'] in stage_opts else 0
-            default_camp_idx = camp_opts.index(p_row['outreach_campaign_group']) if p_row['outreach_campaign_group'] in camp_opts else 0
-
-            with w1: stage_update = st.selectbox("Advance Student Status Outcome:", options=stage_opts, index=default_stage_idx)
-            with w2: camp_update = st.selectbox("Reassign Outreach Campaign:", options=camp_opts, index=default_camp_idx)
-            with w3: append_note = st.text_input("Append Diagnostic Communication Log Entry:")
+            # --- CONVERTED TO WIDGET FORM TO PREVENT AT-CLICK RESET MUTATIONS ---
+            with st.form(key="student_progress_form"):
+                st.subheader("Streamline Applicant Progress Queue Tasks")
+                w1, w2, w3 = st.columns([1, 1, 2])
                 
-            if st.button("Commit Adjustments to Centralized Funnel View"):
-                st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
-                st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
-                if append_note: 
-                    st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
-                st.success("Funnel attributes modified updates pushed live.")
-                st.rerun()
+                stage_opts = ["Enrolled", "Admitted", "Applied", "Inquiry"]
+                camp_opts = ["Completed Yield", "Fall Preview Invite", "Scholarship Push", "Housing Deposit Nudge"]
+                
+                default_stage_idx = stage_opts.index(p_row['funnel_stage']) if p_row['funnel_stage'] in stage_opts else 0
+                default_camp_idx = camp_opts.index(p_row['outreach_campaign_group']) if p_row['outreach_campaign_group'] in camp_opts else 0
+
+                with w1: stage_update = st.selectbox("Advance Student Status Outcome:", options=stage_opts, index=default_stage_idx)
+                with w2: camp_update = st.selectbox("Reassign Outreach Campaign:", options=camp_opts, index=default_camp_idx)
+                with w3: append_note = st.text_input("Append Diagnostic Communication Log Entry:")
+                    
+                submit_adjustments = st.form_submit_button("Commit Adjustments to Centralized Funnel View")
+                
+                if submit_adjustments:
+                    st.session_state.enrollment_funnel_db.at[idx, "funnel_stage"] = stage_update
+                    st.session_state.enrollment_funnel_db.at[idx, "outreach_campaign_group"] = camp_update
+                    if append_note: 
+                        st.session_state.enrollment_funnel_db.at[idx, "staff_meeting_prep_notes"] = f"{p_row['staff_meeting_prep_notes']} | CDO Edit: {append_note}"
+                    st.success("Funnel attributes modified updates pushed live.")
+                    st.rerun()
+                    
         else: st.warning("No tracking records match filters.")
             
         st.write("---")
